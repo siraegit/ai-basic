@@ -150,7 +150,7 @@
   .slg{background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
   .slg label{font-size:16px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:12px;}
   .slg label span{font-family:'Space Grotesk',monospace;font-size:18px;font-weight:700;}
-  input[type=range]{width:100%;-webkit-appearance:none;height:7px;border-radius:4px;outline:none;cursor:pointer;}
+  input[type=range]{width:100%;-webkit-appearance:none;height:7px;border-radius:4px;outline:none;cursor:pointer;background:#E2E8F0;}
   input[type=range].ws{accent-color:var(--blue);}
   input[type=range].bs{accent-color:var(--orange);}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:white;border:3px solid var(--blue);cursor:pointer;}
@@ -208,7 +208,7 @@
   <div style="max-width:700px;margin-top:20px;">
     <div class="cov-eye">고등학교 인공지능 기초 · Ⅱ. 인공지능과 학습</div>
     <div class="cov-ttl">기계학습 유형 및<br><span class="acc">선형 회귀</span> 알고리즘</div>
-    <div class="cov-sub">03. 기계학습 유형 및 알고리즘 선정 | 오늘의 수업 범위</div>
+    <div class="cov-sub">03. 기계학습 유형 및 알고리즘 선정</div>
     <div style="font-size:14px;font-weight:800;color:var(--mid);letter-spacing:1px;margin-bottom:16px;">🎯 학습 목표</div>
     <div class="goal"><div class="goal-ic" style="background:#DBEAFE;">📚</div>기계학습의 세 가지 유형(지도·비지도·강화학습)을 설명할 수 있다.</div>
     <div class="goal"><div class="goal-ic" style="background:#D1FAE5;">📊</div>지도학습의 회귀와 분류를 출력값의 형태로 구분할 수 있다.</div>
@@ -229,7 +229,7 @@
       <h3 style="color:var(--blue);">지도학습</h3>
       <div class="en">Supervised Learning</div>
       <p>입력 데이터와 <strong>레이블(정답)</strong>을 모두 컴퓨터에게 알려 주고, 컴퓨터가 데이터 속에 숨겨진 패턴이나 규칙을 스스로 찾는 학습 방법이다.</p>
-      <div class="ib" style="background:#DBEAFE;color:var(--blue);">💡 <strong>비유:</strong> 채점된 시험지로 공부하기<br>📌 <strong>예:</strong> 이미지 분류, 주택 가격 예측, 의료 진단</div>
+      <div class="ib" style="background:#DBEAFE;color:var(--blue);">💡 <strong>비유:</strong> 채점된 시험지로 공부하기<br>📌 <strong>예:</strong> 이미지 분류, 주택 가격 예측, 의료 진단, 스팸 메일 필터, 음성 인식</div>
     </div>
     <div class="tc" style="background:#F0FDF4;">
       <div class="bi">🔍</div>
@@ -237,7 +237,7 @@
       <h3 style="color:var(--teal);">비지도학습</h3>
       <div class="en">Unsupervised Learning</div>
       <p>입력 데이터의 레이블을 알려 주지 않고, 컴퓨터가 스스로 데이터 간의 비슷한 특성을 찾아 학습하는 방식이다. 비슷한 데이터끼리 묶어 패턴이나 구조를 찾는다.</p>
-      <div class="ib" style="background:#D1FAE5;color:#065F46;">💡 <strong>비유:</strong> 정답 없이 혼자 사진 분류하기<br>📌 <strong>예:</strong> 고객 군집화, 이상 탐지, 추천 시스템</div>
+      <div class="ib" style="background:#D1FAE5;color:#065F46;">💡 <strong>비유:</strong> 정답 없이 혼자 사진 분류하기<br>📌 <strong>예:</strong> 고객 군집화, 이상 탐지, 넷플릭스 추천, 유전자 분석, 문서 주제 분류</div>
     </div>
     <div class="tc" style="background:#FFF7ED;">
       <div class="bi">🎮</div>
@@ -245,7 +245,7 @@
       <h3 style="color:var(--orange);">강화학습</h3>
       <div class="en">Reinforcement Learning</div>
       <p>행동에 대해 <strong>보상과 벌점</strong>을 부여하여 시행착오를 거치며 보상을 최대화하는 전략을 학습하는 방법이다. 환경과의 상호작용을 통해 학습한다.</p>
-      <div class="ib" style="background:#FED7AA;color:#92400E;">💡 <strong>비유:</strong> 점수 받으며 게임 실력 키우기<br>📌 <strong>예:</strong> 알파고 제로, 자율주행, 로봇 제어</div>
+      <div class="ib" style="background:#FED7AA;color:#92400E;">💡 <strong>비유:</strong> 점수 받으며 게임 실력 키우기<br>📌 <strong>예:</strong> 알파고 제로, 자율주행, 로봇 제어, 아타리 게임 AI, ChatGPT 튜닝(RLHF)</div>
     </div>
   </div>
 </div>
@@ -280,8 +280,8 @@
       <tr>
         <td class="rl">대표 알고리즘</td>
         <td style="color:var(--blue);font-weight:600;">선형 회귀, 로지스틱 회귀,<br>의사결정트리, SVM</td>
-        <td style="color:var(--teal);font-weight:600;">K-평균 군집화,<br>주성분 분석(PCA)</td>
-        <td style="color:var(--orange);font-weight:600;">Q-러닝,<br>정책 경사법</td>
+        <td style="color:var(--teal);font-weight:600;">K-평균 군집화,<br>연관 규칙 학습</td>
+        <td style="color:var(--orange);font-weight:600;">심층 강화학습(DRL),<br>진화 알고리즘</td>
       </tr>
       <tr>
         <td class="rl">주요 활용</td>
@@ -478,23 +478,25 @@
   <div class="sub">컴퓨터는 <strong>오차를 계산</strong>하고 <strong>경사하강법</strong>으로 오차를 줄여나가며 최적의 직선을 찾는다.</div>
   <div class="el">
     <div>
-      <div class="card" style="margin-bottom:14px;">
-        <div style="font-size:16px;font-weight:700;color:var(--red);margin-bottom:12px;">⚠️ 오차(Error)란?</div>
-        <div style="font-size:15px;color:var(--mid);line-height:1.65;">모델이 예측한 값과 실제 데이터 값의 <strong style="color:var(--dark);">차이</strong>. 오차가 작을수록 더 좋은 직선이다.</div>
-        <div style="margin-top:12px;background:#FEF2F2;border-radius:10px;padding:12px;font-family:'Space Grotesk',monospace;font-size:16px;text-align:center;color:var(--red);">오차 = 예측값 − 실제값</div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:16px;font-weight:700;color:var(--red);margin-bottom:10px;">⚠️ 오차(Error)와 MSE</div>
+        <div style="font-size:14px;color:var(--mid);line-height:1.65;margin-bottom:10px;">모델의 예측값과 실제값의 <strong style="color:var(--dark);">차이</strong>. 오차가 작을수록 더 좋은 직선이다.<br>오차를 <strong>제곱</strong>하는 이유: ① 음수·양수 오차가 상쇄되는 것을 막고 ② 큰 오차에 더 큰 페널티를 부여하기 위해.</div>
+        <div style="background:#FEF2F2;border-radius:10px;padding:10px;font-family:'Space Grotesk',monospace;font-size:15px;text-align:center;color:var(--red);">오차 = 예측값 − 실제값</div>
       </div>
-      <div class="hl" style="background:#FFF7ED;border-left:4px solid var(--orange);margin-bottom:14px;"><strong>🤔 오차를 왜 제곱할까?</strong><br>오차는 양수도 음수도 될 수 있어서 그냥 더하면 서로 상쇄된다. <strong>제곱</strong>하면 ① 음수가 사라지고 ② 큰 오차에 더 큰 패널티를 준다.</div>
-      <div style="background:var(--dark);border-radius:12px;padding:16px;font-family:'Space Grotesk',monospace;font-size:15px;color:white;text-align:center;">
-        <div style="color:#94A3B8;font-size:13px;margin-bottom:8px;">평균 제곱 오차 (MSE)</div>
-        MSE = <span style="color:#93C5FD;">1/n</span> × Σ (<span style="color:#FCD34D;">예측값 − 실제값</span>)²
+      <div style="background:var(--dark);border-radius:12px;padding:14px 16px;font-family:'Space Grotesk',monospace;font-size:14px;color:white;margin-bottom:12px;">
+        <div style="color:#94A3B8;font-size:12px;margin-bottom:6px;">평균 제곱 오차 (MSE, Mean Squared Error)</div>
+        <div style="font-size:16px;text-align:center;">MSE = <span style="color:#93C5FD;">1/n</span> × Σ (<span style="color:#FCD34D;">예측값 − 실제값</span>)²</div>
+        <div style="color:#94A3B8;font-size:12px;margin-top:8px;text-align:center;">n: 데이터 개수 &nbsp;|&nbsp; MSE = 0이면 완벽한 직선 (현실에선 불가능)</div>
       </div>
+      <div class="hl" style="background:#FFF7ED;border-left:4px solid var(--orange);font-size:14px;"><strong>💡 학습률(Learning Rate, α)이란?</strong><br>경사하강법에서 한 번에 얼마나 크게 w, b를 조정할지 결정하는 값.<br>너무 크면 → 최솟값을 지나쳐 발산 &nbsp;|&nbsp; 너무 작으면 → 학습이 너무 느림</div>
     </div>
     <div>
-      <div style="font-size:16px;font-weight:700;color:var(--mid);margin-bottom:14px;">🏔️ 경사하강법(Gradient Descent) — 최적의 직선 찾기</div>
-      <div class="gs"><div class="gi">🎯</div><div><div class="gh4">초기 직선 설정</div><div class="gp">처음에는 기울기(w)와 절편(b)을 임의로 설정한다. 데이터에 잘 맞지 않을 수 있다.</div></div></div>
-      <div class="gs"><div class="gi">📐</div><div><div class="gh4">오차 계산</div><div class="gp">직선과 실제 데이터 점들 간의 차이를 계산한다. 각 점의 오차를 제곱해 모두 더한다.</div></div></div>
-      <div class="gs"><div class="gi">⛷️</div><div><div class="gh4">오차 최소화 (핵심!)</div><div class="gp">w와 b를 조금씩 조정하여 오차가 줄어드는 방향으로 이동시킨다. 산에서 가장 낮은 곳을 찾아 내려가는 것과 같다!</div></div></div>
-      <div class="gs"><div class="gi">✅</div><div><div class="gh4">최적의 직선 도출</div><div class="gp">오차가 더 이상 크게 줄어들지 않을 때, 그때의 w와 b가 최적값. 이 직선으로 새 데이터를 예측한다.</div></div></div>
+      <div style="font-size:15px;font-weight:700;color:var(--mid);margin-bottom:10px;">🏔️ 경사하강법(Gradient Descent) — 최적의 직선 찾기</div>
+      <div class="gs"><div class="gi">🎯</div><div><div class="gh4">① 초기 직선 설정</div><div class="gp">처음에는 w와 b를 임의로 설정. 데이터에 잘 맞지 않을 수 있다.</div></div></div>
+      <div class="gs"><div class="gi">📐</div><div><div class="gh4">② 오차(MSE) 계산</div><div class="gp">현재 직선과 실제 데이터 점들 간의 차이를 제곱해 평균낸다.</div></div></div>
+      <div class="gs"><div class="gi">⛷️</div><div><div class="gh4">③ 오차가 줄어드는 방향으로 이동 (핵심!)</div><div class="gp">w와 b를 학습률(α)만큼 조금씩 조정. 산에서 경사가 급한 방향으로 한 발씩 내려가는 것과 같다.</div></div></div>
+      <div class="gs"><div class="gi">🔁</div><div><div class="gh4">④ ②~③ 반복</div><div class="gp">오차가 더 이상 크게 줄지 않을 때까지 반복. 이 과정이 바로 "학습"이다.</div></div></div>
+      <div class="gs"><div class="gi">✅</div><div><div class="gh4">⑤ 최적의 직선 도출</div><div class="gp">수렴한 시점의 w, b가 최적값. 기계학습뿐 아니라 <strong>딥러닝에서도</strong> 동일한 원리로 사용된다.</div></div></div>
     </div>
   </div>
 </div>
@@ -542,7 +544,557 @@
       <div class="hl" style="background:#EFF6FF;border-left:4px solid var(--blue);"><strong>단순 vs 다중 선형 회귀</strong><br><br><strong>단순:</strong> Y = wX + b &nbsp;→&nbsp; 독립변수 1개<br><strong>다중:</strong> Y = w₁X₁ + w₂X₂ + … + b &nbsp;→&nbsp; 독립변수 여러 개</div>
       <div class="hl" style="background:#D1FAE5;border-left:4px solid var(--teal);"><strong>✅ 더 정확한 예측 가능!</strong><br>폭염 일수 하나만 볼 때보다, 기온·습도·마케팅 등 여러 요인을 함께 고려하면 판매량 예측이 더 정확해진다.</div>
       <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);"><strong>⚠️ 변수가 너무 많으면?</strong><br>관련 없는 변수까지 너무 많이 넣으면 오히려 예측 성능이 나빠질 수 있다. 중요한 변수를 잘 선택하는 것도 기술이다.</div>
-      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);"><strong>📌 교과서 참고</strong><br>릿지(Ridge) 회귀, 라쏘(Lasso) 회귀는 과적합을 방지하는 정규화 방법으로, 다중 선형 회귀의 심화 버전이다.</div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);"><strong>📌 교과서 참고 — 릿지 & 라쏘 회귀</strong><br><strong style="color:var(--purple);">과적합(훈련 데이터에 너무 딱 맞아 새 데이터 예측이 나빠지는 현상)을 막기 위해 가중치에 패널티를 부과하는 정규화 방법이다.</strong><br>릿지: 모든 w를 작게 유지 &nbsp;|&nbsp; 라쏘: 불필요한 변수의 w를 아예 0으로 만들어 변수 선택 효과</div>
+    </div>
+  </div>
+</div>
+ㅁ<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기계학습 유형 및 선형 회귀 | 인공지능 기초</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:#3B82F6; --teal:#10B981; --amber:#F59E0B;
+    --orange:#F97316; --purple:#8B5CF6; --red:#EF4444;
+    --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
+  #slideshow{width:100vw;height:100vh;position:relative;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateX(40px);padding:28px 50px 68px;}
+  .slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+  .slide.exit-left{opacity:0;transform:translateX(-40px);}
+
+  /* NAV */
+  #nav{position:fixed;bottom:0;left:0;right:0;height:52px;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;gap:18px;z-index:100;}
+  .nav-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--blue);background:white;color:var(--blue);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+  .nav-btn:hover{background:var(--blue);color:white;}
+  .nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+  #slide-counter{font-size:15px;color:var(--mid);font-weight:600;min-width:68px;text-align:center;}
+  .dots{display:flex;gap:6px;align-items:center;}
+  .dot{width:8px;height:8px;border-radius:50%;background:#CBD5E1;transition:all .3s;cursor:pointer;}
+  .dot.active{background:var(--blue);transform:scale(1.4);}
+
+  /* SHARED */
+  .lbl{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;opacity:.65;}
+  .ttl{font-size:36px;font-weight:900;line-height:1.15;margin-bottom:6px;}
+  .sub{font-size:17px;color:var(--mid);margin-bottom:20px;line-height:1.6;}
+  .card{background:white;border-radius:16px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .hl{border-radius:12px;padding:14px 20px;font-size:15px;line-height:1.7;}
+  .fbox{background:var(--dark);color:white;border-radius:14px;padding:18px 28px;font-size:26px;font-weight:700;font-family:'Space Grotesk',monospace;text-align:center;letter-spacing:1px;}
+  .fbox span{color:#93C5FD;} .fbox em{color:#FCD34D;font-style:normal;}
+  .fbox .dim{color:#94A3B8;font-size:14px;font-weight:400;margin-top:8px;}
+  .tag{display:inline-block;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:700;}
+
+  /* S1 */
+  #s1{background:linear-gradient(135deg,#EFF6FF 0%,#F0FDF4 55%,#FFF7ED 100%);justify-content:center;}
+  .cov-eye{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:18px;}
+  .cov-ttl{font-size:54px;font-weight:900;line-height:1.1;margin-bottom:16px;}
+  .cov-ttl .acc{color:var(--blue);}
+  .cov-sub{font-size:19px;color:var(--mid);margin-bottom:34px;}
+  .goal{display:flex;align-items:center;gap:14px;font-size:17px;color:var(--mid);margin-bottom:12px;}
+  .goal-ic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .deco{position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:200px;opacity:.07;}
+
+  /* S2 */
+  #s2{background:var(--bg);}
+  .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:1;}
+  .tc{border-radius:20px;padding:24px 20px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+  .tc .bi{font-size:50px;margin-bottom:12px;}
+  .tc h3{font-size:22px;font-weight:800;margin-bottom:6px;}
+  .tc .en{font-size:13px;opacity:.6;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+  .tc p{font-size:15px;line-height:1.65;color:var(--mid);}
+  .tc .bdg{position:absolute;top:16px;right:16px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;}
+  .tc .ib{margin-top:14px;border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.6;}
+
+  /* S3 */
+  #s3{background:var(--bg);}
+  .ctbl{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);flex:1;}
+  .ctbl th{padding:18px 20px;font-size:17px;font-weight:800;text-align:center;}
+  .ctbl td{padding:16px 20px;font-size:15px;line-height:1.55;text-align:center;border-top:1px solid #F1F5F9;vertical-align:middle;}
+  .ctbl .rl{font-weight:700;background:#F8FAFF;text-align:left;color:var(--mid);font-size:14px;}
+  .ck{color:var(--teal);font-size:20px;} .cx{color:var(--red);font-size:20px;}
+
+  /* S4 */
+  #s4{background:var(--bg);}
+  .ldemo{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;}
+  .pgrid{display:flex;gap:12px;flex-wrap:wrap;}
+  .pc{border-radius:14px;padding:18px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px;font-weight:700;flex:1;min-width:78px;}
+  .pe{font-size:42px;}
+  .ar{display:flex;align-items:flex-start;gap:14px;font-size:15px;line-height:1.6;margin-bottom:14px;}
+  .ai{font-size:26px;flex-shrink:0;}
+
+  /* S5 */
+  #s5{background:var(--bg);}
+  .rcg{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;}
+  .rcc{border-radius:20px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;}
+  .rcc h3{font-size:24px;font-weight:800;}
+  .rcc .def{font-size:16px;line-height:1.65;}
+  .exi{display:flex;align-items:center;gap:12px;font-size:15px;padding:10px 14px;background:rgba(255,255,255,.7);border-radius:10px;margin-bottom:8px;}
+  .eic{font-size:20px;flex-shrink:0;}
+  .ov{border-radius:10px;padding:12px 16px;font-size:15px;font-weight:600;}
+
+  /* S6 */
+  #s6{background:var(--bg);}
+  .qg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;flex:1;}
+  .qi{border-radius:16px;padding:22px;background:white;box-shadow:0 2px 10px rgba(0,0,0,.06);border:2px solid transparent;transition:all .25s;}
+  .qi.rr{border-color:var(--blue);background:#EFF6FF;}
+  .qi.rc{border-color:var(--orange);background:#FFF7ED;}
+  .qq{font-size:17px;font-weight:700;margin-bottom:8px;}
+  .qh{font-size:13px;color:var(--light);margin-bottom:14px;}
+  .qbs{display:flex;gap:10px;}
+  .qb{flex:1;padding:10px;border-radius:10px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+  .br{background:#DBEAFE;color:var(--blue);}
+  .bc{background:#FED7AA;color:var(--orange);}
+  .br:hover{background:var(--blue);color:white;}
+  .bc:hover{background:var(--orange);color:white;}
+  .qa{margin-top:12px;font-size:14px;font-weight:700;padding:8px 14px;border-radius:8px;display:none;}
+  .qi.rr .qa{display:block;background:#DBEAFE;color:var(--blue);}
+  .qi.rc .qa{display:block;background:#FED7AA;color:var(--orange);}
+
+  /* S7 */
+  #s7{background:var(--bg);}
+  .lrl{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;flex:1;}
+  .tr{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;border-radius:14px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:12px;}
+  .tb{font-size:13px;font-weight:800;padding:5px 10px;border-radius:8px;flex-shrink:0;margin-top:2px;}
+  .tn{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .td{font-size:14px;color:var(--mid);line-height:1.5;}
+
+  /* S8 */
+  #s8{background:var(--bg);}
+  .dl{display:grid;grid-template-columns:.85fr 1.15fr;gap:22px;flex:1;}
+  .mt{width:100%;border-collapse:collapse;}
+  .mt th{background:var(--dark);color:white;padding:12px 16px;font-size:15px;text-align:center;}
+  .mt th:first-child{border-radius:10px 0 0 0;} .mt th:last-child{border-radius:0 10px 0 0;}
+  .mt td{padding:11px 16px;text-align:center;font-size:16px;border-bottom:1px solid #F1F5F9;}
+  .mt tr:hover td{background:#F8FAFF;}
+  .xc{color:var(--blue);font-weight:700;} .yc{color:var(--orange);font-weight:700;} .qc{color:var(--purple);font-weight:800;font-size:20px;}
+  .gw{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px;}
+  .gt{font-size:16px;font-weight:700;color:var(--mid);}
+
+  /* S9 */
+  #s9{background:var(--bg);}
+  .cl{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;}
+  .sr{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:12px;}
+  .sn{width:36px;height:36px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;}
+  .st{font-size:16px;font-weight:700;margin-bottom:5px;}
+  .sd{font-size:14px;color:var(--mid);line-height:1.5;}
+  .sm{margin-top:10px;background:#F8FAFF;padding:10px 14px;border-radius:10px;font-family:'Space Grotesk',monospace;font-size:17px;font-weight:600;color:var(--blue);}
+  .rc2{border-radius:18px;padding:28px;background:linear-gradient(135deg,var(--blue),#6366F1);color:white;display:flex;flex-direction:column;gap:14px;}
+
+  /* S10 */
+  #s10{background:var(--bg);}
+  .el{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;}
+  .gs{display:flex;gap:16px;align-items:flex-start;padding:15px 18px;border-radius:14px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:10px;}
+  .gi{font-size:26px;flex-shrink:0;}
+  .gh4{font-size:16px;font-weight:700;margin-bottom:5px;}
+  .gp{font-size:14px;color:var(--mid);line-height:1.55;}
+
+  /* S11 */
+  #s11{background:var(--bg);}
+  .sll{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;flex:1;}
+  .slc{display:flex;flex-direction:column;gap:12px;}
+  .slg{background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+  .slg label{font-size:16px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:12px;}
+  .slg label span{font-family:'Space Grotesk',monospace;font-size:18px;font-weight:700;}
+  input[type=range]{width:100%;-webkit-appearance:none;height:7px;border-radius:4px;outline:none;cursor:pointer;background:#E2E8F0;}
+  input[type=range].ws{accent-color:var(--blue);}
+  input[type=range].bs{accent-color:var(--orange);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:white;border:3px solid var(--blue);cursor:pointer;}
+  input[type=range].bs::-webkit-slider-thumb{border-color:var(--orange);}
+  .sfm{background:var(--dark);color:white;border-radius:14px;padding:18px 22px;text-align:center;font-family:'Space Grotesk',monospace;font-size:20px;font-weight:700;}
+  .sfm .wv{color:#93C5FD;} .sfm .bv{color:#FCD34D;}
+  .msed{background:white;border-radius:14px;padding:15px 20px;box-shadow:0 1px 6px rgba(0,0,0,.05);text-align:center;}
+  .msel{font-size:14px;color:var(--mid);font-weight:600;margin-bottom:6px;}
+  .msev{font-size:32px;font-weight:800;font-family:'Space Grotesk',monospace;}
+  .ob{background:var(--teal);color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+  .ob:hover{background:#059669;transform:translateY(-1px);}
+  .cw{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+
+  /* S12 */
+  #s12{background:var(--bg);}
+  .ml{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fc{border-radius:14px;padding:15px;display:flex;align-items:center;gap:12px;}
+  .fi{font-size:32px;} .fn{font-size:15px;font-weight:700;} .fs{font-size:13px;color:var(--mid);}
+
+  /* S13 */
+  #s13{background:var(--bg);}
+  .pl{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;}
+  .pv{background:white;border-radius:16px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:14px;}
+
+  /* S14 */
+  #s14{background:linear-gradient(135deg,#EFF6FF 0%,#F0FDF4 100%);}
+  .fqg{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;}
+  .fqc{background:white;border-radius:18px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.07);display:flex;flex-direction:column;gap:10px;}
+  .fqn{font-size:13px;font-weight:800;color:var(--light);letter-spacing:1px;}
+  .fqq{font-size:16px;font-weight:700;line-height:1.5;}
+  .fqo{display:flex;flex-direction:column;gap:8px;}
+  .fqb{padding:11px 16px;border-radius:10px;border:2px solid #E2E8F0;font-size:15px;cursor:pointer;transition:all .2s;background:white;text-align:left;font-family:'Noto Sans KR',sans-serif;font-weight:500;color:var(--dark);}
+  .fqb:hover{border-color:var(--blue);background:#EFF6FF;}
+  .fqb.correct{border-color:var(--teal);background:#D1FAE5;color:#065F46;font-weight:700;}
+  .fqb.wrong{border-color:var(--red);background:#FEE2E2;color:#991B1B;}
+  .fqb.disabled{cursor:not-allowed;}
+  .fqf{font-size:14px;line-height:1.55;padding:10px 14px;border-radius:10px;display:none;}
+  .fqf.show{display:block;} .fqf.ok{background:#D1FAE5;color:#065F46;} .fqf.no{background:#FEE2E2;color:#991B1B;}
+
+  /* S15 */
+  #s15{background:var(--bg);}
+  .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;}
+  .sc{border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:11px;}
+  .sc h3{font-size:19px;font-weight:800;}
+  .si{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.55;}
+  .sb{font-size:18px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div id="slideshow">
+
+<!-- S1 COVER -->
+<div class="slide active" id="s1">
+  <div style="max-width:700px;margin-top:20px;">
+    <div class="cov-eye">고등학교 인공지능 기초 · Ⅱ. 인공지능과 학습</div>
+    <div class="cov-ttl">기계학습 유형 및<br><span class="acc">선형 회귀</span> 알고리즘</div>
+    <div class="cov-sub">03. 기계학습 유형 및 알고리즘 선정 | 오늘의 수업 범위</div>
+    <div style="font-size:14px;font-weight:800;color:var(--mid);letter-spacing:1px;margin-bottom:16px;">🎯 학습 목표</div>
+    <div class="goal"><div class="goal-ic" style="background:#DBEAFE;">📚</div>기계학습의 세 가지 유형(지도·비지도·강화학습)을 설명할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#D1FAE5;">📊</div>지도학습의 회귀와 분류를 출력값의 형태로 구분할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#FEF3C7;">📈</div>선형 회귀의 원리를 이해하고 회귀 방정식으로 값을 예측할 수 있다.</div>
+  </div>
+  <div class="deco">🤖</div>
+</div>
+
+<!-- S2 ML TYPES -->
+<div class="slide" id="s2">
+  <div class="lbl" style="color:var(--blue);">Part 1 · 기계학습의 유형</div>
+  <div class="ttl">기계학습, 어떻게 나뉠까?</div>
+  <div class="sub">기계학습은 <strong>학습 방법</strong>에 따라 크게 세 가지로 구분한다.</div>
+  <div class="tg">
+    <div class="tc" style="background:#EFF6FF;">
+      <div class="bi">🏷️</div>
+      <div class="bdg" style="background:#DBEAFE;color:var(--blue);">정답 O</div>
+      <h3 style="color:var(--blue);">지도학습</h3>
+      <div class="en">Supervised Learning</div>
+      <p>입력 데이터와 <strong>레이블(정답)</strong>을 모두 컴퓨터에게 알려 주고, 컴퓨터가 데이터 속에 숨겨진 패턴이나 규칙을 스스로 찾는 학습 방법이다.</p>
+      <div class="ib" style="background:#DBEAFE;color:var(--blue);">💡 <strong>비유:</strong> 채점된 시험지로 공부하기<br>📌 <strong>예:</strong> 이미지 분류, 주택 가격 예측, 의료 진단, 스팸 메일 필터, 음성 인식</div>
+    </div>
+    <div class="tc" style="background:#F0FDF4;">
+      <div class="bi">🔍</div>
+      <div class="bdg" style="background:#D1FAE5;color:var(--teal);">정답 X</div>
+      <h3 style="color:var(--teal);">비지도학습</h3>
+      <div class="en">Unsupervised Learning</div>
+      <p>입력 데이터의 레이블을 알려 주지 않고, 컴퓨터가 스스로 데이터 간의 비슷한 특성을 찾아 학습하는 방식이다. 비슷한 데이터끼리 묶어 패턴이나 구조를 찾는다.</p>
+      <div class="ib" style="background:#D1FAE5;color:#065F46;">💡 <strong>비유:</strong> 정답 없이 혼자 사진 분류하기<br>📌 <strong>예:</strong> 고객 군집화, 이상 탐지, 넷플릭스 추천, 유전자 분석, 문서 주제 분류</div>
+    </div>
+    <div class="tc" style="background:#FFF7ED;">
+      <div class="bi">🎮</div>
+      <div class="bdg" style="background:#FED7AA;color:var(--orange);">보상/벌점</div>
+      <h3 style="color:var(--orange);">강화학습</h3>
+      <div class="en">Reinforcement Learning</div>
+      <p>행동에 대해 <strong>보상과 벌점</strong>을 부여하여 시행착오를 거치며 보상을 최대화하는 전략을 학습하는 방법이다. 환경과의 상호작용을 통해 학습한다.</p>
+      <div class="ib" style="background:#FED7AA;color:#92400E;">💡 <strong>비유:</strong> 점수 받으며 게임 실력 키우기<br>📌 <strong>예:</strong> 알파고 제로, 자율주행, 로봇 제어, 아타리 게임 AI, ChatGPT 튜닝(RLHF)</div>
+    </div>
+  </div>
+</div>
+
+<!-- S3 COMPARISON TABLE (오늘수업 행 없음) -->
+<div class="slide" id="s3">
+  <div class="lbl" style="color:var(--blue);">Part 1 · 기계학습의 유형</div>
+  <div class="ttl">세 가지 유형 한눈에 비교</div>
+  <div class="sub">핵심 차이는 <strong>레이블(정답)의 유무</strong>와 <strong>학습 방식</strong>이다.</div>
+  <table class="ctbl">
+    <thead>
+      <tr>
+        <th style="background:#F8FAFF;color:var(--mid);">구분</th>
+        <th style="background:#EFF6FF;color:var(--blue);">🏷️ 지도학습</th>
+        <th style="background:#F0FDF4;color:var(--teal);">🔍 비지도학습</th>
+        <th style="background:#FFF7ED;color:var(--orange);">🎮 강화학습</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rl">레이블 제공</td>
+        <td><span class="ck">✅ 있음</span></td>
+        <td><span class="cx">❌ 없음</span></td>
+        <td><span class="cx">❌ 없음</span></td>
+      </tr>
+      <tr>
+        <td class="rl">학습 방식</td>
+        <td>정답과 비교하며 패턴 학습</td>
+        <td>유사한 데이터끼리 스스로 묶음</td>
+        <td>환경과 상호작용, 보상 최대화</td>
+      </tr>
+      <tr>
+        <td class="rl">대표 알고리즘</td>
+        <td style="color:var(--blue);font-weight:600;">선형 회귀, 로지스틱 회귀,<br>의사결정트리, SVM</td>
+        <td style="color:var(--teal);font-weight:600;">K-평균 군집화,<br>연관 규칙 학습</td>
+        <td style="color:var(--orange);font-weight:600;">심층 강화학습(DRL),<br>진화 알고리즘</td>
+      </tr>
+      <tr>
+        <td class="rl">주요 활용</td>
+        <td>가격 예측, 이미지 분류, 의료 진단</td>
+        <td>고객 세분화, 이상 탐지</td>
+        <td>게임 AI, 자율주행, 로봇</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- S4 LABEL (알파고 없음, 레이블 품질 강조) -->
+<div class="slide" id="s4">
+  <div class="lbl" style="color:var(--blue);">Part 1 · 지도학습</div>
+  <div class="ttl">레이블(Label)이란?</div>
+  <div class="sub"><strong>레이블</strong>은 데이터에 대한 <strong>실제 정답 또는 원하는 출력값</strong>을 의미한다. 지도학습에서 가장 핵심적인 개념이다.</div>
+  <div class="ldemo">
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:16px;font-weight:700;color:var(--mid);margin-bottom:16px;">📸 예시: 동물 사진 분류</div>
+        <div class="pgrid">
+          <div class="pc" style="background:#EFF6FF;"><div class="pe">🐕</div><div>강아지 사진</div><div class="tag" style="background:#DBEAFE;color:var(--blue);margin-top:4px;">레이블: 강아지</div></div>
+          <div class="pc" style="background:#FFF7ED;"><div class="pe">🐈</div><div>고양이 사진</div><div class="tag" style="background:#FED7AA;color:var(--orange);margin-top:4px;">레이블: 고양이</div></div>
+          <div class="pc" style="background:#F0FDF4;"><div class="pe">🐇</div><div>토끼 사진</div><div class="tag" style="background:#D1FAE5;color:var(--teal);margin-top:4px;">레이블: 토끼</div></div>
+        </div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);">
+        <strong>🔑 핵심 정리</strong><br>
+        각 사진(입력 데이터)에 붙어있는 "강아지", "고양이" 같은 태그가 바로 <strong>레이블</strong>이다. 컴퓨터는 이 레이블을 보고 사진의 특징을 학습한다.
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:16px;font-weight:700;color:var(--mid);margin-bottom:16px;">🎓 지도학습 과정</div>
+        <div class="ar"><div class="ai">1️⃣</div><div><strong>데이터 + 레이블 입력</strong><br><span style="font-size:14px;color:var(--mid);">사진 수천 장과 각각의 정답(레이블)을 컴퓨터에 전달</span></div></div>
+        <div class="ar"><div class="ai">2️⃣</div><div><strong>패턴 학습</strong><br><span style="font-size:14px;color:var(--mid);">컴퓨터가 "강아지에는 이런 특징이 있구나" 스스로 규칙 발견</span></div></div>
+        <div class="ar"><div class="ai">3️⃣</div><div><strong>새로운 데이터 예측</strong><br><span style="font-size:14px;color:var(--mid);">본 적 없는 새 사진도 학습한 규칙으로 분류 가능!</span></div></div>
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);">
+        <strong>💡 레이블이 왜 중요한가?</strong><br>
+        레이블의 품질이 곧 AI의 성능이다. 잘못된 레이블로 학습하면 엉터리 AI가 만들어진다. 그래서 <strong>양질의 데이터</strong>가 기계학습의 핵심이다!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5 REGRESSION vs CLASSIFICATION -->
+<div class="slide" id="s5">
+  <div class="lbl" style="color:var(--blue);">Part 1 · 지도학습의 두 갈래</div>
+  <div class="ttl">회귀 vs 분류</div>
+  <div class="sub">지도학습은 <strong>예측하려는 출력값의 형태</strong>에 따라 회귀와 분류로 나뉜다.</div>
+  <div class="rcg">
+    <div class="rcc" style="background:#EFF6FF;">
+      <h3 style="color:var(--blue);">📈 회귀 <span style="font-size:18px;opacity:.6;">Regression</span></h3>
+      <div class="def" style="font-size:16px;line-height:1.65;"><strong style="color:var(--dark);">연속적인 값(수치)</strong>을 예측하는 문제. 출력값이 주관식처럼 무수히 많은 숫자 중 하나가 된다.</div>
+      <div class="ov" style="background:#DBEAFE;color:var(--blue);">📏 출력값 예: 29.88만 개, 3억 2천만 원, 37.5℃</div>
+      <div>
+        <div class="exi"><div class="eic">🏠</div>주택이나 주식의 가격을 예측하는 문제</div>
+        <div class="exi"><div class="eic">🌡️</div>2050년 8월 기온을 예측하는 문제</div>
+        <div class="exi"><div class="eic">🛒</div>특정 상품의 판매량을 예측하는 문제</div>
+      </div>
+    </div>
+    <div class="rcc" style="background:#FFF7ED;">
+      <h3 style="color:var(--orange);">🏷️ 분류 <span style="font-size:18px;opacity:.6;">Classification</span></h3>
+      <div style="font-size:16px;line-height:1.65;"><strong style="color:var(--dark);">범주(카테고리)</strong>로 데이터를 나누는 문제. 출력값이 객관식처럼 정해진 몇 가지 중 하나가 된다.</div>
+      <div class="ov" style="background:#FED7AA;color:var(--orange);">📋 출력값 예: 스팸/정상, 강아지/고양이, 양성/음성</div>
+      <div>
+        <div class="exi"><div class="eic">📧</div>이메일 중 스팸 메일을 구분하는 문제</div>
+        <div class="exi"><div class="eic">🐾</div>강아지와 고양이를 구분하는 문제</div>
+        <div class="exi"><div class="eic">🏥</div>악성 종양의 여부를 판단하는 문제 (양성, 음성)</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:16px;margin-top:14px;">
+    <div class="hl" style="flex:1;background:#F0FDF4;border-left:4px solid var(--teal);"><strong>🔑 구분 포인트:</strong> 예측하려는 값이 <strong>연속형(숫자)</strong>이면 회귀, <strong>범주형(종류)</strong>이면 분류!</div>
+    <div class="hl" style="flex:1;background:#FEF3C7;border-left:4px solid var(--amber);"><strong>📌 오늘 학습:</strong> 두 가지 중 <strong>회귀</strong> — 대표 알고리즘인 <strong>선형 회귀</strong>를 배운다.</div>
+  </div>
+</div>
+
+<!-- S6 QUIZ -->
+<div class="slide" id="s6">
+  <div class="lbl" style="color:var(--purple);">Quiz Time 🎯</div>
+  <div class="ttl">회귀일까, 분류일까?</div>
+  <div class="sub">각 문제를 보고 <strong>회귀</strong>인지 <strong>분류</strong>인지 맞혀보자! 버튼을 클릭해 정답을 확인하세요.</div>
+  <div class="qg">
+    <div class="qi" id="q1">
+      <div class="qq">① 내일 서울의 최고 기온은 몇 도일까?</div>
+      <div class="qh">출력값의 형태를 생각해보세요 🌡️</div>
+      <div class="qbs"><button class="qb br" onclick="rQ('q1','reg','reg')">📈 회귀</button><button class="qb bc" onclick="rQ('q1','cls','reg')">🏷️ 분류</button></div>
+      <div class="qa">✅ 회귀! — 기온은 23.4℃, 27.1℃ 같은 연속적인 숫자값</div>
+    </div>
+    <div class="qi" id="q2">
+      <div class="qq">② 내일 비가 올까, 안 올까?</div>
+      <div class="qh">출력이 몇 가지 중 하나인지 생각해보세요 ☔</div>
+      <div class="qbs"><button class="qb br" onclick="rQ('q2','reg','cls')">📈 회귀</button><button class="qb bc" onclick="rQ('q2','cls','cls')">🏷️ 분류</button></div>
+      <div class="qa">✅ 분류! — "온다/안 온다" 두 가지 범주 중 하나</div>
+    </div>
+    <div class="qi" id="q3">
+      <div class="qq">③ 이 아파트의 매매 가격은 얼마일까?</div>
+      <div class="qh">정해진 몇 가지 중 하나? 아니면 숫자? 🏠</div>
+      <div class="qbs"><button class="qb br" onclick="rQ('q3','reg','reg')">📈 회귀</button><button class="qb bc" onclick="rQ('q3','cls','reg')">🏷️ 분류</button></div>
+      <div class="qa">✅ 회귀! — 3억 2천만 원처럼 연속적인 숫자값</div>
+    </div>
+    <div class="qi" id="q4">
+      <div class="qq">④ 이 메일은 스팸인가, 아닌가?</div>
+      <div class="qh">출력값이 어떤 형태인지 떠올려보세요 📧</div>
+      <div class="qbs"><button class="qb br" onclick="rQ('q4','reg','cls')">📈 회귀</button><button class="qb bc" onclick="rQ('q4','cls','cls')">🏷️ 분류</button></div>
+      <div class="qa">✅ 분류! — "스팸/정상" 두 가지 범주 중 하나</div>
+    </div>
+  </div>
+</div>
+
+<!-- S7 LINEAR REGRESSION CONCEPT -->
+<div class="slide" id="s7">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 선형 회귀</div>
+  <div class="ttl">선형 회귀란?</div>
+  <div class="sub">주어진 입력값(X)과 출력값(Y)의 관계를 <strong>직선</strong>으로 표현하여 새로운 값을 예측하는 알고리즘</div>
+  <div class="lrl">
+    <div>
+      <div class="fbox" style="margin-bottom:18px;">Y = <span>w</span>X + <em>b</em><div class="dim"><span style="color:#93C5FD;">w</span> : 직선의 기울기 (가중치, weight) &nbsp;|&nbsp; <em style="color:#FCD34D;font-style:normal;">b</em> : y절편 (편향, bias)</div></div>
+      <div class="tr"><div class="tb" style="background:#DBEAFE;color:var(--blue);">X</div><div><div class="tn">독립 변수 (특성, Feature)</div><div class="td">예측의 근거가 되는 입력값. 예) 폭염 일수</div></div></div>
+      <div class="tr"><div class="tb" style="background:#FED7AA;color:var(--orange);">Y</div><div><div class="tn">종속 변수 (타깃, Target)</div><div class="td">예측하고자 하는 출력값. 예) 이온 음료 판매량</div></div></div>
+      <div class="tr"><div class="tb" style="background:#D1FAE5;color:var(--teal);">w</div><div><div class="tn">가중치 (기울기)</div><div class="td">X가 1 증가할 때 Y가 얼마나 변하는지를 나타냄</div></div></div>
+      <div class="tr"><div class="tb" style="background:#EDE9FF;color:var(--purple);">b</div><div><div class="tn">편향 (y절편)</div><div class="td">X=0일 때의 Y값 (직선이 y축과 만나는 점)</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <div style="font-size:16px;font-weight:700;color:var(--mid);margin-bottom:12px;">🎯 선형 회귀의 목표</div>
+        <div style="font-size:16px;line-height:1.7;color:var(--mid);">주어진 데이터를 <strong style="color:var(--dark);">가장 잘 설명하는 직선</strong>을 찾는 것.<br>즉, <strong style="color:var(--blue);">w</strong>와 <strong style="color:var(--orange);">b</strong>의 최적값을 구하는 것이 목표다.<br><br>X값이 주어지면 식에 대입하여 대응하는 Y값을 예측할 수 있다.</div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);"><strong>🤔 왜 "선형"인가?</strong><br>관계를 <strong>직선(Linear)</strong>으로 표현하기 때문이다. X와 Y가 일정한 비율로 변하는 관계를 직선으로 나타낸다.</div>
+      <div class="hl" style="background:#EFF6FF;border-left:4px solid var(--blue);"><strong>🤔 왜 "회귀"라고 부를까?</strong><br>19세기 통계학자 갤턴이 평균값으로 돌아가는 현상을 연구하며 처음 사용한 용어. 지금은 <strong>수치 예측 모델</strong>을 통칭한다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S8 DATA TABLE & GRAPH -->
+<div class="slide" id="s8">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 선형 회귀</div>
+  <div class="ttl">예시: 폭염 일수로 이온 음료 판매량 예측하기</div>
+  <div class="sub">올해 폭염 예상 일수가 <strong>15일</strong>일 때, 이온 음료 판매량을 예측해보자!</div>
+  <div class="dl">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <table class="mt">
+        <thead><tr><th style="background:var(--blue);">폭염 일수 X</th><th style="background:var(--orange);">이온음료 판매량 Y (만 개)</th></tr></thead>
+        <tbody>
+          <tr><td class="xc">5일</td><td class="yc">12만 개</td></tr>
+          <tr><td class="xc">8일</td><td class="yc">16만 개</td></tr>
+          <tr><td class="xc">11일</td><td class="yc">22.5만 개</td></tr>
+          <tr><td class="xc">17일</td><td class="yc">32만 개</td></tr>
+          <tr><td class="xc">20일</td><td class="yc">40.5만 개</td></tr>
+          <tr style="background:#F5F3FF;"><td class="xc" style="font-weight:800;">15일 ← 예측!</td><td class="qc">?</td></tr>
+        </tbody>
+      </table>
+      <div class="hl" style="background:#EFF6FF;"><strong style="color:var(--blue);">독립 변수(X):</strong> 폭염 일수<br><strong style="color:var(--orange);">종속 변수(Y):</strong> 이온 음료 판매량</div>
+      <div class="hl" style="background:#F0FDF4;"><strong style="color:var(--teal);">💡 오차(Error)란?</strong><br>선형 회귀 모델의 예측값은 실제값과 다를 수 있다. 폭염 일수 외에도 마케팅, 경제 상황, 소비자 선호 등 다양한 요인이 영향을 미치기 때문이다.</div>
+    </div>
+    <div class="gw">
+      <div class="gt">📊 폭염 일수와 이온 음료 판매량 관계 그래프</div>
+      <canvas id="chart8"></canvas>
+      <div style="text-align:center;font-size:14px;color:var(--mid);"><span style="color:var(--orange);">●</span> 실제 데이터 &nbsp;&nbsp;<span style="color:var(--blue);">―</span> 선형 회귀선 (Y = 1.87X + 1.83)</div>
+    </div>
+  </div>
+</div>
+
+<!-- S9 FORMULA & CALCULATION -->
+<div class="slide" id="s9">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 선형 회귀</div>
+  <div class="ttl">회귀 방정식으로 예측하기</div>
+  <div class="sub">선형 회귀선의 방정식을 구하고, 폭염 일수 15일일 때의 판매량을 계산해보자.</div>
+  <div class="cl">
+    <div>
+      <div class="fbox" style="margin-bottom:18px;">Y = <span>1.87</span> X + <em>1.83</em><div class="dim">X: 폭염 일수 &nbsp;|&nbsp; Y: 이온 음료 판매량 (만 개)</div></div>
+      <div class="sr"><div class="sn">1</div><div><div class="st">입력값 설정</div><div class="sd">폭염 일수가 15일이므로 X = 15</div></div></div>
+      <div class="sr"><div class="sn">2</div><div><div class="st">방정식에 대입</div><div class="sd">X 자리에 15를 넣는다</div><div class="sm">Y = 1.87 × 15 + 1.83</div></div></div>
+      <div class="sr"><div class="sn">3</div><div><div class="st">계산</div><div class="sd">1.87 × 15 = 28.05, 여기에 1.83을 더하면</div><div class="sm">Y = 28.05 + 1.83 = <strong style="color:var(--blue);">29.88</strong></div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="rc2">
+        <div style="font-size:17px;font-weight:700;opacity:.85;">🎯 예측 결과</div>
+        <div><div style="font-size:15px;opacity:.8;margin-bottom:4px;">폭염 일수 15일일 때</div><div style="font-size:52px;font-weight:900;">29.88</div><div style="font-size:18px;opacity:.7;">만 개 (이온 음료 판매 예측)</div></div>
+        <div style="font-size:14px;opacity:.75;line-height:1.6;">※ 이 값은 선형 회귀 모델의 예측값이며, 실제 판매량과 약간의 오차가 있을 수 있습니다.</div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);"><strong>🔍 기울기 w = 1.87의 의미</strong><br>폭염 일수가 <strong>1일 늘어날 때마다</strong> 이온 음료 판매량이 <strong>1.87만 개</strong> 늘어난다!</div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);"><strong>🔍 y절편 b = 1.83의 의미</strong><br>폭염 일수가 0일이어도 기본 판매량이 약 <strong>1.83만 개</strong> 있다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S10 ERROR & GRADIENT DESCENT -->
+<div class="slide" id="s10">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 선형 회귀</div>
+  <div class="ttl">어떻게 최적의 직선을 찾을까?</div>
+  <div class="sub">컴퓨터는 <strong>오차를 계산</strong>하고 <strong>경사하강법</strong>으로 오차를 줄여나가며 최적의 직선을 찾는다.</div>
+  <div class="el">
+    <div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:16px;font-weight:700;color:var(--red);margin-bottom:10px;">⚠️ 오차(Error)와 MSE</div>
+        <div style="font-size:14px;color:var(--mid);line-height:1.65;margin-bottom:10px;">모델의 예측값과 실제값의 <strong style="color:var(--dark);">차이</strong>. 오차가 작을수록 더 좋은 직선이다.<br>오차를 <strong>제곱</strong>하는 이유: ① 음수·양수 오차가 상쇄되는 것을 막고 ② 큰 오차에 더 큰 페널티를 부여하기 위해.</div>
+        <div style="background:#FEF2F2;border-radius:10px;padding:10px;font-family:'Space Grotesk',monospace;font-size:15px;text-align:center;color:var(--red);">오차 = 예측값 − 실제값</div>
+      </div>
+      <div style="background:var(--dark);border-radius:12px;padding:14px 16px;font-family:'Space Grotesk',monospace;font-size:14px;color:white;margin-bottom:12px;">
+        <div style="color:#94A3B8;font-size:12px;margin-bottom:6px;">평균 제곱 오차 (MSE, Mean Squared Error)</div>
+        <div style="font-size:16px;text-align:center;">MSE = <span style="color:#93C5FD;">1/n</span> × Σ (<span style="color:#FCD34D;">예측값 − 실제값</span>)²</div>
+        <div style="color:#94A3B8;font-size:12px;margin-top:8px;text-align:center;">n: 데이터 개수 &nbsp;|&nbsp; MSE = 0이면 완벽한 직선 (현실에선 불가능)</div>
+      </div>
+      <div class="hl" style="background:#FFF7ED;border-left:4px solid var(--orange);font-size:14px;"><strong>💡 학습률(Learning Rate, α)이란?</strong><br>경사하강법에서 한 번에 얼마나 크게 w, b를 조정할지 결정하는 값.<br>너무 크면 → 최솟값을 지나쳐 발산 &nbsp;|&nbsp; 너무 작으면 → 학습이 너무 느림</div>
+    </div>
+    <div>
+      <div style="font-size:15px;font-weight:700;color:var(--mid);margin-bottom:10px;">🏔️ 경사하강법(Gradient Descent) — 최적의 직선 찾기</div>
+      <div class="gs"><div class="gi">🎯</div><div><div class="gh4">① 초기 직선 설정</div><div class="gp">처음에는 w와 b를 임의로 설정. 데이터에 잘 맞지 않을 수 있다.</div></div></div>
+      <div class="gs"><div class="gi">📐</div><div><div class="gh4">② 오차(MSE) 계산</div><div class="gp">현재 직선과 실제 데이터 점들 간의 차이를 제곱해 평균낸다.</div></div></div>
+      <div class="gs"><div class="gi">⛷️</div><div><div class="gh4">③ 오차가 줄어드는 방향으로 이동 (핵심!)</div><div class="gp">w와 b를 학습률(α)만큼 조금씩 조정. 산에서 경사가 급한 방향으로 한 발씩 내려가는 것과 같다.</div></div></div>
+      <div class="gs"><div class="gi">🔁</div><div><div class="gh4">④ ②~③ 반복</div><div class="gp">오차가 더 이상 크게 줄지 않을 때까지 반복. 이 과정이 바로 "학습"이다.</div></div></div>
+      <div class="gs"><div class="gi">✅</div><div><div class="gh4">⑤ 최적의 직선 도출</div><div class="gp">수렴한 시점의 w, b가 최적값. 기계학습뿐 아니라 <strong>딥러닝에서도</strong> 동일한 원리로 사용된다.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S11 INTERACTIVE SLIDER -->
+<div class="slide" id="s11">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮</div>
+  <div class="ttl">직접 직선을 맞춰보자!</div>
+  <div class="sub">슬라이더로 <strong>w(기울기)</strong>와 <strong>b(절편)</strong>를 조절해 오차가 가장 작아지는 직선을 찾아보자.</div>
+  <div class="sll">
+    <div class="slc">
+      <div class="slg"><label>기울기 w <span id="wVal" style="color:var(--blue);">1.00</span></label><input type="range" class="ws" id="wSl" min="0" max="4" step="0.05" value="1.00"></div>
+      <div class="slg"><label>절편 b <span id="bVal" style="color:var(--orange);">5.00</span></label><input type="range" class="bs" id="bSl" min="-10" max="20" step="0.1" value="5.00"></div>
+      <div class="sfm">Y = <span class="wv" id="fW">1.00</span> × X + <span class="bv" id="fB">5.00</span></div>
+      <div class="msed"><div class="msel">📊 평균 제곱 오차 (MSE)</div><div class="msev" id="mseVal" style="color:var(--red);">—</div><div style="font-size:13px;color:var(--light);margin-top:4px;">작을수록 더 좋은 직선!</div></div>
+      <button class="ob" onclick="setOpt()">✨ 최적값 보기 (w=1.87, b=1.83)</button>
+    </div>
+    <div class="cw"><canvas id="chart11"></canvas></div>
+  </div>
+</div>
+
+<!-- S12 MULTIPLE REGRESSION -->
+<div class="slide" id="s12">
+  <div class="lbl" style="color:var(--teal);">심화 · 더 알아보기</div>
+  <div class="ttl">독립변수가 여러 개라면? — 다중 선형 회귀</div>
+  <div class="sub">현실에서는 하나의 원인만으로 결과를 설명하기 어렵다. <strong>여러 개의 X</strong>를 동시에 사용할 수 있다!</div>
+  <div class="ml">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <div style="font-size:16px;font-weight:700;color:var(--mid);margin-bottom:14px;">🏠 예시: 집값에 영향을 주는 요인들</div>
+        <div class="fg">
+          <div class="fc" style="background:#EFF6FF;"><div class="fi">📐</div><div><div class="fn">면적 (X₁)</div><div class="fs">59㎡, 84㎡…</div></div></div>
+          <div class="fc" style="background:#F0FDF4;"><div class="fi">🏢</div><div><div class="fn">층수 (X₂)</div><div class="fs">1층, 10층…</div></div></div>
+          <div class="fc" style="background:#FFF7ED;"><div class="fi">🚇</div><div><div class="fn">역까지 거리 (X₃)</div><div class="fs">300m, 1km…</div></div></div>
+          <div class="fc" style="background:#EDE9FF;"><div class="fi">📅</div><div><div class="fn">준공연도 (X₄)</div><div class="fs">2010년, 2020년…</div></div></div>
+        </div>
+      </div>
+      <div style="background:var(--dark);border-radius:14px;padding:20px;text-align:center;">
+        <div style="color:#94A3B8;font-size:14px;margin-bottom:10px;">다중 선형 회귀 방정식</div>
+        <div style="font-family:'Space Grotesk',monospace;font-size:19px;color:white;font-weight:700;">Y = w₁X₁ + w₂X₂ + w₃X₃ + w₄X₄ + b</div>
+        <div style="color:#94A3B8;font-size:13px;margin-top:10px;">각 X마다 개별 가중치(w)가 붙는다</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="hl" style="background:#EFF6FF;border-left:4px solid var(--blue);"><strong>단순 vs 다중 선형 회귀</strong><br><br><strong>단순:</strong> Y = wX + b &nbsp;→&nbsp; 독립변수 1개<br><strong>다중:</strong> Y = w₁X₁ + w₂X₂ + … + b &nbsp;→&nbsp; 독립변수 여러 개</div>
+      <div class="hl" style="background:#D1FAE5;border-left:4px solid var(--teal);"><strong>✅ 더 정확한 예측 가능!</strong><br>폭염 일수 하나만 볼 때보다, 기온·습도·마케팅 등 여러 요인을 함께 고려하면 판매량 예측이 더 정확해진다.</div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);"><strong>⚠️ 변수가 너무 많으면?</strong><br>관련 없는 변수까지 너무 많이 넣으면 오히려 예측 성능이 나빠질 수 있다. 중요한 변수를 잘 선택하는 것도 기술이다.</div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);"><strong>📌 교과서 참고 — 릿지 & 라쏘 회귀</strong><br><strong style="color:var(--purple);">과적합(훈련 데이터에 너무 딱 맞아 새 데이터 예측이 나빠지는 현상)을 막기 위해 가중치에 패널티를 부과하는 정규화 방법이다.</strong><br>릿지: 모든 w를 작게 유지 &nbsp;|&nbsp; 라쏘: 불필요한 변수의 w를 아예 0으로 만들어 변수 선택 효과</div>
     </div>
   </div>
 </div>
@@ -558,8 +1110,8 @@
       <svg viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;flex:1;">
         <line x1="32" y1="180" x2="320" y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
         <line x1="32" y1="10"  x2="32"  y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
-        <text x="176" y="198" text-anchor="middle" font-size="12" fill="#94A3B8" font-family="Noto Sans KR">X</text>
-        <text x="16"  y="100" text-anchor="middle" font-size="12" fill="#94A3B8" font-family="Noto Sans KR">Y</text>
+        <text x="176" y="198" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">X</text>
+        <text x="16"  y="100" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">Y</text>
         <!-- 선형 (점선, 회색) -->
         <line x1="32" y1="148" x2="320" y2="56" stroke="#94A3B8" stroke-width="2" stroke-dasharray="7,4"/>
         <!-- 다항 곡선 (보라) -->
@@ -574,12 +1126,12 @@
         <circle cx="284" cy="88"  r="6" fill="#F97316"/>
         <circle cx="314" cy="136" r="6" fill="#F97316"/>
         <!-- 범례 -->
-        <circle cx="48" cy="196" r="5" fill="#F97316"/>
-        <text x="58" y="200" font-size="11" fill="#F97316" font-family="Noto Sans KR">실제 데이터</text>
-        <line x1="138" y1="196" x2="160" y2="196" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
-        <text x="165" y="200" font-size="11" fill="#94A3B8" font-family="Noto Sans KR">선형 회귀 (직선)</text>
-        <line x1="248" y1="196" x2="270" y2="196" stroke="#8B5CF6" stroke-width="2.5"/>
-        <text x="275" y="200" font-size="11" fill="#8B5CF6" font-family="Noto Sans KR">다항 회귀 (곡선)</text>
+        <circle cx="48" cy="196" r="4" fill="#F97316"/>
+        <text x="57" y="200" font-size="9" fill="#F97316" font-family="Noto Sans KR">실제 데이터</text>
+        <line x1="128" y1="196" x2="148" y2="196" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="153" y="200" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">선형 회귀 (직선)</text>
+        <line x1="240" y1="196" x2="260" y2="196" stroke="#8B5CF6" stroke-width="2.5"/>
+        <text x="265" y="200" font-size="9" fill="#8B5CF6" font-family="Noto Sans KR">다항 회귀 (곡선)</text>
       </svg>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
@@ -737,7 +1289,7 @@ function c11(){
   ch11=new Chart(document.getElementById('chart11').getContext('2d'),{
     data:{datasets:[
       {type:'scatter',label:'실제 데이터',data:rp,backgroundColor:'#F97316',pointRadius:8},
-      {type:'line',label:'Y=wX+b',data:[{x:0,y:5},{x:22,y:27}],borderColor:'#3B82F6',borderWidth:2.5,pointRadius:0,fill:false}
+      {type:'line',label:'Y=wX+b',data:[{x:0,y:5},{x:22,y:27}],borderColor:'#94A3B8',borderWidth:2.5,pointRadius:0,fill:false}
     ]},
     options:{responsive:true,maintainAspectRatio:true,animation:{duration:0},
       scales:{x:{min:0,max:22,title:{display:true,text:'폭염 일수'},grid:{color:'#F1F5F9'}},y:{min:-10,max:55,title:{display:true,text:'판매량 (만 개)'},grid:{color:'#F1F5F9'}}},
@@ -759,19 +1311,267 @@ function upd(){
 }
 function setOpt(){document.getElementById('wSl').value=1.87;document.getElementById('bSl').value=1.83;upd();}
 
-// Quiz S6
+// Quiz S6 — re-selectable
 function rQ(id,ch,cor){
   const it=document.getElementById(id);
-  if(it.classList.contains('rr')||it.classList.contains('rc'))return;
+  it.classList.remove('rr','rc');
   it.classList.add(cor==='reg'?'rr':'rc');
-  it.querySelectorAll('.qb').forEach(b=>b.disabled=true);
+  it.querySelectorAll('.qb').forEach(b=>b.disabled=false);
+  // update answer text based on correctness
+  const qa=it.querySelector('.qa');
+  if(ch===cor){
+    qa.style.background=cor==='reg'?'#DBEAFE':'#FED7AA';
+    qa.style.color=cor==='reg'?'var(--blue)':'var(--orange)';
+  }
 }
 
-// Final Quiz S14
-const ans={};
+// Final Quiz S14 — re-selectable
 function cQ(btn,n,ok,msg){
-  if(ans[n])return; ans[n]=1;
-  btn.parentElement.querySelectorAll('.fqb').forEach(b=>{b.classList.add('disabled');b.disabled=true;});
+  const opts=btn.parentElement.querySelectorAll('.fqb');
+  // reset all
+  opts.forEach(b=>{b.classList.remove('correct','wrong','disabled');b.disabled=false;});
+  // mark chosen
+  btn.classList.add(ok?'correct':'wrong');
+  const f=document.getElementById('fb'+n);
+  f.textContent=(ok?'✅ 정답! ':'❌ 오답! ')+msg;
+  f.className='fqf show '+(ok?'ok':'no');
+}
+</script>
+</body>
+</html>
+
+<!-- S13 POLYNOMIAL — 정적 SVG -->
+<div class="slide" id="s13">
+  <div class="lbl" style="color:var(--teal);">심화 · 더 알아보기</div>
+  <div class="ttl">직선 말고 곡선은? — 다항 회귀</div>
+  <div class="sub">데이터가 직선보다 <strong>곡선 형태</strong>에 더 가까울 때는? 선형 회귀가 항상 최선은 아니다!</div>
+  <div class="pl">
+    <div class="pv">
+      <div style="font-size:16px;font-weight:700;color:var(--mid);">📊 어느 쪽이 데이터에 더 잘 맞을까?</div>
+      <svg viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;flex:1;">
+        <line x1="32" y1="180" x2="320" y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="32" y1="10"  x2="32"  y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="176" y="198" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">X</text>
+        <text x="16"  y="100" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">Y</text>
+        <!-- 선형 (점선, 회색) -->
+        <line x1="32" y1="148" x2="320" y2="56" stroke="#94A3B8" stroke-width="2" stroke-dasharray="7,4"/>
+        <!-- 다항 곡선 (보라) -->
+        <path d="M32,168 C90,58 175,18 245,36 C285,50 310,100 318,138" fill="none" stroke="#8B5CF6" stroke-width="2.8"/>
+        <!-- 데이터 점 -->
+        <circle cx="48"  cy="162" r="6" fill="#F97316"/>
+        <circle cx="82"  cy="116" r="6" fill="#F97316"/>
+        <circle cx="124" cy="70"  r="6" fill="#F97316"/>
+        <circle cx="168" cy="40"  r="6" fill="#F97316"/>
+        <circle cx="208" cy="34"  r="6" fill="#F97316"/>
+        <circle cx="248" cy="48"  r="6" fill="#F97316"/>
+        <circle cx="284" cy="88"  r="6" fill="#F97316"/>
+        <circle cx="314" cy="136" r="6" fill="#F97316"/>
+        <!-- 범례 -->
+        <circle cx="48" cy="196" r="4" fill="#F97316"/>
+        <text x="57" y="200" font-size="9" fill="#F97316" font-family="Noto Sans KR">실제 데이터</text>
+        <line x1="128" y1="196" x2="148" y2="196" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="153" y="200" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">선형 회귀 (직선)</text>
+        <line x1="240" y1="196" x2="260" y2="196" stroke="#8B5CF6" stroke-width="2.5"/>
+        <text x="265" y="200" font-size="9" fill="#8B5CF6" font-family="Noto Sans KR">다항 회귀 (곡선)</text>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:14px;">선형 vs 다항 회귀 비교</div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px;background:#EFF6FF;border-radius:12px;margin-bottom:10px;">
+          <div style="font-size:26px;flex-shrink:0;">📏</div>
+          <div><div style="font-weight:700;font-size:16px;color:var(--blue);margin-bottom:5px;">선형 회귀 (Y = wX + b)</div><div style="font-size:14px;color:var(--mid);">직선으로 표현. 단순하고 해석이 쉽지만, 곡선형 데이터엔 부적합할 수 있다.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px;background:#F0FDF4;border-radius:12px;">
+          <div style="font-size:26px;flex-shrink:0;">🌈</div>
+          <div><div style="font-weight:700;font-size:16px;color:var(--teal);margin-bottom:5px;">다항 회귀 (Y = aX² + bX + c)</div><div style="font-size:14px;color:var(--mid);">2차, 3차 곡선으로 표현. 더 복잡한 관계도 나타낼 수 있다!</div></div>
+        </div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);"><strong>⚠️ 과적합(Overfitting) 주의!</strong><br>데이터에 너무 딱 맞추면 오히려 새로운 데이터 예측이 나빠진다. 마치 시험 문제를 통째로 외워서 응용 문제를 못 푸는 것과 같다!</div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);"><strong>🎯 핵심 메시지</strong><br>문제에 따라 적합한 모델이 다르다. 데이터의 특성을 파악하고 알고리즘을 선택하는 것이 중요하다!</div>
+    </div>
+  </div>
+</div>
+
+<!-- S14 FINAL QUIZ -->
+<div class="slide" id="s14">
+  <div class="lbl" style="color:var(--purple);">🎯 정리 퀴즈</div>
+  <div class="ttl">오늘 배운 내용 확인하기</div>
+  <div class="sub">선택지를 클릭해서 정답을 맞혀보자! 틀려도 괜찮아 — 배우는 게 목표! 💪</div>
+  <div class="fqg">
+    <div class="fqc">
+      <div class="fqn">Q 1</div>
+      <div class="fqq">기계학습에서 입력 데이터와 <strong>레이블(정답)을 함께</strong> 제공하여 학습하는 유형은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,1,false,'비지도학습은 정답 없이 스스로 패턴을 찾아요.')">① 비지도학습</button>
+        <button class="fqb" onclick="cQ(this,1,true,'정답! 지도학습은 입력 데이터와 레이블(정답)을 모두 제공합니다.')">② 지도학습</button>
+        <button class="fqb" onclick="cQ(this,1,false,'강화학습은 보상과 벌점으로 학습해요.')">③ 강화학습</button>
+      </div>
+      <div class="fqf" id="fb1"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 2</div>
+      <div class="fqq">다음 중 <strong>회귀(Regression)</strong> 문제에 해당하는 것은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,2,false,'스팸 분류는 범주(스팸/정상)를 구분하므로 분류 문제예요.')">① 이메일이 스팸인지 판별하기</button>
+        <button class="fqb" onclick="cQ(this,2,false,'강아지/고양이는 범주형 출력이므로 분류 문제예요.')">② 사진이 강아지인지 고양이인지 구분하기</button>
+        <button class="fqb" onclick="cQ(this,2,true,'정답! 내일 기온은 23.4℃ 같은 연속적인 숫자값이므로 회귀 문제예요.')">③ 내일 서울의 최고 기온 예측하기</button>
+      </div>
+      <div class="fqf" id="fb2"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 3</div>
+      <div class="fqq">선형 회귀 방정식 <strong>Y = wX + b</strong>에서 <strong>w</strong>가 의미하는 것은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,3,false,'b가 y절편(편향)이에요.')">① y절편 (편향)</button>
+        <button class="fqb" onclick="cQ(this,3,true,'정답! w는 직선의 기울기로, X가 1 증가할 때 Y가 얼마나 변하는지를 나타내요.')">② 직선의 기울기 (가중치)</button>
+        <button class="fqb" onclick="cQ(this,3,false,'X는 독립변수(입력값)이에요.')">③ 독립 변수 (입력값)</button>
+      </div>
+      <div class="fqf" id="fb3"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 4</div>
+      <div class="fqq">선형 회귀에서 <strong>최적의 직선</strong>을 찾기 위해 사용하는 방법은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,4,false,'로지스틱 함수는 분류(로지스틱 회귀)에서 사용해요.')">① 로지스틱 함수</button>
+        <button class="fqb" onclick="cQ(this,4,false,'군집화는 비지도학습의 방법이에요.')">② 군집화</button>
+        <button class="fqb" onclick="cQ(this,4,true,'정답! 경사하강법은 오차를 조금씩 줄여가며 최적의 w, b를 찾아요.')">③ 경사하강법 (Gradient Descent)</button>
+      </div>
+      <div class="fqf" id="fb4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- S15 SUMMARY -->
+<div class="slide" id="s15">
+  <div class="lbl" style="color:var(--teal);">오늘의 핵심 정리</div>
+  <div class="ttl">수업 내용 요약 🎉</div>
+  <div class="sub">오늘 배운 내용을 정리해보자. 다음 시간에는 <strong>분류 알고리즘(로지스틱 회귀 등)</strong>을 배울 예정이다!</div>
+  <div class="sg">
+    <div class="sc" style="background:#EFF6FF;">
+      <div class="tag" style="background:#DBEAFE;color:var(--blue);">Part 1</div>
+      <h3 style="color:var(--blue);">기계학습의 유형</h3>
+      <div class="si"><div class="sb">🏷️</div><div><strong>지도학습:</strong> 레이블(정답) 있음, 패턴 학습</div></div>
+      <div class="si"><div class="sb">🔍</div><div><strong>비지도학습:</strong> 레이블 없음, 스스로 군집화</div></div>
+      <div class="si"><div class="sb">🎮</div><div><strong>강화학습:</strong> 보상/벌점, 시행착오로 학습</div></div>
+      <div class="si"><div class="sb">📌</div><div>구분 기준: <strong>레이블 유무 + 학습 방식</strong></div></div>
+    </div>
+    <div class="sc" style="background:#F0FDF4;">
+      <div class="tag" style="background:#D1FAE5;color:var(--teal);">Part 1-2</div>
+      <h3 style="color:var(--teal);">회귀 vs 분류</h3>
+      <div class="si"><div class="sb">📈</div><div><strong>회귀:</strong> 연속적 숫자값 예측 (주가, 기온…)</div></div>
+      <div class="si"><div class="sb">🏷️</div><div><strong>분류:</strong> 범주 구분 (스팸/정상, 양성/음성…)</div></div>
+      <div class="si"><div class="sb">🔑</div><div>구분 기준: <strong>출력값이 연속형 vs 범주형</strong></div></div>
+      <div class="si"><div class="sb">➡️</div><div>다음 시간: 분류 알고리즘 (로지스틱 회귀…)</div></div>
+    </div>
+    <div class="sc" style="background:#FFF7ED;">
+      <div class="tag" style="background:#FED7AA;color:var(--orange);">Part 2</div>
+      <h3 style="color:var(--orange);">선형 회귀</h3>
+      <div class="si"><div class="sb">📐</div><div>방정식: <strong>Y = wX + b</strong></div></div>
+      <div class="si"><div class="sb">🎯</div><div>목표: 오차가 가장 작은 직선의 w, b 찾기</div></div>
+      <div class="si"><div class="sb">⛷️</div><div>방법: <strong>경사하강법</strong>으로 반복 최적화</div></div>
+      <div class="si"><div class="sb">➕</div><div>심화: 다중 선형 회귀, 다항 회귀</div></div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding:18px 26px;background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:16px;">
+    <div style="font-size:30px;">💡</div>
+    <div style="font-size:16px;color:var(--mid);line-height:1.6;"><strong style="color:var(--dark);">핵심 한 줄 요약:</strong> 기계학습은 <strong>학습 방법</strong>에 따라 지도·비지도·강화학습으로 나뉘고, 지도학습에서 <strong>연속적인 값을 예측</strong>할 때 선형 회귀를 사용하며, 컴퓨터는 <strong>경사하강법</strong>으로 오차가 가장 작은 직선의 방정식을 찾아낸다.</div>
+  </div>
+</div>
+
+</div><!-- /slideshow -->
+
+<div id="nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)" disabled>&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span id="sc">1 / 15</span>
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const T=15; let cur=1; const cr={};
+function go(d){
+  const sl=document.querySelectorAll('.slide');
+  sl[cur-1].classList.remove('active'); sl[cur-1].classList.add('exit-left');
+  setTimeout(()=>sl[cur-1].classList.remove('exit-left'),500);
+  cur=Math.max(1,Math.min(T,cur+d));
+  sl[cur-1].classList.add('active');
+  document.getElementById('prevBtn').disabled=cur===1;
+  document.getElementById('nextBtn').disabled=cur===T;
+  document.getElementById('sc').textContent=`${cur} / ${T}`;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur-1));
+  if(cur===8&&!cr[8]){c8();cr[8]=1;}
+  if(cur===11&&!cr[11]){c11();cr[11]=1;}
+}
+const dw=document.getElementById('dots');
+for(let i=0;i<T;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>{const x=(i+1)-cur;if(x)go(x);};dw.appendChild(d);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+
+// Chart 8
+function c8(){
+  new Chart(document.getElementById('chart8').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'실제 데이터',data:[{x:5,y:12},{x:8,y:16},{x:11,y:22.5},{x:17,y:32},{x:20,y:40.5}],backgroundColor:'#F97316',pointRadius:8},
+      {type:'line',label:'선형 회귀선',data:[{x:0,y:1.83},{x:22,y:1.87*22+1.83}],borderColor:'#3B82F6',borderWidth:2.5,pointRadius:0,fill:false},
+      {type:'scatter',label:'예측 (X=15)',data:[{x:15,y:29.88}],backgroundColor:'#8B5CF6',pointRadius:10,pointStyle:'triangle'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:true,
+      scales:{x:{min:0,max:22,title:{display:true,text:'폭염 일수 (일)',font:{size:13}},grid:{color:'#F1F5F9'}},y:{min:0,max:50,title:{display:true,text:'판매량 (만 개)',font:{size:13}},grid:{color:'#F1F5F9'}}},
+      plugins:{legend:{position:'top',labels:{font:{size:13,family:'Noto Sans KR'}}}}}
+  });
+}
+
+// Chart 11 (interactive)
+let ch11=null;
+const rp=[{x:5,y:12},{x:8,y:16},{x:11,y:22.5},{x:17,y:32},{x:20,y:40.5}];
+function mse(w,b){return rp.reduce((s,p)=>s+Math.pow(w*p.x+b-p.y,2),0)/rp.length;}
+function c11(){
+  ch11=new Chart(document.getElementById('chart11').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'실제 데이터',data:rp,backgroundColor:'#F97316',pointRadius:8},
+      {type:'line',label:'Y=wX+b',data:[{x:0,y:5},{x:22,y:27}],borderColor:'#94A3B8',borderWidth:2.5,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:true,animation:{duration:0},
+      scales:{x:{min:0,max:22,title:{display:true,text:'폭염 일수'},grid:{color:'#F1F5F9'}},y:{min:-10,max:55,title:{display:true,text:'판매량 (만 개)'},grid:{color:'#F1F5F9'}}},
+      plugins:{legend:{position:'top',labels:{font:{size:13,family:'Noto Sans KR'}}}}}
+  });
+  upd();
+  document.getElementById('wSl').addEventListener('input',upd);
+  document.getElementById('bSl').addEventListener('input',upd);
+}
+function upd(){
+  const w=+document.getElementById('wSl').value, b=+document.getElementById('bSl').value;
+  document.getElementById('wVal').textContent=w.toFixed(2);
+  document.getElementById('bVal').textContent=b.toFixed(2);
+  document.getElementById('fW').textContent=w.toFixed(2);
+  document.getElementById('fB').textContent=b.toFixed(2);
+  const m=mse(w,b); const el=document.getElementById('mseVal');
+  el.textContent=m.toFixed(2); el.style.color=m<5?'#10B981':m<50?'#F59E0B':'#EF4444';
+  if(ch11){ch11.data.datasets[1].data=[{x:0,y:b},{x:22,y:w*22+b}];ch11.update();}
+}
+function setOpt(){document.getElementById('wSl').value=1.87;document.getElementById('bSl').value=1.83;upd();}
+
+// Quiz S6 — re-selectable
+function rQ(id,ch,cor){
+  const it=document.getElementById(id);
+  it.classList.remove('rr','rc');
+  it.classList.add(cor==='reg'?'rr':'rc');
+  it.querySelectorAll('.qb').forEach(b=>b.disabled=false);
+  // update answer text based on correctness
+  const qa=it.querySelector('.qa');
+  if(ch===cor){
+    qa.style.background=cor==='reg'?'#DBEAFE':'#FED7AA';
+    qa.style.color=cor==='reg'?'var(--blue)':'var(--orange)';
+  }
+}
+
+// Final Quiz S14 — re-selectable
+function cQ(btn,n,ok,msg){
+  const opts=btn.parentElement.querySelectorAll('.fqb');
+  // reset all
+  opts.forEach(b=>{b.classList.remove('correct','wrong','disabled');b.disabled=false;});
+  // mark chosen
   btn.classList.add(ok?'correct':'wrong');
   const f=document.getElementById('fb'+n);
   f.textContent=(ok?'✅ 정답! ':'❌ 오답! ')+msg;
