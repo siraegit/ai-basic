@@ -14,20 +14,15 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
   #slideshow{width:100vw;height:100vh;position:relative;overflow:hidden;}
-  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateX(40px);padding:28px 50px 68px;}
-  .slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-  .slide.exit-left{opacity:0;transform:translateX(-40px);}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px;}
+  .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
+  .slide.exit-left{opacity:0;transform:translateY(-30px);}
 
   /* NAV */
-  #nav{position:fixed;bottom:0;left:0;right:0;height:52px;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;gap:18px;z-index:100;}
-  .nav-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--blue);background:white;color:var(--blue);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-  .nav-btn:hover{background:var(--blue);color:white;}
-  .nav-btn:disabled{opacity:.3;cursor:not-allowed;}
-  #slide-counter{font-size:15px;color:var(--mid);font-weight:600;min-width:68px;text-align:center;}
-  .dots{display:flex;gap:6px;align-items:center;}
-  .dot{width:8px;height:8px;border-radius:50%;background:#CBD5E1;transition:all .3s;cursor:pointer;}
-  .dot.active{background:var(--blue);transform:scale(1.4);}
-  .home-btn{position:absolute;left:16px;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#EFF6FF;color:var(--blue);font-size:13px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:all .2s;}
+  #nav{position:fixed;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56vh;background:#E2E8F0;border-radius:3px;z-index:100;}
+  #nav-fill{width:100%;border-radius:3px;background:var(--blue);transition:height .45s ease;}
+  .home-btn{position:fixed;bottom:22px;right:24px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(239,246,255,.95);color:var(--blue);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
+  .home-btn.visible{opacity:1;pointer-events:all;}
   .home-btn:hover{background:var(--blue);color:white;}
 
   /* SHARED */
@@ -688,13 +683,8 @@
 
 </div><!-- /slideshow -->
 
-<div id="nav">
-  <a class="home-btn" href="../../index.html">&#8962; 목차</a>
-  <button class="nav-btn" id="prevBtn" onclick="go(-1)" disabled>&#8592;</button>
-  <div class="dots" id="dots"></div>
-  <span id="sc">1 / 15</span>
-  <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
-</div>
+<a class="home-btn visible" id="homeBtn" href="../../index.html">&#8962; 목차</a>
+<div id="nav"><div id="nav-fill" style="height:0%"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
@@ -705,16 +695,29 @@ function go(d){
   setTimeout(()=>sl[cur-1].classList.remove('exit-left'),500);
   cur=Math.max(1,Math.min(T,cur+d));
   sl[cur-1].classList.add('active');
-  document.getElementById('prevBtn').disabled=cur===1;
-  document.getElementById('nextBtn').disabled=cur===T;
-  document.getElementById('sc').textContent=`${cur} / ${T}`;
-  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur-1));
+  document.getElementById('nav-fill').style.height=((cur-1)/(T-1)*100)+'%';
+  document.getElementById('homeBtn').classList.toggle('visible',cur===1||cur===T);
   if(cur===8&&!cr[8]){c8();cr[8]=1;}
   if(cur===11&&!cr[11]){c11();cr[11]=1;}
 }
-const dw=document.getElementById('dots');
-for(let i=0;i<T;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>{const x=(i+1)-cur;if(x)go(x);};dw.appendChild(d);}
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+
+// Mouse wheel navigation
+let wheelBusy=false;
+document.addEventListener('wheel',e=>{
+  if(wheelBusy)return;
+  wheelBusy=true;
+  setTimeout(()=>{wheelBusy=false;},650);
+  if(e.deltaY>0)go(1);else if(e.deltaY<0)go(-1);
+},{passive:true});
+
+// Touch swipe navigation
+let tsX=0,tsY=0;
+document.addEventListener('touchstart',e=>{tsX=e.touches[0].clientX;tsY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=tsX-e.changedTouches[0].clientX,dy=tsY-e.changedTouches[0].clientY;
+  if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){if(dy>0)go(1);else go(-1);}
+},{passive:true});
 
 // Chart 8
 function c8(){
