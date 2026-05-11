@@ -12,16 +12,16 @@
     --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
-  #slideshow{width:100vw;height:100vh;position:relative;overflow:hidden;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
+  #slideshow{width:1280px;height:720px;position:relative;overflow:hidden;flex-shrink:0;transform-origin:center center;}
   .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px;}
   .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
   .slide.exit-left{opacity:0;transform:translateY(-30px);}
 
   /* NAV */
-  #nav{position:fixed;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56vh;background:#E2E8F0;border-radius:3px;z-index:100;}
+  #nav{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56%;background:#E2E8F0;border-radius:3px;z-index:100;}
   #nav-fill{width:100%;border-radius:3px;background:var(--blue);transition:height .45s ease;}
-  .home-btn{position:fixed;bottom:22px;right:24px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(239,246,255,.95);color:var(--blue);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
+  .home-btn{position:absolute;bottom:22px;right:20px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(239,246,255,.95);color:var(--blue);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
   .home-btn.visible{opacity:1;pointer-events:all;}
   .home-btn:hover{background:var(--blue);color:white;}
 
@@ -187,6 +187,18 @@
   .fqb.disabled{cursor:not-allowed;}
   .fqf{font-size:14px;line-height:1.55;padding:10px 14px;border-radius:10px;display:none;}
   .fqf.show{display:block;} .fqf.ok{background:#D1FAE5;color:#065F46;} .fqf.no{background:#FEE2E2;color:#991B1B;}
+
+  /* S14 compact — 피드백 표시 시에도 720px 캔버스 안에 맞도록 */
+  #s14 .lbl{font-size:11px;margin-bottom:3px;}
+  #s14 .ttl{font-size:24px;margin-bottom:4px;}
+  #s14 .sub{font-size:13px;margin-bottom:10px;}
+  #s14 .fqg{gap:12px;grid-template-rows:1fr 1fr;}
+  #s14 .fqc{padding:13px 15px;gap:7px;border-radius:14px;}
+  #s14 .fqn{font-size:11px;}
+  #s14 .fqq{font-size:13px;line-height:1.4;}
+  #s14 .fqo{gap:6px;}
+  #s14 .fqb{padding:7px 12px;font-size:13px;border-radius:8px;}
+  #s14 .fqf{font-size:12px;padding:8px 12px;line-height:1.45;}
 
   /* S15 */
   #s15{background:var(--bg);}
@@ -681,10 +693,9 @@
   </div>
 </div>
 
+  <a class="home-btn visible" id="homeBtn" href="../../index.html">&#8962; 목차</a>
+  <div id="nav"><div id="nav-fill" style="height:0%"></div></div>
 </div><!-- /slideshow -->
-
-<a class="home-btn visible" id="homeBtn" href="../../index.html">&#8962; 목차</a>
-<div id="nav"><div id="nav-fill" style="height:0%"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
@@ -718,6 +729,15 @@ document.addEventListener('touchend',e=>{
   const dx=tsX-e.changedTouches[0].clientX,dy=tsY-e.changedTouches[0].clientY;
   if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){if(dy>0)go(1);else go(-1);}
 },{passive:true});
+
+// Scale slideshow to fit viewport
+function scaleSlides(){
+  const s=document.getElementById('slideshow');
+  const scale=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  s.style.transform='scale('+scale+')';
+}
+window.addEventListener('resize',scaleSlides);
+scaleSlides();
 
 // Chart 8
 function c8(){
