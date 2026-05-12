@@ -12,17 +12,14 @@
     --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
-  #slideshow{width:1280px;height:720px;position:absolute;top:0;left:0;overflow:hidden;transform-origin:0 0;}
-  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px;}
-  .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
-  .slide.exit-left{opacity:0;transform:translateY(-30px);}
+  body{font-family:'Noto Sans KR',sans-serif;background:#CBD5E1;color:var(--dark);overflow-y:auto;min-height:100vh;}
+  #slideshow{display:flex;flex-direction:column;align-items:center;padding:32px 0 48px;gap:20px;}
+  .slide{width:900px;min-height:520px;display:flex;flex-direction:column;padding:28px 50px;background:white;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.12);position:relative;overflow:hidden;opacity:1;pointer-events:all;transform:none;transition:none;}
 
-  /* NAV */
-  #nav{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56%;background:#E2E8F0;border-radius:3px;z-index:100;}
-  #nav-fill{width:100%;border-radius:3px;background:var(--blue);transition:height .45s ease;}
-  .home-btn{position:absolute;bottom:22px;right:20px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(239,246,255,.95);color:var(--blue);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
-  .home-btn.visible{opacity:1;pointer-events:all;}
+  /* NAV — 상단 고정 툴바로 변경 */
+  #nav{display:none;}
+  #nav-fill{display:none;}
+  .home-btn{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:5px;padding:8px 16px;border-radius:999px;background:rgba(239,246,255,.97);color:var(--blue);font-size:13px;font-weight:700;text-decoration:none;border:1.5px solid #BFDBFE;transition:background .2s,color .2s;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.15);}
   .home-btn:hover{background:var(--blue);color:white;}
 
   /* SHARED */
@@ -35,6 +32,9 @@
   .fbox span{color:#93C5FD;} .fbox em{color:#FCD34D;font-style:normal;}
   .fbox .dim{color:#94A3B8;font-size:14px;font-weight:400;margin-top:8px;}
   .tag{display:inline-block;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:700;}
+
+  /* 슬라이드 번호 배지 */
+  .slide::before{content:attr(data-slide);position:absolute;top:14px;right:18px;font-size:11px;font-weight:700;color:var(--light);letter-spacing:1px;font-family:'Space Grotesk',sans-serif;}
 
   /* S1 */
   #s1{background:linear-gradient(135deg,#EFF6FF 0%,#F0FDF4 55%,#FFF7ED 100%);justify-content:center;}
@@ -196,7 +196,7 @@
   #s14 .lbl{font-size:11px;margin-bottom:3px;}
   #s14 .ttl{font-size:24px;margin-bottom:4px;}
   #s14 .sub{font-size:13px;margin-bottom:10px;}
-  #s14 .fqg{gap:12px;grid-template-rows:1fr 1fr;}
+  #s14 .fqg{gap:12px;}
   #s14 .fqc{padding:13px 15px;gap:7px;border-radius:14px;}
   #s14 .fqn{font-size:11px;}
   #s14 .fqq{font-size:13px;line-height:1.4;}
@@ -698,53 +698,27 @@
   </div>
 </div>
 
-  <a class="home-btn visible" id="homeBtn" href="../../index.html">&#8962; 목차</a>
-  <div id="nav"><div id="nav-fill" style="height:0%"></div></div>
 </div><!-- /slideshow -->
+<a class="home-btn" href="../../index.html">&#8962; 목차</a>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const T=15; let cur=1; const cr={};
-function go(d){
-  const sl=document.querySelectorAll('.slide');
-  sl[cur-1].classList.remove('active'); sl[cur-1].classList.add('exit-left');
-  setTimeout(()=>sl[cur-1].classList.remove('exit-left'),500);
-  cur=Math.max(1,Math.min(T,cur+d));
-  sl[cur-1].classList.add('active');
-  document.getElementById('nav-fill').style.height=((cur-1)/(T-1)*100)+'%';
-  document.getElementById('homeBtn').classList.toggle('visible',cur===1||cur===T);
-  if(cur===8&&!cr[8]){c8();cr[8]=1;}
-  if(cur===11&&!cr[11]){c11();cr[11]=1;}
-}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+// 슬라이드 번호 배지 설정
+document.querySelectorAll('.slide').forEach((el,i)=>{
+  el.setAttribute('data-slide',(i+1)+' / '+document.querySelectorAll('.slide').length);
+});
 
-// Mouse wheel navigation
-let wheelBusy=false;
-document.addEventListener('wheel',e=>{
-  if(wheelBusy)return;
-  wheelBusy=true;
-  setTimeout(()=>{wheelBusy=false;},650);
-  if(e.deltaY>0)go(1);else if(e.deltaY<0)go(-1);
-},{passive:true});
-
-// Touch swipe navigation
-let tsX=0,tsY=0;
-document.addEventListener('touchstart',e=>{tsX=e.touches[0].clientX;tsY=e.touches[0].clientY;},{passive:true});
-document.addEventListener('touchend',e=>{
-  const dx=tsX-e.changedTouches[0].clientX,dy=tsY-e.changedTouches[0].clientY;
-  if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){if(dy>0)go(1);else go(-1);}
-},{passive:true});
-
-// Scale slideshow to fit viewport
-function scaleSlides(){
-  const s=document.getElementById('slideshow');
-  const scale=Math.min(window.innerWidth/1280,window.innerHeight/720);
-  const ox=(window.innerWidth-1280*scale)/2;
-  const oy=(window.innerHeight-720*scale)/2;
-  s.style.transform='translate('+ox+'px,'+oy+'px) scale('+scale+')';
-}
-window.addEventListener('resize',scaleSlides);
-scaleSlides();
+// 차트는 모두 IntersectionObserver로 뷰포트 진입 시 초기화
+const cr={};
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const id=entry.target.id;
+    if(id==='s8'&&!cr[8]){c8();cr[8]=1;}
+    if(id==='s11'&&!cr[11]){c11();cr[11]=1;}
+  });
+},{threshold:0.1});
+document.querySelectorAll('.slide').forEach(s=>observer.observe(s));
 
 // Chart 8
 function c8(){

@@ -13,19 +13,19 @@
     --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#CBD5E1;color:var(--dark);overflow-y:auto;min-height:100vh;}
 
-  /* ── SLIDESHOW: fixed 1280×720, scaled to fit ── */
-  #slideshow{width:1280px;height:720px;position:absolute;top:0;left:0;overflow:hidden;transform-origin:0 0;}
-  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px 24px;}
-  .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
-  .slide.exit-left{opacity:0;transform:translateY(-30px);}
+  /* ── SLIDESHOW: PDF 페이지 뷰 ── */
+  #slideshow{display:flex;flex-direction:column;align-items:center;padding:32px 0 48px;gap:20px;}
+  .slide{width:900px;min-height:520px;display:flex;flex-direction:column;padding:28px 50px 24px;background:white;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.12);position:relative;overflow:hidden;opacity:1;pointer-events:all;transform:none;transition:none;}
 
-  /* ── NAV: vertical progress bar ── */
-  #nav{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56%;background:#E2E8F0;border-radius:3px;z-index:100;}
-  #nav-fill{width:100%;border-radius:3px;background:var(--orange);transition:height .45s ease;}
-  .home-btn{position:absolute;bottom:22px;right:20px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(255,247,237,.95);color:var(--orange);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #FED7AA;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
-  .home-btn.visible{opacity:1;pointer-events:all;}
+  /* 슬라이드 번호 배지 */
+  .slide::before{content:attr(data-slide);position:absolute;top:14px;right:18px;font-size:11px;font-weight:700;color:var(--light);letter-spacing:1px;font-family:'Space Grotesk',sans-serif;}
+
+  /* ── NAV 비활성화 ── */
+  #nav{display:none;}
+  #nav-fill{display:none;}
+  .home-btn{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:5px;padding:8px 16px;border-radius:999px;background:rgba(255,247,237,.97);color:var(--orange);font-size:13px;font-weight:700;text-decoration:none;border:1.5px solid #FED7AA;transition:background .2s,color .2s;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.15);}
   .home-btn:hover{background:var(--orange);color:white;}
 
   /* ── SHARED COMPONENTS ── */
@@ -407,7 +407,7 @@
         <strong>🔑 0.5 기준:</strong> 출력 ≥ 0.5 → 1(양성) &nbsp;|&nbsp; 출력 &lt; 0.5 → 0(음성)
       </div>
     </div>
-    <div class="cw2"><canvas id="chart6sig" width="600" height="400"></canvas></div>
+    <div class="cw2"><canvas id="chart6sig" width="440" height="300"></canvas></div>
   </div>
 </div>
 
@@ -516,7 +516,7 @@
       <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">
         🖱️ 캔버스 클릭: <span style="color:var(--blue);">● 그룹 A</span> 추가 &nbsp;|&nbsp; Shift+클릭: <span style="color:var(--red);">● 그룹 B</span> 추가
       </div>
-      <canvas id="svmCanvas" width="620" height="380"></canvas>
+      <canvas id="svmCanvas" width="440" height="280"></canvas>
     </div>
     <div class="svm-info">
       <div class="slg">
@@ -597,7 +597,7 @@
       <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">
         🖱️ 클릭: <span style="color:var(--blue);">● A 그룹</span> &nbsp;|&nbsp; Shift+클릭: <span style="color:var(--red);">● B 그룹</span> &nbsp;|&nbsp; Ctrl+클릭: <span style="color:var(--purple);">★ 새 점 (분류 대상)</span>
       </div>
-      <canvas id="knnCanvas" width="620" height="380"></canvas>
+      <canvas id="knnCanvas" width="440" height="280"></canvas>
     </div>
     <div class="knn-controls">
       <div class="slg">
@@ -934,55 +934,36 @@
 </div>
 
 </div><!-- /slideshow -->
-
-<a class="home-btn" id="homeBtn" href="../../index.html">&#8962; 목차</a>
-<div id="nav"><div id="nav-fill" style="height:0%"></div></div>
+<a class="home-btn" href="../../index.html">&#8962; 목차</a>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // ═══════════════════════════════════════
-//  SLIDE ENGINE
+//  PAGE VIEW ENGINE
 // ═══════════════════════════════════════
-const T=16; let cur=1; const cr={};
-function go(d){
-  const sl=document.querySelectorAll('.slide');
-  sl[cur-1].classList.remove('active'); sl[cur-1].classList.add('exit-left');
-  setTimeout(()=>sl[cur-1].classList.remove('exit-left'),500);
-  cur=Math.max(1,Math.min(T,cur+d));
-  sl[cur-1].classList.add('active');
-  document.getElementById('nav-fill').style.height=((cur-1)/(T-1)*100)+'%';
-  document.getElementById('homeBtn').classList.toggle('visible',cur===1||cur===T);
-  if(cur===4  && !cr[4])  { initC4();    cr[4]=1;  }
-  if(cur===5  && !cr[5])  { initC5sig(); cr[5]=1;  }
-  if(cur===6  && !cr[6])  { initC6sig(); cr[6]=1;  }
-  if(cur===7  && !cr[7])  { initC7dia(); cr[7]=1;  }
-  if(cur===8  && !cr[8])  { initC8svm(); cr[8]=1;  }
-  if(cur===9  && !cr[9])  { initSVMint();cr[9]=1;  }
-  if(cur===10 && !cr[10]) { initC10knn();cr[10]=1; }
-  if(cur===11 && !cr[11]) { initKNNint();cr[11]=1; }
-}
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
-  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   go(-1);
+
+// 슬라이드 번호 배지 설정
+document.querySelectorAll('.slide').forEach((el,i)=>{
+  el.setAttribute('data-slide',(i+1)+' / '+document.querySelectorAll('.slide').length);
 });
-let wBusy=false;
-document.addEventListener('wheel',e=>{
-  if(wBusy)return; wBusy=true; setTimeout(()=>wBusy=false,650);
-  if(e.deltaY>0)go(1); else go(-1);
-},{passive:true});
-let tsX=0,tsY=0;
-document.addEventListener('touchstart',e=>{tsX=e.touches[0].clientX;tsY=e.touches[0].clientY;},{passive:true});
-document.addEventListener('touchend',e=>{
-  const dx=tsX-e.changedTouches[0].clientX,dy=tsY-e.changedTouches[0].clientY;
-  if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){if(dy>0)go(1);else go(-1);}
-},{passive:true});
-function scaleSlides(){
-  const s=document.getElementById('slideshow');
-  const sc=Math.min(window.innerWidth/1280,window.innerHeight/720);
-  const ox=(window.innerWidth-1280*sc)/2, oy=(window.innerHeight-720*sc)/2;
-  s.style.transform=`translate(${ox}px,${oy}px) scale(${sc})`;
-}
-window.addEventListener('resize',scaleSlides); scaleSlides();
+
+// 차트는 IntersectionObserver로 뷰포트 진입 시 초기화
+const cr={};
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const id=entry.target.id;
+    if(id==='s4'  && !cr[4])  { initC4();    cr[4]=1;  }
+    if(id==='s5'  && !cr[5])  { initC5sig(); cr[5]=1;  }
+    if(id==='s6'  && !cr[6])  { initC6sig(); cr[6]=1;  }
+    if(id==='s7'  && !cr[7])  { initC7dia(); cr[7]=1;  }
+    if(id==='s8'  && !cr[8])  { initC8svm(); cr[8]=1;  }
+    if(id==='s9'  && !cr[9])  { initSVMint();cr[9]=1;  }
+    if(id==='s10' && !cr[10]) { initC10knn();cr[10]=1; }
+    if(id==='s11' && !cr[11]) { initKNNint();cr[11]=1; }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.slide').forEach(s=>observer.observe(s));
 
 // ═══════════════════════════════════════
 //  S4: 선형 회귀 vs 로지스틱 비교 차트
@@ -1160,7 +1141,7 @@ function drawSVM(){
   ctx.beginPath();
   const margin=40;
   // 결정 경계: y = slope*(x-320) + 190 + intercept
-  const fy=x=>slope*(x-320)+190+intercept;
+  const fy=x=>slope*(x-220)+140+intercept;
   ctx.moveTo(0,fy(0)-margin); ctx.lineTo(620,fy(620)-margin);
   ctx.lineTo(620,fy(620)+margin); ctx.lineTo(0,fy(0)+margin); ctx.closePath();
   ctx.fill();
@@ -1234,12 +1215,12 @@ function initKNNint(){
 }
 function knnAddSample(){
   knnPts=[
-    {x:150,y:120,group:'A'},{x:180,y:150,group:'A'},{x:130,y:160,group:'A'},
-    {x:200,y:100,group:'A'},{x:160,y:180,group:'A'},
-    {x:400,y:250,group:'B'},{x:430,y:220,group:'B'},{x:380,y:270,group:'B'},
-    {x:460,y:260,group:'B'},{x:410,y:300,group:'B'},
+    {x:100,y:80,group:'A'},{x:130,y:110,group:'A'},{x:90,y:120,group:'A'},
+    {x:150,y:70,group:'A'},{x:115,y:135,group:'A'},
+    {x:300,y:180,group:'B'},{x:330,y:155,group:'B'},{x:280,y:200,group:'B'},
+    {x:350,y:190,group:'B'},{x:315,y:220,group:'B'},
   ];
-  knnNew={x:290,y:200};
+  knnNew={x:210,y:145};
   drawKNN();
 }
 function drawKNN(){
