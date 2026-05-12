@@ -80,7 +80,7 @@
 
   /* ── S5 LOGISTIC CONCEPT ── */
   #s5{background:var(--bg);}
-  .log-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;flex:1;}
+  .log-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;}
   .tr{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:10px;}
   .tb{font-size:12px;font-weight:800;padding:4px 9px;border-radius:7px;flex-shrink:0;margin-top:2px;}
   .tn{font-size:15px;font-weight:700;margin-bottom:3px;}
@@ -370,7 +370,7 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
         <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 시그모이드 함수</div>
-        <canvas id="chart5sig" width="380" height="160"></canvas>
+        <canvas id="chart5sig" width="350" height="180"></canvas>
         <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:6px;">f(x) = 1 / (1 + e⁻ˣ)</div>
       </div>
       <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
@@ -983,7 +983,7 @@ function initC4(){
       {type:'line',label:'선형 회귀',data:linePts,borderColor:'#94A3B8',borderWidth:2,pointRadius:0,fill:false},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      scales:{x:{type:'linear',min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.5,max:1.8,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:0,yMax:0,borderColor:'#CBD5E1',borderWidth:1},line2:{type:'line',yMin:1,yMax:1,borderColor:'#CBD5E1',borderWidth:1}}}}}
   });
@@ -998,7 +998,7 @@ function initC4(){
       {type:'line',label:'시그모이드',data:sigPts,borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      scales:{x:{type:'linear',min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.1,max:1.1,grid:{color:'#F1F5F9'},
                 afterBuildTicks:axis=>{axis.ticks=[{value:0},{value:0.5},{value:1}];},
                 ticks:{font:{size:10}}}},
@@ -1018,7 +1018,7 @@ function initC5sig(){
       {type:'line',label:'y=0.5',data:[{x:-6,y:0.5},{x:6,y:0.5}],borderColor:'#F97316',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      scales:{x:{type:'linear',min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:0,max:1,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
   });
@@ -1037,7 +1037,7 @@ function initC6sig(){
       {type:'scatter',label:'x=0 출력',data:[{x:0,y:0.5}],backgroundColor:'#EF4444',pointRadius:8},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:-8,max:8,title:{display:true,text:'입력값 x',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      scales:{x:{type:'linear',min:-8,max:8,title:{display:true,text:'입력값 x',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:0,max:1,title:{display:true,text:'출력 (확률)',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
   });
@@ -1080,7 +1080,7 @@ function initC7dia(){
       {type:'line',label:'기준(0.5)',data:[{x:0,y:0.5},{x:12,y:0.5}],borderColor:'#8B5CF6',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:0,max:12,title:{display:true,text:'당의 섭취량',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      scales:{x:{type:'linear',min:0,max:12,title:{display:true,text:'당의 섭취량',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.1,max:1.1,title:{display:true,text:'당뇨 확률',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
   });
@@ -1104,8 +1104,8 @@ function initC8svm(){
       {type:'line',label:'B (나쁜 경계)',data:lineB,borderColor:'#94A3B8',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:0,max:10,title:{display:true,text:'크기',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
-              y:{min:0,max:11,title:{display:true,text:'속도',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      scales:{x:{type:'linear',min:0,max:10,title:{display:true,text:'크기',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{type:'linear',min:0,max:11,title:{display:true,text:'속도',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
   });
 }
@@ -1187,8 +1187,8 @@ function initC10knn(){
       {type:'scatter',label:'★ 새 데이터',data:newPt,backgroundColor:'#8B5CF6',pointRadius:12,pointStyle:'star'},
     ]},
     options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{min:0,max:11,title:{display:true,text:'특성 1',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
-              y:{min:0,max:11,title:{display:true,text:'특성 2',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      scales:{x:{type:'linear',min:0,max:11,title:{display:true,text:'특성 1',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{type:'linear',min:0,max:11,title:{display:true,text:'특성 2',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
   });
 }
