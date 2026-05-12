@@ -12,8 +12,8 @@
     --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
-  #slideshow{width:1280px;height:720px;position:relative;overflow:hidden;flex-shrink:0;transform-origin:center center;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
+  #slideshow{width:1280px;height:720px;position:absolute;top:0;left:0;overflow:hidden;transform-origin:0 0;}
   .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px;}
   .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
   .slide.exit-left{opacity:0;transform:translateY(-30px);}
@@ -739,7 +739,9 @@ document.addEventListener('touchend',e=>{
 function scaleSlides(){
   const s=document.getElementById('slideshow');
   const scale=Math.min(window.innerWidth/1280,window.innerHeight/720);
-  s.style.transform='scale('+scale+')';
+  const ox=(window.innerWidth-1280*scale)/2;
+  const oy=(window.innerHeight-720*scale)/2;
+  s.style.transform='translate('+ox+'px,'+oy+'px) scale('+scale+')';
 }
 window.addEventListener('resize',scaleSlides);
 scaleSlides();
