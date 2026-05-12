@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분류 알고리즘 | 인공지능 기초</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:#3B82F6; --teal:#10B981; --amber:#F59E0B;
+    --orange:#F97316; --purple:#8B5CF6; --red:#EF4444;
+    --pink:#EC4899; --cyan:#06B6D4;
+    --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;width:100vw;height:100vh;}
+
+  /* ── SLIDESHOW: fixed 1280×720, scaled to fit ── */
+  #slideshow{width:1280px;height:720px;position:absolute;top:0;left:0;overflow:hidden;transform-origin:0 0;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;transform:translateY(30px);padding:28px 50px 24px;}
+  .slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
+  .slide.exit-left{opacity:0;transform:translateY(-30px);}
+
+  /* ── NAV: vertical progress bar ── */
+  #nav{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:5px;height:56%;background:#E2E8F0;border-radius:3px;z-index:100;}
+  #nav-fill{width:100%;border-radius:3px;background:var(--orange);transition:height .45s ease;}
+  .home-btn{position:absolute;bottom:22px;right:20px;display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;background:rgba(255,247,237,.95);color:var(--orange);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid #FED7AA;transition:opacity .3s,background .2s,color .2s;z-index:100;opacity:0;pointer-events:none;}
+  .home-btn.visible{opacity:1;pointer-events:all;}
+  .home-btn:hover{background:var(--orange);color:white;}
+
+  /* ── SHARED COMPONENTS ── */
+  .lbl{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;opacity:.65;}
+  .ttl{font-size:34px;font-weight:900;line-height:1.15;margin-bottom:6px;}
+  .sub{font-size:16px;color:var(--mid);margin-bottom:18px;line-height:1.6;}
+  .card{background:white;border-radius:16px;padding:18px 22px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .hl{border-radius:12px;padding:13px 18px;font-size:14px;line-height:1.7;}
+  .fbox{background:var(--dark);color:white;border-radius:14px;padding:16px 26px;font-size:24px;font-weight:700;font-family:'Space Grotesk',monospace;text-align:center;letter-spacing:1px;}
+  .fbox span{color:#93C5FD;} .fbox em{color:#FCD34D;font-style:normal;}
+  .fbox .dim{color:#94A3B8;font-size:13px;font-weight:400;margin-top:7px;}
+  .tag{display:inline-block;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:700;}
+  .algo-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:800;}
+
+  /* ── S1 COVER ── */
+  #s1{background:linear-gradient(135deg,#FFF7ED 0%,#FEF3C7 40%,#F0FDF4 100%);justify-content:center;}
+  .cov-eye{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--orange);text-transform:uppercase;margin-bottom:16px;}
+  .cov-ttl{font-size:52px;font-weight:900;line-height:1.1;margin-bottom:14px;}
+  .cov-ttl .acc{color:var(--orange);}
+  .cov-sub{font-size:18px;color:var(--mid);margin-bottom:30px;}
+  .goal{display:flex;align-items:center;gap:14px;font-size:16px;color:var(--mid);margin-bottom:11px;}
+  .goal-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .deco{position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:190px;opacity:.07;}
+  .algo-row{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+
+  /* ── S2 REVIEW ── */
+  #s2{background:var(--bg);}
+  .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+  .review-card{border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px;}
+  .arrow-center{display:flex;align-items:center;justify-content:center;}
+  .big-arrow{font-size:48px;color:#CBD5E1;}
+
+  /* ── S3 CLASSIFICATION CONCEPT ── */
+  #s3{background:var(--bg);}
+  .cls-flow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .cls-box{border-radius:14px;padding:14px 18px;font-size:14px;font-weight:600;text-align:center;flex:1;}
+  .cls-arrow{font-size:22px;color:var(--light);flex-shrink:0;}
+  .algo-map{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px;}
+  .algo-card{border-radius:14px;padding:16px 12px;text-align:center;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+  .algo-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+  .algo-icon{font-size:36px;}
+  .algo-name{font-size:14px;font-weight:800;}
+  .algo-eng{font-size:11px;opacity:.6;font-weight:600;}
+
+  /* ── S4 WHY NOT LINEAR ── */
+  #s4{background:var(--bg);}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+  .prob-card{border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;}
+  #s4 .prob-card{padding:12px;gap:7px;}
+  #s4 .hl{padding:7px 14px;}
+  #s4 .prob-card>div:nth-child(2){margin-bottom:4px !important;}
+
+  /* ── S5 LOGISTIC CONCEPT ── */
+  #s5{background:var(--bg);}
+  .log-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;flex:1;}
+  .tr{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:10px;}
+  .tb{font-size:12px;font-weight:800;padding:4px 9px;border-radius:7px;flex-shrink:0;margin-top:2px;}
+  .tn{font-size:15px;font-weight:700;margin-bottom:3px;}
+  .td{font-size:13px;color:var(--mid);line-height:1.5;}
+
+  /* ── S6 SIGMOID INTERACTIVE ── */
+  #s6{background:var(--bg);}
+  .sig-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;flex:1;}
+  .sig-controls{display:flex;flex-direction:column;gap:11px;}
+  .slg{background:white;border-radius:13px;padding:16px 18px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+  .slg label{font-size:15px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:10px;}
+  .slg label span{font-family:'Space Grotesk',monospace;font-size:17px;font-weight:700;}
+  input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;background:#E2E8F0;}
+  input[type=range].ws{accent-color:var(--orange);}
+  input[type=range].bs{accent-color:var(--purple);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:white;border:3px solid var(--orange);cursor:pointer;}
+  input[type=range].bs::-webkit-slider-thumb{border-color:var(--purple);}
+  .sfm2{background:var(--dark);color:white;border-radius:12px;padding:14px 20px;text-align:center;font-family:'Space Grotesk',monospace;font-size:17px;font-weight:700;}
+  .sfm2 .ov{color:#93C5FD;} .sfm2 .ob{color:#FCD34D;}
+  .cw2{background:white;border-radius:14px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .threshold-display{background:white;border-radius:12px;padding:12px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);text-align:center;}
+
+  /* ── S7 DIABETES EXAMPLE ── */
+  #s7{background:var(--bg);}
+  .dia-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+
+  /* ── S8 SVM CONCEPT ── */
+  #s8{background:var(--bg);}
+  .svm-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+
+  /* ── S9 SVM INTERACTIVE ── */
+  #s9{background:var(--bg);}
+  .svm-int-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;flex:1;}
+  .svm-canvas-wrap{background:white;border-radius:14px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;}
+  #svmCanvas{display:block;cursor:crosshair;border-radius:8px;}
+  .svm-info{display:flex;flex-direction:column;gap:12px;}
+
+  /* ── S10 KNN CONCEPT ── */
+  #s10{background:var(--bg);}
+  .knn-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+  .k-cases{display:flex;flex-direction:column;gap:10px;}
+  .k-case{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+  .k-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;}
+  .k-result{font-size:13px;color:var(--mid);line-height:1.5;}
+
+  /* ── S11 KNN INTERACTIVE ── */
+  #s11{background:var(--bg);}
+  .knn-int-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;flex:1;}
+  .knn-canvas-wrap{background:white;border-radius:14px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  #knnCanvas{display:block;cursor:crosshair;border-radius:8px;}
+  .knn-controls{display:flex;flex-direction:column;gap:12px;}
+
+  /* ── S12 DECISION TREE CONCEPT ── */
+  #s12{background:var(--bg);}
+  .dt-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+  .tree-wrap{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+
+  /* ── S13 DECISION TREE INTERACTIVE ── */
+  #s13{background:var(--bg);}
+  .dt-int-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;}
+  .dt-tree-wrap{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .dt-path{display:flex;flex-direction:column;gap:10px;}
+  .dt-step{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;background:white;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+  .dt-q-box{border-radius:12px;padding:14px 16px;font-size:15px;font-weight:700;margin-bottom:10px;}
+  .dt-btn-row{display:flex;gap:10px;}
+  .dt-btn{flex:1;padding:11px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+
+  /* ── S14 COMPARISON TABLE ── */
+  #s14{background:var(--bg);}
+  .ctbl2{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+  .ctbl2 th{padding:14px 16px;font-size:14px;font-weight:800;text-align:center;}
+  .ctbl2 td{padding:12px 16px;font-size:13px;line-height:1.5;text-align:center;border-top:1px solid #F1F5F9;vertical-align:middle;}
+  .ctbl2 .rl2{font-weight:700;background:#F8FAFF;text-align:left;color:var(--mid);font-size:13px;}
+
+  /* ── S15 QUIZ ── */
+  #s15{background:linear-gradient(135deg,#FFF7ED 0%,#F0FDF4 100%);}
+  .fqg{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
+  .fqc{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.07);display:flex;flex-direction:column;gap:9px;}
+  .fqn{font-size:12px;font-weight:800;color:var(--light);letter-spacing:1px;}
+  .fqq{font-size:14px;font-weight:700;line-height:1.5;}
+  .fqo{display:flex;flex-direction:column;gap:7px;}
+  .fqb{padding:9px 14px;border-radius:9px;border:2px solid #E2E8F0;font-size:13px;cursor:pointer;transition:all .2s;background:white;text-align:left;font-family:'Noto Sans KR',sans-serif;font-weight:500;color:var(--dark);}
+  .fqb:hover{border-color:var(--orange);background:#FFF7ED;}
+  .fqb.correct{border-color:var(--teal);background:#D1FAE5;color:#065F46;font-weight:700;}
+  .fqb.wrong{border-color:var(--red);background:#FEE2E2;color:#991B1B;}
+  .fqf{font-size:12px;line-height:1.5;padding:8px 12px;border-radius:8px;display:none;}
+  .fqf.show{display:block;} .fqf.ok{background:#D1FAE5;color:#065F46;} .fqf.no{background:#FEE2E2;color:#991B1B;}
+
+  /* ── S15 compact ── */
+  #s15 .lbl{font-size:11px;margin-bottom:3px;}
+  #s15 .ttl{font-size:24px;margin-bottom:4px;}
+  #s15 .sub{font-size:13px;margin-bottom:10px;}
+
+  /* ── S16 SUMMARY ── */
+  #s16{background:var(--bg);}
+  .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:1;}
+  .sc{border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:9px;}
+  .sc h3{font-size:16px;font-weight:800;}
+  .si{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;}
+  .sb{font-size:16px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div id="slideshow">
+
+<!-- ═══════════════════════════════════════════════════
+     S1  COVER
+═══════════════════════════════════════════════════ -->
+<div class="slide active" id="s1">
+  <div style="max-width:720px;margin-top:16px;">
+    <div class="cov-eye">고등학교 인공지능 기초 · Ⅱ. 인공지능과 학습 · 2차시</div>
+    <div class="cov-ttl">지도학습 —<br><span class="acc">분류 알고리즘</span> 4가지</div>
+    <div class="cov-sub">03. 기계학습 유형 및 알고리즘 선정 | 로지스틱 회귀 · SVM · K-NN · 의사결정트리</div>
+    <div style="font-size:13px;font-weight:800;color:var(--mid);letter-spacing:1px;margin-bottom:14px;">🎯 학습 목표</div>
+    <div class="goal"><div class="goal-ic" style="background:#FED7AA;">🏷️</div>분류의 개념을 이해하고 회귀와 구분할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#DBEAFE;">📐</div>로지스틱 회귀의 원리와 시그모이드 함수의 역할을 설명할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#D1FAE5;">🌳</div>SVM, K-NN, 의사결정트리의 핵심 원리를 이해하고 비교할 수 있다.</div>
+    <div class="algo-row">
+      <span class="algo-badge" style="background:#FFF7ED;color:var(--orange);">① 로지스틱 회귀</span>
+      <span class="algo-badge" style="background:#EFF6FF;color:var(--blue);">② SVM</span>
+      <span class="algo-badge" style="background:#F0FDF4;color:var(--teal);">③ K-NN</span>
+      <span class="algo-badge" style="background:#FEF3C7;color:var(--amber);">④ 의사결정트리</span>
+    </div>
+  </div>
+  <div class="deco">🏷️</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S2  1차시 복습 & 오늘 연결
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="lbl" style="color:var(--orange);">복습 & 오늘의 연결</div>
+  <div class="ttl">지난 시간엔 회귀, 오늘은 분류!</div>
+  <div class="sub">지도학습은 출력값의 형태에 따라 두 갈래로 나뉜다. 지난 시간에 이어 오늘은 <strong>분류</strong>를 배운다.</div>
+  <div class="review-grid">
+    <div class="review-card" style="background:#EFF6FF;opacity:.75;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="font-size:28px;">📈</span>
+        <div>
+          <div style="font-size:18px;font-weight:900;color:var(--blue);">회귀 (Regression)</div>
+          <div style="font-size:12px;color:var(--mid);">지난 시간 ✅</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:var(--mid);line-height:1.65;">출력값이 <strong style="color:var(--dark);">연속적인 숫자</strong>. 주어진 데이터를 가장 잘 설명하는 <strong>직선</strong>을 찾는다.</div>
+      <div class="hl" style="background:#DBEAFE;color:var(--blue);font-size:13px;">📌 선형 회귀: Y = wX + b<br>예) 폭염 일수 → 이온 음료 판매량</div>
+      <div style="font-size:13px;color:var(--blue);font-weight:700;">경사하강법으로 최적 직선 탐색</div>
+    </div>
+
+    <div class="review-card" style="background:#FFF7ED;border:3px solid var(--orange);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="font-size:28px;">🏷️</span>
+        <div>
+          <div style="font-size:18px;font-weight:900;color:var(--orange);">분류 (Classification)</div>
+          <div style="font-size:12px;color:var(--orange);font-weight:700;">⭐ 오늘 배울 내용!</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:var(--mid);line-height:1.65;">출력값이 <strong style="color:var(--dark);">정해진 범주</strong>. 데이터가 어느 카테고리에 속하는지 판단하는 <strong>경계</strong>를 찾는다.</div>
+      <div class="hl" style="background:#FED7AA;color:#92400E;font-size:13px;">📌 오늘 배울 알고리즘 4가지<br>로지스틱 회귀 / SVM / K-NN / 의사결정트리</div>
+      <div style="font-size:13px;color:var(--orange);font-weight:700;">각 알고리즘마다 경계를 찾는 방식이 다르다!</div>
+    </div>
+  </div>
+  <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);margin-top:14px;font-size:14px;">
+    <strong>🔑 핵심 차이:</strong> 회귀는 "얼마나?"를 예측, 분류는 "어느 쪽?"을 판단한다.<br>
+    예) 내일 기온이 <strong>몇 도</strong>일까? → 회귀 &nbsp;&nbsp;|&nbsp;&nbsp; 내일 비가 <strong>올까 안 올까</strong>? → 분류
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S3  분류 개념 + 알고리즘 로드맵
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="lbl" style="color:var(--orange);">Part 1 · 분류(Classification)</div>
+  <div class="ttl">분류란 무엇인가?</div>
+  <div class="sub">정해진 <strong>범주(카테고리)</strong>에 따라 데이터를 나누는 것. 오늘 배울 알고리즘 4가지를 미리 살펴보자.</div>
+
+  <!-- 스팸 메일 분류 흐름 -->
+  <div style="background:white;border-radius:14px;padding:16px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px;">
+    <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:12px;">📧 예시: 스팸 메일 분류 모델</div>
+    <div class="cls-flow">
+      <div class="cls-box" style="background:#EFF6FF;color:var(--blue);">✉️ 새로운 메일 입력<br><span style="font-size:12px;opacity:.7;">"무료 상품권 클릭!"</span></div>
+      <div class="cls-arrow">→</div>
+      <div class="cls-box" style="background:#FEF3C7;color:var(--amber);">🤖 분류 모델<br><span style="font-size:12px;opacity:.7;">패턴 분석</span></div>
+      <div class="cls-arrow">→</div>
+      <div class="cls-box" style="background:#FEE2E2;color:var(--red);">🚫 스팸 메일<br><span style="font-size:12px;opacity:.7;">범주 = 스팸</span></div>
+      <div style="font-size:20px;color:var(--light);padding:0 4px;">또는</div>
+      <div class="cls-box" style="background:#D1FAE5;color:var(--teal);">✅ 정상 메일<br><span style="font-size:12px;opacity:.7;">범주 = 정상</span></div>
+    </div>
+  </div>
+
+  <!-- 알고리즘 4가지 로드맵 -->
+  <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">🗺️ 오늘 배울 분류 알고리즘 4가지</div>
+  <div class="algo-map">
+    <div class="algo-card" style="background:#FFF7ED;">
+      <div class="algo-icon">📉</div>
+      <div class="algo-name" style="color:var(--orange);">로지스틱 회귀</div>
+      <div class="algo-eng">Logistic Regression</div>
+      <div style="font-size:12px;color:var(--mid);">시그모이드 함수로 확률 계산</div>
+    </div>
+    <div class="algo-card" style="background:#EFF6FF;">
+      <div class="algo-icon">📏</div>
+      <div class="algo-name" style="color:var(--blue);">서포트 벡터 머신</div>
+      <div class="algo-eng">SVM</div>
+      <div style="font-size:12px;color:var(--mid);">마진을 최대화하는 경계 탐색</div>
+    </div>
+    <div class="algo-card" style="background:#F0FDF4;">
+      <div class="algo-icon">👥</div>
+      <div class="algo-name" style="color:var(--teal);">K-최근접 이웃</div>
+      <div class="algo-eng">K-NN</div>
+      <div style="font-size:12px;color:var(--mid);">k개 이웃의 다수결로 분류</div>
+    </div>
+    <div class="algo-card" style="background:#FEF3C7;">
+      <div class="algo-icon">🌳</div>
+      <div class="algo-name" style="color:var(--amber);">의사결정트리</div>
+      <div class="algo-eng">Decision Tree</div>
+      <div style="font-size:12px;color:var(--mid);">스무고개처럼 질문으로 분류</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S4  왜 선형 회귀로 분류하면 안 될까?
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="lbl" style="color:var(--orange);">Part 1 · 분류 알고리즘이 필요한 이유</div>
+  <div class="ttl">선형 회귀로 분류하면 안 될까?</div>
+  <div class="sub">1차시에서 배운 선형 회귀를 분류 문제에 그냥 쓰면 어떤 문제가 생길까?</div>
+  <div class="compare-grid">
+    <div class="prob-card" style="background:#FEE2E2;border:2px solid var(--red);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:22px;">❌</span>
+        <div style="font-size:16px;font-weight:800;color:var(--red);">선형 회귀로 분류하면?</div>
+      </div>
+      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <canvas id="chart4bad" height="480"></canvas>
+      </div>
+      <div style="font-size:13px;color:var(--mid);line-height:1.65;">
+        당뇨 여부(0 또는 1)를 선형 회귀로 예측하면<br>
+        출력이 <strong style="color:var(--red);">1.7, -0.3</strong> 같은 범위를 벗어난 값이 나온다.<br>
+        "1.7 당뇨"는 무슨 뜻? → <strong>의미가 없다!</strong>
+      </div>
+      <div class="hl" style="background:#FEE2E2;font-size:13px;color:var(--red);">
+        ⚠️ 출력값이 0~1 범위를 벗어남<br>⚠️ 확률로 해석 불가
+      </div>
+    </div>
+
+    <div class="prob-card" style="background:#D1FAE5;border:2px solid var(--teal);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:22px;">✅</span>
+        <div style="font-size:16px;font-weight:800;color:var(--teal);">로지스틱 회귀로 분류하면?</div>
+      </div>
+      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <canvas id="chart4good" height="480"></canvas>
+      </div>
+      <div style="font-size:13px;color:var(--mid);line-height:1.65;">
+        <strong>시그모이드 함수</strong>를 사용해 출력을 항상 <strong style="color:var(--teal);">0~1 사이</strong>로 제한.<br>
+        이 값을 "당뇨일 확률"로 해석하고,<br>
+        <strong>0.5 기준</strong>으로 1(당뇨) 또는 0(정상)을 판단.
+      </div>
+      <div class="hl" style="background:#D1FAE5;font-size:13px;color:var(--teal);">
+        ✅ 출력값이 항상 0~1 사이<br>✅ 확률로 해석 가능
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S5  로지스틱 회귀 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="lbl" style="color:var(--orange);">Part 2 · 로지스틱 회귀</div>
+  <div class="ttl">로지스틱 회귀(Logistic Regression)</div>
+  <div class="sub"><strong>이진 분류</strong> 문제를 해결하는 알고리즘. 선형 회귀 식을 기반으로 설계했지만, 시그모이드 함수로 분류 문제를 해결한다.</div>
+  <div class="log-layout">
+    <div>
+      <div class="fbox" style="margin-bottom:14px;font-size:20px;">
+        Y = σ( <span>w</span>X + <em>b</em> )
+        <div class="dim">σ: 시그모이드 함수 &nbsp;|&nbsp; 내부는 선형 회귀식과 동일</div>
+      </div>
+      <div class="tr"><div class="tb" style="background:#FED7AA;color:var(--orange);">선형</div><div><div class="tn">wX + b (1차시와 동일!)</div><div class="td">입력값과 가중치의 선형 결합. 출력 범위는 -∞ ~ +∞</div></div></div>
+      <div class="tr"><div class="tb" style="background:#EDE9FF;color:var(--purple);">σ</div><div><div class="tn">시그모이드 함수 (로지스틱 함수)</div><div class="td">어떤 값이 들어와도 0~1 사이로 압축. "당뇨일 확률"로 해석</div></div></div>
+      <div class="tr"><div class="tb" style="background:#D1FAE5;color:var(--teal);">0.5</div><div><div class="tn">판별 기준 (임계값)</div><div class="td">σ 출력 ≥ 0.5 → 1 (양성/당뇨), &lt; 0.5 → 0 (음성/정상)</div></div></div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);margin-top:10px;font-size:13px;">
+        <strong>🤔 왜 이름이 "회귀"인가?</strong><br>
+        내부에 선형 회귀식(wX+b)을 그대로 사용하고, 통계학에서 회귀 계열로 분류되어 붙은 이름. 실제 하는 일은 <strong>분류</strong>다.
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 시그모이드 함수</div>
+        <canvas id="chart5sig" height="160"></canvas>
+        <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:6px;">f(x) = 1 / (1 + e⁻ˣ)</div>
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>✽ 이진 분류(Binary Classification)</strong><br>
+        분류 결과가 참/거짓, 양성/음성처럼 <strong>두 가지</strong>인 경우.<br>
+        합격/불합격, 스팸/정상, 당뇨/정상 등
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S6  시그모이드 인터랙티브
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · 로지스틱 회귀</div>
+  <div class="ttl">시그모이드 함수를 직접 조작해보자!</div>
+  <div class="sub">슬라이더로 <strong>w(기울기)</strong>와 <strong>b(이동)</strong>를 바꾸면 시그모이드 곡선이 어떻게 달라지는지 확인해보자.</div>
+  <div class="sig-layout">
+    <div class="sig-controls">
+      <div class="slg"><label>가중치 w (곡선 기울기) <span id="sigW" style="color:var(--orange);">1.0</span></label><input type="range" class="ws" id="sigWsl" min="-5" max="5" step="0.1" value="1"></div>
+      <div class="slg"><label>편향 b (곡선 이동) <span id="sigB" style="color:var(--purple);">0.0</span></label><input type="range" class="bs" id="sigBsl" min="-5" max="5" step="0.1" value="0"></div>
+      <div class="sfm2">σ( <span class="ov" id="sfmW">1.0</span>x + <span class="ob" id="sfmB">0.0</span> )</div>
+      <div class="threshold-display">
+        <div style="font-size:13px;color:var(--mid);font-weight:600;margin-bottom:6px;">🎯 입력값 x = 0 일 때 출력</div>
+        <div style="font-size:28px;font-weight:800;font-family:'Space Grotesk',monospace;" id="sigOut">0.50</div>
+        <div style="font-size:12px;color:var(--light);margin-top:3px;" id="sigJudge">0.5 기준 → 판별 대기</div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>💡 w가 커지면?</strong> 곡선이 가팔라져 0/1 판별이 더 명확해진다.<br>
+        <strong>💡 b가 바뀌면?</strong> 기준점(0.5 교차 지점)이 좌우로 이동한다.
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>🔑 0.5 기준:</strong> 출력 ≥ 0.5 → 1(양성) &nbsp;|&nbsp; 출력 &lt; 0.5 → 0(음성)
+      </div>
+    </div>
+    <div class="cw2"><canvas id="chart6sig" width="600" height="400"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S7  당뇨병 예시 + 한계
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="lbl" style="color:var(--orange);">Part 2 · 로지스틱 회귀</div>
+  <div class="ttl">예시: 당뇨병 여부 예측 & 로지스틱 회귀의 한계</div>
+  <div class="sub">당의 섭취량(X)으로 당뇨병 여부(Y: 1=당뇨, 0=정상)를 분류하는 예시를 살펴보자.</div>
+  <div class="dia-layout">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 당의 섭취량 → 당뇨병 여부</div>
+        <canvas id="chart7dia" height="200"></canvas>
+        <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:6px;">
+          <span style="color:var(--red);">●</span> 당뇨(1) &nbsp;
+          <span style="color:var(--teal);">●</span> 정상(0) &nbsp;
+          <span style="color:var(--orange);">―</span> 시그모이드 곡선
+        </div>
+      </div>
+      <div class="hl" style="background:#FFF7ED;border-left:4px solid var(--orange);font-size:13px;">
+        <strong>판별 과정:</strong> 새로운 환자의 당 섭취량을 시그모이드에 대입 →<br>
+        출력값 ≥ 0.5 이면 <strong style="color:var(--red);">당뇨(1)</strong>, &lt; 0.5 이면 <strong style="color:var(--teal);">정상(0)</strong>으로 판별
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:14px;font-weight:700;color:var(--mid);">⚠️ 로지스틱 회귀의 한계</div>
+      <div class="hl" style="background:#FEE2E2;border-left:4px solid var(--red);font-size:13px;">
+        <strong>① 선형 경계만 가능</strong><br>
+        결정 경계가 직선(선형)이라, 복잡하게 구부러진 경계는 표현하기 어렵다.
+      </div>
+      <div class="hl" style="background:#FEE2E2;border-left:4px solid var(--red);font-size:13px;">
+        <strong>② 이진 분류에 특화</strong><br>
+        기본적으로 두 가지 결과만 분류. 개/고양이/새처럼 3개 이상을 분류할 땐 <strong>다항 로지스틱 회귀</strong>나 다른 알고리즘이 필요하다.
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>📌 언제 적합?</strong><br>
+        스팸/정상, 합격/불합격처럼 <strong>두 가지 선택지 중 하나</strong>를 예측해야 하는 문제에 매우 유용하다.
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>✽ 참고: 0.5가 아닌 다른 기준도 가능</strong><br>
+        의료 진단처럼 오탐(정상을 당뇨로 판별)이 더 위험한 경우 임계값을 0.3으로 낮추는 등 조절할 수 있다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S8  SVM 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="lbl" style="color:var(--blue);">Part 3 · 서포트 벡터 머신</div>
+  <div class="ttl">서포트 벡터 머신(SVM)</div>
+  <div class="sub">두 집단을 가장 잘 나누는 <strong>결정 경계</strong>를 찾는 알고리즘 — 핵심은 <strong>마진(Margin)을 최대화</strong>하는 것!</div>
+  <div class="svm-layout">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">🦌🐯 사슴 vs 호랑이: 어느 경계가 더 좋을까?</div>
+        <canvas id="chart8svm" height="210"></canvas>
+      </div>
+      <div class="hl" style="background:#DBEAFE;border-left:4px solid var(--blue);font-size:13px;">
+        <strong>A 직선</strong>이 더 좋다! 두 집단 사이 간격(마진)이 더 넓어서, 새로운 데이터가 들어와도 잘 분류한다.
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:16px;">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:12px;">📐 SVM의 핵심 개념</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#EFF6FF;border-radius:10px;">
+            <div style="font-size:20px;flex-shrink:0;">🎯</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--blue);">결정 경계 (Decision Boundary)</div><div style="font-size:12px;color:var(--mid);">두 집단을 나누는 기준이 되는 직선. 마진 영역의 정중앙을 통과한다.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#F0FDF4;border-radius:10px;">
+            <div style="font-size:20px;flex-shrink:0;">↔️</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--teal);">마진 (Margin)</div><div style="font-size:12px;color:var(--mid);">결정 경계와 각 집단의 서포트 벡터 사이의 거리. 넓을수록 좋다.</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#FFF7ED;border-radius:10px;">
+            <div style="font-size:20px;flex-shrink:0;">📌</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--orange);">서포트 벡터 (Support Vector)</div><div style="font-size:12px;color:var(--mid);">경계에 가장 가까이 위치한 데이터 포인트들. 결정 경계를 결정하는 핵심 데이터.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>🎯 SVM의 목표:</strong> 서포트 벡터로부터의 거리(마진)가 <strong>가장 넓은</strong> 결정 경계를 찾는 것
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>찾는 과정 3단계:</strong><br>
+        ① 경계 부분 데이터(서포트 벡터)를 지나는 평행선 그리기<br>
+        ② 두 평행선 사이 거리 = 마진<br>
+        ③ 마진 중앙 통과하는 선 = 결정 경계 ✅
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S9  SVM 인터랙티브
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · SVM</div>
+  <div class="ttl">마진을 최대화하는 경계를 찾아보자!</div>
+  <div class="sub">캔버스에 두 그룹 데이터를 직접 찍고, 슬라이더로 결정 경계를 조절해 마진이 가장 넓어지는 위치를 찾아보자.</div>
+  <div class="svm-int-layout">
+    <div class="svm-canvas-wrap">
+      <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">
+        🖱️ 캔버스 클릭: <span style="color:var(--blue);">● 그룹 A</span> 추가 &nbsp;|&nbsp; Shift+클릭: <span style="color:var(--red);">● 그룹 B</span> 추가
+      </div>
+      <canvas id="svmCanvas" width="620" height="380"></canvas>
+    </div>
+    <div class="svm-info">
+      <div class="slg">
+        <label>결정 경계 기울기 <span id="svmSlope" style="color:var(--blue);">0.0</span></label>
+        <input type="range" class="ws" id="svmSlopeSl" min="-3" max="3" step="0.1" value="0">
+      </div>
+      <div class="slg">
+        <label>결정 경계 위치 <span id="svmIntercept" style="color:var(--purple);">0.0</span></label>
+        <input type="range" class="bs" id="svmInterceptSl" min="-200" max="200" step="5" value="0">
+      </div>
+      <div style="background:var(--dark);border-radius:12px;padding:14px;text-align:center;">
+        <div style="color:#94A3B8;font-size:12px;margin-bottom:6px;">현재 마진 점수</div>
+        <div style="font-size:30px;font-weight:800;font-family:'Space Grotesk',monospace;color:#FCD34D;" id="svmMargin">—</div>
+        <div style="color:#94A3B8;font-size:11px;margin-top:4px;">클수록 더 좋은 경계!</div>
+      </div>
+      <div class="hl" style="background:#EFF6FF;border-left:4px solid var(--blue);font-size:13px;">
+        <strong>💡 관찰 포인트</strong><br>
+        ① 경계선을 두 그룹 사이 정중앙으로<br>
+        ② 마진(파란 영역)이 넓을수록 점수 ↑<br>
+        ③ 데이터가 마진 안에 들어오면 점수 ↓
+      </div>
+      <button onclick="svmReset()" style="padding:11px;background:#F1F5F9;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--mid);">↺ 초기화</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S10  K-NN 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="lbl" style="color:var(--teal);">Part 4 · K-최근접 이웃</div>
+  <div class="ttl">k-최근접 이웃(K-NN)</div>
+  <div class="sub">입력값과 <strong>가장 가까운 k개의 이웃</strong>을 찾아 <strong>다수결</strong> 방식으로 클래스를 결정하는 알고리즘</div>
+  <div class="knn-layout">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 k값에 따라 결과가 달라진다!</div>
+        <canvas id="chart10knn" height="220"></canvas>
+      </div>
+    </div>
+    <div class="k-cases">
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:6px;">🔍 k값별 분류 결과 (교과서 예시)</div>
+      <div class="k-case" style="background:#EFF6FF;">
+        <div class="k-num" style="background:#DBEAFE;color:var(--blue);">k=1</div>
+        <div class="k-result">가장 가까운 이웃 1개 → <strong style="color:var(--blue);">○ 동그라미</strong><br>단순하지만 노이즈에 민감함</div>
+      </div>
+      <div class="k-case" style="background:#FFF7ED;border:2px solid var(--orange);">
+        <div class="k-num" style="background:#FED7AA;color:var(--orange);">k=3</div>
+        <div class="k-result">가까운 이웃 3개 중 ○1개, ▲2개 → <strong style="color:var(--orange);">▲ 세모</strong><br>다수결로 결정 (2 > 1)</div>
+      </div>
+      <div class="k-case" style="background:#F0FDF4;">
+        <div class="k-num" style="background:#D1FAE5;color:var(--teal);">k=9</div>
+        <div class="k-result">가까운 이웃 9개 중 ○3개, ▲5개, □1개 → <strong style="color:var(--teal);">▲ 세모</strong><br>더 많은 이웃을 고려해 안정적</div>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>⚠️ k값 선택의 중요성</strong><br>
+        k가 너무 작으면 → 노이즈에 민감, 과적합<br>
+        k가 너무 크면 → 너무 일반화, 정확도 감소
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>📌 K-NN의 특징</strong><br>
+        별도 학습 없이 거리 계산만으로 분류.<br>
+        데이터가 많을수록 예측 시 계산 시간이 오래 걸린다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S11  K-NN 인터랙티브
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · K-NN</div>
+  <div class="ttl">k값을 바꿔가며 분류해보자!</div>
+  <div class="sub">캔버스에 두 그룹 데이터를 찍고, 새 점을 추가해 k값에 따라 분류 결과가 어떻게 달라지는지 확인해보자.</div>
+  <div class="knn-int-layout">
+    <div class="knn-canvas-wrap">
+      <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">
+        🖱️ 클릭: <span style="color:var(--blue);">● A 그룹</span> &nbsp;|&nbsp; Shift+클릭: <span style="color:var(--red);">● B 그룹</span> &nbsp;|&nbsp; Ctrl+클릭: <span style="color:var(--purple);">★ 새 점 (분류 대상)</span>
+      </div>
+      <canvas id="knnCanvas" width="620" height="380"></canvas>
+    </div>
+    <div class="knn-controls">
+      <div class="slg">
+        <label>k 값 <span id="kVal" style="color:var(--teal);">3</span></label>
+        <input type="range" class="ws" id="kSl" min="1" max="15" step="2" value="3" style="accent-color:var(--teal);">
+      </div>
+      <div style="background:var(--dark);border-radius:12px;padding:14px;text-align:center;">
+        <div style="color:#94A3B8;font-size:12px;margin-bottom:6px;">분류 결과</div>
+        <div style="font-size:22px;font-weight:800;" id="knnResult">—</div>
+        <div style="color:#94A3B8;font-size:11px;margin-top:4px;" id="knnDetail">새 점(★)을 추가하세요</div>
+      </div>
+      <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+        <strong>💡 관찰 포인트</strong><br>
+        ① k=1 vs k=9일 때 결과 비교<br>
+        ② 경계 부근에 새 점을 찍어보기<br>
+        ③ k가 커질수록 원이 넓어짐 확인
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>📌 교과서 탐구:</strong> k=9일 때<br>
+        ○ 3개, ▲ 5개, □ 1개 → <strong>▲ 세모</strong>로 분류!
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="knnReset()" style="flex:1;padding:11px;background:#F1F5F9;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--mid);">↺ 초기화</button>
+        <button onclick="knnAddSample()" style="flex:1;padding:11px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📚 예시 불러오기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S12  의사결정트리 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="lbl" style="color:var(--amber);">Part 5 · 의사결정트리</div>
+  <div class="ttl">의사결정트리(Decision Tree)</div>
+  <div class="sub">스무고개 게임처럼 <strong>한 번에 하나씩 질문</strong>하며 정답을 찾아가는 분류 알고리즘</div>
+  <div class="dt-layout">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="tree-wrap">
+        <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:10px;">🌳 동물 분류 트리 (교과서 예시)</div>
+        <svg viewBox="0 0 420 260" style="width:100%;height:auto;font-family:'Noto Sans KR',sans-serif;">
+          <!-- 연결선 -->
+          <line x1="210" y1="44" x2="120" y2="94" stroke="#CBD5E1" stroke-width="1.5"/>
+          <line x1="210" y1="44" x2="300" y2="94" stroke="#CBD5E1" stroke-width="1.5"/>
+          <line x1="120" y1="114" x2="72" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+          <line x1="120" y1="114" x2="168" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+          <line x1="300" y1="114" x2="252" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+          <line x1="300" y1="114" x2="348" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+          <!-- 예/아니요 레이블 -->
+          <text x="148" y="86" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+          <text x="264" y="86" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+          <text x="80" y="148" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+          <text x="138" y="148" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+          <text x="214" y="148" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+          <text x="310" y="148" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+          <!-- 루트 노드 -->
+          <rect x="130" y="12" width="160" height="36" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+          <text x="210" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#92400E">날개가 있나요?</text>
+          <!-- 2단계 -->
+          <rect x="60" y="94" width="120" height="36" rx="10" fill="#DBEAFE" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="120" y="117" text-anchor="middle" font-size="12" font-weight="700" fill="var(--blue)">날 수 있나요?</text>
+          <rect x="240" y="94" width="120" height="36" rx="10" fill="#DBEAFE" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="300" y="117" text-anchor="middle" font-size="12" font-weight="700" fill="var(--blue)">지느러미 있나요?</text>
+          <!-- 결과 노드 -->
+          <rect x="36" y="164" width="72" height="34" rx="8" fill="#D1FAE5" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="72" y="185" text-anchor="middle" font-size="14">🦅 매</text>
+          <rect x="120" y="164" width="72" height="34" rx="8" fill="#D1FAE5" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="156" y="185" text-anchor="middle" font-size="14">🐧 펭귄</text>
+          <rect x="214" y="164" width="72" height="34" rx="8" fill="#D1FAE5" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="250" y="185" text-anchor="middle" font-size="14">🐬 돌고래</text>
+          <rect x="306" y="164" width="72" height="34" rx="8" fill="#D1FAE5" stroke="var(--teal)" stroke-width="1.5"/>
+          <text x="342" y="185" text-anchor="middle" font-size="14">🐻 곰</text>
+          <!-- 학습 데이터 표 -->
+          <rect x="20" y="210" width="380" height="44" rx="8" fill="#F8FAFF" stroke="#E2E8F0"/>
+          <text x="30" y="228" font-size="11" fill="var(--mid)" font-weight="700">학습 데이터</text>
+          <text x="30" y="246" font-size="11" fill="var(--mid)">매(날개O, 비행O) / 펭귄(날개O, 비행X) / 돌고래(날개X, 지느러미O) / 곰(날개X, 지느러미X)</text>
+        </svg>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>📌 첫 질문이 중요!</strong> 데이터를 <strong>가장 잘 나누는</strong> 질문을 첫 번째로 배치해야 트리 성능이 높아진다.
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">의사결정트리의 장단점</div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#D1FAE5;border-radius:10px;margin-bottom:8px;">
+          <div style="font-size:18px;flex-shrink:0;">✅</div>
+          <div style="font-size:13px;"><strong>직관적이고 시각적</strong> — 왜 그 결론에 도달했는지 각 분기점에서 바로 확인 가능. "블랙박스"가 아니다!</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#D1FAE5;border-radius:10px;margin-bottom:8px;">
+          <div style="font-size:18px;flex-shrink:0;">✅</div>
+          <div style="font-size:13px;"><strong>다양한 분야 활용</strong> — 상품 추천, 의료 진단, 고객 분류 등</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#FEE2E2;border-radius:10px;margin-bottom:8px;">
+          <div style="font-size:18px;flex-shrink:0;">⚠️</div>
+          <div style="font-size:13px;"><strong>과적합(Overfitting) 위험</strong> — 가지가 너무 많아지면 훈련 데이터에만 딱 맞아 새 데이터 예측이 나빠진다.</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:#EFF6FF;border-radius:10px;">
+          <div style="font-size:18px;flex-shrink:0;">💡</div>
+          <div style="font-size:13px;"><strong>해결책: 가지치기(Pruning)</strong> — 불필요한 가지를 잘라 트리 복잡도를 줄인다.</div>
+        </div>
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
+        <strong>📌 어떤 변수가 중요?</strong><br>
+        의사결정트리를 통해 어떤 변수가 분류에 <strong>가장 큰 영향</strong>을 주는지도 알 수 있다. 첫 번째 질문 = 가장 중요한 변수!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S13  의사결정트리 인터랙티브 (음식 분류 탐구)
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s13">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · 의사결정트리 탐구</div>
+  <div class="ttl">의사결정트리로 음식을 분류해보자!</div>
+  <div class="sub">교과서 탐구 문제 — 질문에 따라 트리를 내려가며 음식을 분류해보자.</div>
+  <div class="dt-int-layout">
+    <div class="dt-tree-wrap">
+      <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:10px;">🌳 음식 분류 의사결정트리</div>
+      <svg viewBox="0 0 400 240" id="dtSvg" style="width:100%;height:auto;font-family:'Noto Sans KR',sans-serif;">
+        <!-- 연결선 -->
+        <line x1="200" y1="44" x2="110" y2="94" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="200" y1="44" x2="290" y2="94" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="110" y1="114" x2="66" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="110" y1="114" x2="154" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="290" y1="114" x2="246" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="290" y1="114" x2="334" y2="164" stroke="#CBD5E1" stroke-width="1.5"/>
+        <!-- 예/아니요 -->
+        <text x="136" y="86" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+        <text x="252" y="86" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+        <text x="70" y="148" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+        <text x="122" y="148" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+        <text x="204" y="148" font-size="11" fill="var(--teal)" font-weight="700">예</text>
+        <text x="296" y="148" font-size="11" fill="var(--red)" font-weight="700">아니요</text>
+        <!-- 루트 -->
+        <rect id="dt-node-root" x="110" y="12" width="180" height="36" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="200" y="35" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E">매운 요리를 좋아하나요?</text>
+        <!-- 2단계 -->
+        <rect id="dt-node-L" x="48" y="94" width="124" height="36" rx="10" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="110" y="117" text-anchor="middle" font-size="12" font-weight="600" fill="var(--mid)">면을 좋아하나요?</text>
+        <rect id="dt-node-R" x="228" y="94" width="124" height="36" rx="10" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="290" y="117" text-anchor="middle" font-size="12" font-weight="600" fill="var(--mid)">닭고기를 좋아하나요?</text>
+        <!-- 결과 -->
+        <rect id="dt-leaf-LL" x="26" y="164" width="80" height="34" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="66" y="185" text-anchor="middle" font-size="13">🍜 라면</text>
+        <rect id="dt-leaf-LR" x="114" y="164" width="80" height="34" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="154" y="185" text-anchor="middle" font-size="13">🍚 비빔밥</text>
+        <rect id="dt-leaf-RL" x="204" y="164" width="80" height="34" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="244" y="185" text-anchor="middle" font-size="13">🍗 치킨</text>
+        <rect id="dt-leaf-RR" x="292" y="164" width="80" height="34" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+        <text x="332" y="185" text-anchor="middle" font-size="13">🥩 삼겹살</text>
+        <!-- 학습 데이터 힌트 -->
+        <text x="200" y="228" text-anchor="middle" font-size="10" fill="var(--light)">매운O·면O→라면 | 매운O·면X→비빔밥 | 매운X·닭O→치킨 | 매운X·닭X→삼겹살</text>
+      </svg>
+    </div>
+    <div class="dt-path">
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:4px;">🎮 직접 분류해보기</div>
+      <div class="dt-q-box" id="dtQBox" style="background:#FEF3C7;border:2px solid var(--amber);">
+        매운 요리를 좋아하나요?
+      </div>
+      <div class="dt-btn-row" id="dtBtnRow">
+        <button class="dt-btn" style="background:#D1FAE5;color:var(--teal);" onclick="dtAnswer('yes')">✅ 예</button>
+        <button class="dt-btn" style="background:#FEE2E2;color:var(--red);" onclick="dtAnswer('no')">❌ 아니요</button>
+      </div>
+      <div id="dtResult" style="display:none;border-radius:14px;padding:20px;text-align:center;background:var(--dark);color:white;">
+        <div style="font-size:36px;" id="dtResultEmoji">🍜</div>
+        <div style="font-size:20px;font-weight:800;margin-top:8px;" id="dtResultName">라면</div>
+        <div style="font-size:12px;opacity:.7;margin-top:4px;" id="dtResultPath">매운O → 면O</div>
+      </div>
+      <div id="dtPath" style="font-size:12px;color:var(--mid);min-height:36px;"></div>
+      <button onclick="dtReset()" id="dtResetBtn" style="padding:11px;background:#F1F5F9;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--mid);display:none;">↺ 다시 시작</button>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>📌 교과서 탐구 답:</strong><br>
+        매운O·면T·닭F → <strong>라면</strong> &nbsp;|&nbsp; 매운F·면T·닭F → <strong>삼겹살</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S14  4가지 알고리즘 비교표
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s14">
+  <div class="lbl" style="color:var(--mid);">Part 6 · 비교 & 정리</div>
+  <div class="ttl">4가지 분류 알고리즘 한눈에 비교</div>
+  <div class="sub">같은 문제(스팸 메일 분류)에 각 알고리즘을 적용하면 어떻게 다를까?</div>
+  <table class="ctbl2" style="flex:1;">
+    <thead>
+      <tr>
+        <th style="background:#F8FAFF;color:var(--mid);">구분</th>
+        <th style="background:#FFF7ED;color:var(--orange);">📉 로지스틱 회귀</th>
+        <th style="background:#EFF6FF;color:var(--blue);">📏 SVM</th>
+        <th style="background:#F0FDF4;color:var(--teal);">👥 K-NN</th>
+        <th style="background:#FEF3C7;color:var(--amber);">🌳 의사결정트리</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rl2">핵심 원리</td>
+        <td>시그모이드로 확률 계산, 0.5 기준 판별</td>
+        <td>마진을 최대화하는 결정 경계 탐색</td>
+        <td>가장 가까운 k개 이웃의 다수결</td>
+        <td>스무고개처럼 질문으로 분기</td>
+      </tr>
+      <tr>
+        <td class="rl2">경계 형태</td>
+        <td>선형 (직선)</td>
+        <td>선형 (마진 포함 직선)</td>
+        <td>복잡한 비선형 가능</td>
+        <td>계단형 (축에 평행)</td>
+      </tr>
+      <tr>
+        <td class="rl2">장점</td>
+        <td style="color:var(--teal);">확률 출력, 빠름, 해석 용이</td>
+        <td style="color:var(--teal);">데이터 적어도 강력, 일반화↑</td>
+        <td style="color:var(--teal);">단순, 새 데이터에 유연</td>
+        <td style="color:var(--teal);">직관적, 시각화, 해석 용이</td>
+      </tr>
+      <tr>
+        <td class="rl2">단점</td>
+        <td style="color:var(--red);">비선형 경계 불가</td>
+        <td style="color:var(--red);">대용량 데이터에 느림</td>
+        <td style="color:var(--red);">예측 시 느림, k값 설정 어려움</td>
+        <td style="color:var(--red);">과적합 위험</td>
+      </tr>
+      <tr>
+        <td class="rl2">적합한 상황</td>
+        <td>스팸/정상처럼 2가지 분류</td>
+        <td>데이터 수가 적고 정확도가 중요할 때</td>
+        <td>간단한 분류, 새 유형이 계속 추가될 때</td>
+        <td>이유 설명이 중요한 분야 (의료, 금융)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S15  정리 퀴즈
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s15">
+  <div class="lbl" style="color:var(--purple);">🎯 정리 퀴즈</div>
+  <div class="ttl">오늘 배운 내용 확인하기</div>
+  <div class="sub">선택지를 클릭해서 정답을 맞혀보자! 다시 클릭해서 바꿀 수 있어.</div>
+  <div class="fqg">
+    <div class="fqc">
+      <div class="fqn">Q 1</div>
+      <div class="fqq">로지스틱 회귀에서 출력값을 0~1 사이로 압축하는 함수는?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,1,false,'ReLU는 딥러닝에서 사용하는 활성화 함수예요.')">① ReLU 함수</button>
+        <button class="fqb" onclick="cQ(this,1,true,'정답! 시그모이드(로지스틱) 함수가 -∞~+∞을 0~1 사이로 압축해줍니다.')">② 시그모이드 함수</button>
+        <button class="fqb" onclick="cQ(this,1,false,'선형 함수는 출력 범위를 제한하지 않아요.')">③ 선형 함수</button>
+      </div>
+      <div class="fqf" id="fb1"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 2</div>
+      <div class="fqq">SVM에서 결정 경계를 결정하는 데 핵심 역할을 하는 데이터 포인트는?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,2,false,'평균값은 K-NN이나 다른 통계적 방법에서 사용해요.')">① 평균값</button>
+        <button class="fqb" onclick="cQ(this,2,false,'이상치는 오히려 경계를 왜곡할 수 있어요.')">② 이상치(outlier)</button>
+        <button class="fqb" onclick="cQ(this,2,true,'정답! 경계에 가장 가까이 위치한 서포트 벡터가 마진과 결정 경계를 결정합니다.')">③ 서포트 벡터</button>
+      </div>
+      <div class="fqf" id="fb2"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 3</div>
+      <div class="fqq">K-NN에서 k=3일 때, 이웃 3개가 ○2개, ▲1개라면 분류 결과는?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,3,true,'정답! 다수결 원칙에 따라 2개로 더 많은 ○ 동그라미로 분류돼요.')">① ○ 동그라미</button>
+        <button class="fqb" onclick="cQ(this,3,false,'▲는 1개뿐이라 다수결에서 지게 돼요.')">② ▲ 세모</button>
+        <button class="fqb" onclick="cQ(this,3,false,'K-NN은 확률이 아니라 다수결로 결정해요.')">③ 확률로 결정</button>
+      </div>
+      <div class="fqf" id="fb3"></div>
+    </div>
+    <div class="fqc">
+      <div class="fqn">Q 4</div>
+      <div class="fqq">의사결정트리에서 트리가 너무 복잡해져 훈련 데이터에만 딱 맞는 현상은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,4,false,'언더피팅은 반대로 너무 단순해서 훈련 데이터도 못 맞추는 현상이에요.')">① 언더피팅(Underfitting)</button>
+        <button class="fqb" onclick="cQ(this,4,true,'정답! 과적합(Overfitting) — 훈련 데이터엔 잘 맞지만 새 데이터 예측이 나빠지는 현상이에요.')">② 과적합(Overfitting)</button>
+        <button class="fqb" onclick="cQ(this,4,false,'가지치기는 과적합을 해결하는 방법이에요.')">③ 가지치기(Pruning)</button>
+      </div>
+      <div class="fqf" id="fb4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S16  수업 요약
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s16">
+  <div class="lbl" style="color:var(--teal);">오늘의 핵심 정리</div>
+  <div class="ttl">수업 내용 요약 🎉</div>
+  <div class="sub">오늘 배운 분류 알고리즘 4가지를 한눈에 정리해보자!</div>
+  <div class="sg">
+    <div class="sc" style="background:#FFF7ED;">
+      <div class="tag" style="background:#FED7AA;color:var(--orange);">① 로지스틱 회귀</div>
+      <h3 style="color:var(--orange);">로지스틱 회귀</h3>
+      <div class="si"><div class="sb">📐</div><div>Y = σ(wX+b) — 내부는 선형 회귀</div></div>
+      <div class="si"><div class="sb">🔁</div><div>시그모이드로 출력을 0~1 사이로 압축</div></div>
+      <div class="si"><div class="sb">🎯</div><div>0.5 기준으로 이진 분류 판별</div></div>
+      <div class="si"><div class="sb">⚠️</div><div>선형 경계만 가능, 이진 분류에 특화</div></div>
+    </div>
+    <div class="sc" style="background:#EFF6FF;">
+      <div class="tag" style="background:#DBEAFE;color:var(--blue);">② SVM</div>
+      <h3 style="color:var(--blue);">서포트 벡터 머신</h3>
+      <div class="si"><div class="sb">↔️</div><div>마진을 최대화하는 결정 경계 탐색</div></div>
+      <div class="si"><div class="sb">📌</div><div>서포트 벡터 = 경계 결정 핵심 데이터</div></div>
+      <div class="si"><div class="sb">✅</div><div>데이터 적어도 성능 우수, 일반화↑</div></div>
+      <div class="si"><div class="sb">⚠️</div><div>대용량 데이터에서 계산 느림</div></div>
+    </div>
+    <div class="sc" style="background:#F0FDF4;">
+      <div class="tag" style="background:#D1FAE5;color:var(--teal);">③ K-NN</div>
+      <h3 style="color:var(--teal);">K-최근접 이웃</h3>
+      <div class="si"><div class="sb">👥</div><div>k개 이웃의 다수결로 분류</div></div>
+      <div class="si"><div class="sb">📏</div><div>거리 계산 기반 — 별도 학습 없음</div></div>
+      <div class="si"><div class="sb">🔢</div><div>k값이 클수록 안정적, 작을수록 민감</div></div>
+      <div class="si"><div class="sb">⚠️</div><div>데이터 많을수록 예측이 느려짐</div></div>
+    </div>
+    <div class="sc" style="background:#FEF3C7;">
+      <div class="tag" style="background:#FDE68A;color:var(--amber);">④ 의사결정트리</div>
+      <h3 style="color:var(--amber);">의사결정트리</h3>
+      <div class="si"><div class="sb">🌳</div><div>스무고개처럼 질문으로 분기</div></div>
+      <div class="si"><div class="sb">👁️</div><div>직관적, 시각화 가능, 해석 용이</div></div>
+      <div class="si"><div class="sb">⭐</div><div>첫 질문 = 가장 중요한 변수</div></div>
+      <div class="si"><div class="sb">⚠️</div><div>과적합 위험 → 가지치기로 해결</div></div>
+    </div>
+  </div>
+  <div style="margin-top:12px;padding:15px 22px;background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:14px;">
+    <div style="font-size:26px;">💡</div>
+    <div style="font-size:15px;color:var(--mid);line-height:1.6;"><strong style="color:var(--dark);">핵심 한 줄 요약:</strong> 분류 알고리즘은 모두 <strong>데이터의 경계</strong>를 찾는 방법이며, 데이터의 특성과 문제에 따라 적합한 알고리즘을 선택하는 것이 중요하다.</div>
+  </div>
+</div>
+
+</div><!-- /slideshow -->
+
+<a class="home-btn" id="homeBtn" href="../../index.html">&#8962; 목차</a>
+<div id="nav"><div id="nav-fill" style="height:0%"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  SLIDE ENGINE
+// ═══════════════════════════════════════
+const T=16; let cur=1; const cr={};
+function go(d){
+  const sl=document.querySelectorAll('.slide');
+  sl[cur-1].classList.remove('active'); sl[cur-1].classList.add('exit-left');
+  setTimeout(()=>sl[cur-1].classList.remove('exit-left'),500);
+  cur=Math.max(1,Math.min(T,cur+d));
+  sl[cur-1].classList.add('active');
+  document.getElementById('nav-fill').style.height=((cur-1)/(T-1)*100)+'%';
+  document.getElementById('homeBtn').classList.toggle('visible',cur===1||cur===T);
+  if(cur===4  && !cr[4])  { initC4();    cr[4]=1;  }
+  if(cur===5  && !cr[5])  { initC5sig(); cr[5]=1;  }
+  if(cur===6  && !cr[6])  { initC6sig(); cr[6]=1;  }
+  if(cur===7  && !cr[7])  { initC7dia(); cr[7]=1;  }
+  if(cur===8  && !cr[8])  { initC8svm(); cr[8]=1;  }
+  if(cur===9  && !cr[9])  { initSVMint();cr[9]=1;  }
+  if(cur===10 && !cr[10]) { initC10knn();cr[10]=1; }
+  if(cur===11 && !cr[11]) { initKNNint();cr[11]=1; }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   go(-1);
+});
+let wBusy=false;
+document.addEventListener('wheel',e=>{
+  if(wBusy)return; wBusy=true; setTimeout(()=>wBusy=false,650);
+  if(e.deltaY>0)go(1); else go(-1);
+},{passive:true});
+let tsX=0,tsY=0;
+document.addEventListener('touchstart',e=>{tsX=e.touches[0].clientX;tsY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=tsX-e.changedTouches[0].clientX,dy=tsY-e.changedTouches[0].clientY;
+  if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){if(dy>0)go(1);else go(-1);}
+},{passive:true});
+function scaleSlides(){
+  const s=document.getElementById('slideshow');
+  const sc=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  const ox=(window.innerWidth-1280*sc)/2, oy=(window.innerHeight-720*sc)/2;
+  s.style.transform=`translate(${ox}px,${oy}px) scale(${sc})`;
+}
+window.addEventListener('resize',scaleSlides); scaleSlides();
+
+// ═══════════════════════════════════════
+//  S4: 선형 회귀 vs 로지스틱 비교 차트
+// ═══════════════════════════════════════
+function initC4(){
+  // 공통 데이터: 양 극단에 밀집, 가운데로 갈수록 희박
+  const normPts=[{x:-5.5,y:0},{x:-5,y:0},{x:-4.5,y:0},{x:-4,y:0},{x:-3,y:0},{x:-2,y:0},{x:-1,y:0}];
+  const diabPts=[{x:1,y:1},{x:2,y:1},{x:3,y:1},{x:4,y:1},{x:4.5,y:1},{x:5,y:1},{x:5.5,y:1}];
+
+  // Bad: 선형 회귀 — 같은 데이터 패턴
+  const linePts=[];
+  for(let x=-6;x<=6;x+=0.5) linePts.push({x,y:parseFloat((0.145*x+0.5).toFixed(3))});
+  new Chart(document.getElementById('chart4bad').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'정상(0)',data:normPts,backgroundColor:'#10B981',pointRadius:6},
+      {type:'scatter',label:'당뇨(1)',data:diabPts,backgroundColor:'#EF4444',pointRadius:6},
+      {type:'line',label:'선형 회귀',data:linePts,borderColor:'#94A3B8',borderWidth:2,pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:-0.5,max:1.8,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:0,yMax:0,borderColor:'#CBD5E1',borderWidth:1},line2:{type:'line',yMin:1,yMax:1,borderColor:'#CBD5E1',borderWidth:1}}}}}
+  });
+  // Good: 로지스틱 회귀
+  const sig=x=>1/(1+Math.exp(-x));
+  const sigPts=[];
+  for(let x=-6;x<=6;x+=0.2) sigPts.push({x:parseFloat(x.toFixed(1)),y:parseFloat(sig(x).toFixed(3))});
+  new Chart(document.getElementById('chart4good').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'정상(0)',data:normPts,backgroundColor:'#10B981',pointRadius:6},
+      {type:'scatter',label:'당뇨(1)',data:diabPts,backgroundColor:'#EF4444',pointRadius:6},
+      {type:'line',label:'시그모이드',data:sigPts,borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:-0.1,max:1.1,grid:{color:'#F1F5F9'},
+                afterBuildTicks:axis=>{axis.ticks=[{value:0},{value:0.5},{value:1}];},
+                ticks:{font:{size:10}}}},
+      plugins:{legend:{display:false}}}
+  });
+}
+
+// ═══════════════════════════════════════
+//  S5: 시그모이드 정적 차트
+// ═══════════════════════════════════════
+function initC5sig(){
+  const pts=[];
+  for(let x=-6;x<=6;x+=0.2) pts.push({x:parseFloat(x.toFixed(1)),y:parseFloat((1/(1+Math.exp(-x))).toFixed(4))});
+  new Chart(document.getElementById('chart5sig').getContext('2d'),{
+    data:{datasets:[
+      {type:'line',label:'σ(x)',data:pts,borderColor:'#8B5CF6',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
+      {type:'line',label:'y=0.5',data:[{x:-6,y:0.5},{x:6,y:0.5}],borderColor:'#F97316',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:0,max:1,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
+  });
+}
+
+// ═══════════════════════════════════════
+//  S6: 시그모이드 인터랙티브
+// ═══════════════════════════════════════
+let ch6=null;
+function initC6sig(){
+  const ctx=document.getElementById('chart6sig').getContext('2d');
+  ch6=new Chart(ctx,{
+    data:{datasets:[
+      {type:'line',label:'σ(wx+b)',data:[],borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
+      {type:'line',label:'y=0.5 (기준)',data:[{x:-8,y:0.5},{x:8,y:0.5}],borderColor:'#8B5CF6',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
+      {type:'scatter',label:'x=0 출력',data:[{x:0,y:0.5}],backgroundColor:'#EF4444',pointRadius:8},
+    ]},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:-8,max:8,title:{display:true,text:'입력값 x',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:0,max:1,title:{display:true,text:'출력 (확률)',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
+  });
+  updateSig();
+  document.getElementById('sigWsl').addEventListener('input',updateSig);
+  document.getElementById('sigBsl').addEventListener('input',updateSig);
+}
+function updateSig(){
+  const w=+document.getElementById('sigWsl').value, b=+document.getElementById('sigBsl').value;
+  document.getElementById('sigW').textContent=w.toFixed(1);
+  document.getElementById('sigB').textContent=b.toFixed(1);
+  document.getElementById('sfmW').textContent=w.toFixed(1);
+  document.getElementById('sfmB').textContent=b.toFixed(1);
+  const pts=[];
+  for(let x=-8;x<=8;x+=0.2) pts.push({x:parseFloat(x.toFixed(1)),y:parseFloat((1/(1+Math.exp(-(w*x+b)))).toFixed(4))});
+  const outAt0=1/(1+Math.exp(-b));
+  document.getElementById('sigOut').textContent=outAt0.toFixed(2);
+  const judgeEl=document.getElementById('sigJudge');
+  if(outAt0>=0.5){ judgeEl.textContent='≥ 0.5 → 1 (양성)'; judgeEl.style.color='#EF4444'; }
+  else{ judgeEl.textContent='< 0.5 → 0 (음성)'; judgeEl.style.color='#10B981'; }
+  if(ch6){
+    ch6.data.datasets[0].data=pts;
+    ch6.data.datasets[2].data=[{x:0,y:parseFloat(outAt0.toFixed(4))}];
+    ch6.update();
+  }
+}
+
+// ═══════════════════════════════════════
+//  S7: 당뇨병 차트
+// ═══════════════════════════════════════
+function initC7dia(){
+  const sig=x=>1/(1+Math.exp(-0.8*(x-5)));
+  const pts=[];
+  for(let x=0;x<=12;x+=0.2) pts.push({x:parseFloat(x.toFixed(1)),y:parseFloat(sig(x).toFixed(4))});
+  new Chart(document.getElementById('chart7dia').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'정상(0)',data:[{x:1,y:0},{x:2,y:0},{x:2.5,y:0},{x:3,y:0},{x:3.5,y:0},{x:4,y:0}],backgroundColor:'#10B981',pointRadius:7},
+      {type:'scatter',label:'당뇨(1)',data:[{x:6,y:1},{x:7,y:1},{x:7.5,y:1},{x:8,y:1},{x:9,y:1},{x:10,y:1}],backgroundColor:'#EF4444',pointRadius:7},
+      {type:'line',label:'로지스틱 곡선',data:pts,borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
+      {type:'line',label:'기준(0.5)',data:[{x:0,y:0.5},{x:12,y:0.5}],borderColor:'#8B5CF6',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:0,max:12,title:{display:true,text:'당의 섭취량',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:-0.1,max:1.1,title:{display:true,text:'당뇨 확률',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
+  });
+}
+
+// ═══════════════════════════════════════
+//  S8: SVM 개념 차트
+// ═══════════════════════════════════════
+function initC8svm(){
+  // 사슴(파랑) vs 호랑이(빨강) 데이터
+  const deer=[{x:2,y:7},{x:3,y:8},{x:2.5,y:6},{x:1.5,y:7.5},{x:3,y:9}];
+  const tiger=[{x:7,y:3},{x:8,y:2},{x:7.5,y:4},{x:6,y:3},{x:8.5,y:3.5}];
+  // A: 좋은 경계 (마진 넓음), B: 나쁜 경계
+  const lineA=[{x:0,y:5.5},{x:10,y:5.5}];
+  const lineB=[{x:0,y:9},{x:10,y:1.5}];
+  new Chart(document.getElementById('chart8svm').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'🦌 사슴',data:deer,backgroundColor:'#3B82F6',pointRadius:9},
+      {type:'scatter',label:'🐯 호랑이',data:tiger,backgroundColor:'#EF4444',pointRadius:9},
+      {type:'line',label:'A (좋은 경계)',data:lineA,borderColor:'#10B981',borderWidth:2.5,pointRadius:0,fill:false},
+      {type:'line',label:'B (나쁜 경계)',data:lineB,borderColor:'#94A3B8',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:0,max:10,title:{display:true,text:'크기',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:0,max:11,title:{display:true,text:'속도',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
+  });
+}
+
+// ═══════════════════════════════════════
+//  S9: SVM 인터랙티브
+// ═══════════════════════════════════════
+let svmPts=[]; // {x,y,group:'A'|'B'}
+function initSVMint(){
+  const canvas=document.getElementById('svmCanvas');
+  canvas.addEventListener('click',e=>{
+    const r=canvas.getBoundingClientRect();
+    const scl=canvas.width/r.width;
+    const px=(e.clientX-r.left)*scl, py=(e.clientY-r.top)*scl;
+    svmPts.push({x:px,y:py,group:e.shiftKey?'B':'A'});
+    drawSVM();
+  });
+  document.getElementById('svmSlopeSl').addEventListener('input',drawSVM);
+  document.getElementById('svmInterceptSl').addEventListener('input',drawSVM);
+  drawSVM();
+}
+function drawSVM(){
+  const canvas=document.getElementById('svmCanvas');
+  const ctx=canvas.getContext('2d');
+  const slope=+document.getElementById('svmSlopeSl').value;
+  const intercept=+document.getElementById('svmInterceptSl').value;
+  document.getElementById('svmSlope').textContent=slope.toFixed(1);
+  document.getElementById('svmIntercept').textContent=intercept.toFixed(0);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#F8FAFF'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // 마진 영역 (결정 경계 ±40px)
+  ctx.fillStyle='rgba(59,130,246,0.08)';
+  ctx.beginPath();
+  const margin=40;
+  // 결정 경계: y = slope*(x-320) + 190 + intercept
+  const fy=x=>slope*(x-320)+190+intercept;
+  ctx.moveTo(0,fy(0)-margin); ctx.lineTo(620,fy(620)-margin);
+  ctx.lineTo(620,fy(620)+margin); ctx.lineTo(0,fy(0)+margin); ctx.closePath();
+  ctx.fill();
+  // 마진 선
+  ctx.setLineDash([6,4]); ctx.strokeStyle='rgba(59,130,246,0.4)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,fy(0)-margin); ctx.lineTo(620,fy(620)-margin); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,fy(0)+margin); ctx.lineTo(620,fy(620)+margin); ctx.stroke();
+  // 결정 경계
+  ctx.setLineDash([]); ctx.strokeStyle='#3B82F6'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(0,fy(0)); ctx.lineTo(620,fy(620)); ctx.stroke();
+  // 데이터 포인트
+  svmPts.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,8,0,Math.PI*2);
+    ctx.fillStyle=p.group==='A'?'#3B82F6':'#EF4444';
+    ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.stroke();
+  });
+  // 마진 점수 계산
+  let score=margin;
+  let violations=0;
+  svmPts.forEach(p=>{
+    const dist=Math.abs(slope*p.x - p.y + fy(0))/Math.sqrt(slope*slope+1);
+    if(dist<margin) violations++;
+  });
+  const finalScore=Math.max(0,Math.round(margin - violations*15));
+  document.getElementById('svmMargin').textContent=finalScore;
+  document.getElementById('svmMargin').style.color=finalScore>30?'#10B981':finalScore>15?'#F59E0B':'#EF4444';
+}
+function svmReset(){ svmPts=[]; drawSVM(); }
+
+// ═══════════════════════════════════════
+//  S10: K-NN 개념 차트
+// ═══════════════════════════════════════
+function initC10knn(){
+  const circleData=[{x:3,y:6},{x:4,y:7},{x:3.5,y:5},{x:2,y:6.5},{x:4,y:5.5}];
+  const triangleData=[{x:7,y:4},{x:8,y:5},{x:6.5,y:3},{x:7.5,y:6},{x:8.5,y:4}];
+  const newPt=[{x:5.5,y:5.5}];
+  new Chart(document.getElementById('chart10knn').getContext('2d'),{
+    data:{datasets:[
+      {type:'scatter',label:'○ 그룹',data:circleData,backgroundColor:'#3B82F6',pointRadius:9,pointStyle:'circle'},
+      {type:'scatter',label:'▲ 그룹',data:triangleData,backgroundColor:'#F97316',pointRadius:9,pointStyle:'triangle'},
+      {type:'scatter',label:'★ 새 데이터',data:newPt,backgroundColor:'#8B5CF6',pointRadius:12,pointStyle:'star'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+      scales:{x:{min:0,max:11,title:{display:true,text:'특성 1',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+              y:{min:0,max:11,title:{display:true,text:'특성 2',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
+  });
+}
+
+// ═══════════════════════════════════════
+//  S11: K-NN 인터랙티브
+// ═══════════════════════════════════════
+let knnPts=[], knnNew=null;
+function initKNNint(){
+  const canvas=document.getElementById('knnCanvas');
+  canvas.addEventListener('click',e=>{
+    const r=canvas.getBoundingClientRect();
+    const scl=canvas.width/r.width;
+    const px=(e.clientX-r.left)*scl, py=(e.clientY-r.top)*scl;
+    if(e.ctrlKey||e.metaKey){ knnNew={x:px,y:py}; }
+    else{ knnPts.push({x:px,y:py,group:e.shiftKey?'B':'A'}); }
+    drawKNN();
+  });
+  document.getElementById('kSl').addEventListener('input',()=>{
+    document.getElementById('kVal').textContent=document.getElementById('kSl').value;
+    drawKNN();
+  });
+  knnAddSample(); // 예시 데이터로 시작
+}
+function knnAddSample(){
+  knnPts=[
+    {x:150,y:120,group:'A'},{x:180,y:150,group:'A'},{x:130,y:160,group:'A'},
+    {x:200,y:100,group:'A'},{x:160,y:180,group:'A'},
+    {x:400,y:250,group:'B'},{x:430,y:220,group:'B'},{x:380,y:270,group:'B'},
+    {x:460,y:260,group:'B'},{x:410,y:300,group:'B'},
+  ];
+  knnNew={x:290,y:200};
+  drawKNN();
+}
+function drawKNN(){
+  const canvas=document.getElementById('knnCanvas');
+  const ctx=canvas.getContext('2d');
+  const k=+document.getElementById('kSl').value;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#F8FAFF'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // k개 이웃 원
+  if(knnNew && knnPts.length>=k){
+    const dists=knnPts.map(p=>({p,d:Math.hypot(p.x-knnNew.x,p.y-knnNew.y)}));
+    dists.sort((a,b)=>a.d-b.d);
+    const neighbors=dists.slice(0,k);
+    const r=neighbors[k-1].d;
+    ctx.beginPath(); ctx.arc(knnNew.x,knnNew.y,r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(139,92,246,0.4)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(139,92,246,0.05)'; ctx.fill();
+    // 이웃 연결선
+    neighbors.forEach(({p})=>{
+      ctx.beginPath(); ctx.moveTo(knnNew.x,knnNew.y); ctx.lineTo(p.x,p.y);
+      ctx.strokeStyle='rgba(139,92,246,0.3)'; ctx.lineWidth=1.5; ctx.stroke();
+    });
+    // 분류 결과
+    const cntA=neighbors.filter(n=>n.p.group==='A').length;
+    const cntB=neighbors.filter(n=>n.p.group==='B').length;
+    const result=cntA>cntB?'A':'B';
+    const rEl=document.getElementById('knnResult');
+    rEl.textContent=result==='A'?'● A 그룹':'● B 그룹';
+    rEl.style.color=result==='A'?'#3B82F6':'#EF4444';
+    document.getElementById('knnDetail').textContent=`k=${k}: A ${cntA}개, B ${cntB}개 → 다수결 결과`;
+  }
+  // 일반 점
+  knnPts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,8,0,Math.PI*2);
+    ctx.fillStyle=p.group==='A'?'#3B82F6':'#EF4444'; ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.stroke();
+  });
+  // 새 점
+  if(knnNew){
+    ctx.beginPath(); ctx.arc(knnNew.x,knnNew.y,10,0,Math.PI*2);
+    ctx.fillStyle='#8B5CF6'; ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle='white'; ctx.font='bold 12px Noto Sans KR';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('★',knnNew.x,knnNew.y);
+  }
+}
+function knnReset(){ knnPts=[]; knnNew=null; document.getElementById('knnResult').textContent='—'; document.getElementById('knnDetail').textContent='새 점(★)을 추가하세요'; drawKNN(); }
+
+// ═══════════════════════════════════════
+//  S13: 의사결정트리 인터랙티브
+// ═══════════════════════════════════════
+const dtTree={
+  q:'매운 요리를 좋아하나요?', node:'root',
+  yes:{ q:'면을 좋아하나요?', node:'L',
+    yes:{result:'🍜',name:'라면',path:'매운O → 면O'},
+    no:{result:'🍚',name:'비빔밥',path:'매운O → 면X'}},
+  no:{ q:'닭고기를 좋아하나요?', node:'R',
+    yes:{result:'🍗',name:'치킨',path:'매운X → 닭O'},
+    no:{result:'🥩',name:'삼겹살',path:'매운X → 닭X'}}
+};
+let dtCurrent=dtTree, dtPathStr='';
+function dtAnswer(ans){
+  const next=dtCurrent[ans];
+  dtPathStr+=(dtPathStr?' → ':'')+(ans==='yes'?'예':'아니요');
+  document.getElementById('dtPath').textContent='경로: '+dtPathStr;
+  highlightNode(dtCurrent.node, ans);
+  if(next.result){
+    document.getElementById('dtQBox').style.display='none';
+    document.getElementById('dtBtnRow').style.display='none';
+    document.getElementById('dtResult').style.display='block';
+    document.getElementById('dtResultEmoji').textContent=next.result;
+    document.getElementById('dtResultName').textContent=next.name;
+    document.getElementById('dtResultPath').textContent=next.path;
+    document.getElementById('dtResetBtn').style.display='block';
+  } else {
+    dtCurrent=next;
+    document.getElementById('dtQBox').textContent=next.q;
+    highlightNode(next.node, null);
+  }
+}
+function highlightNode(node, ans){
+  const colors={root:'#FEF3C7',L:'#DBEAFE',R:'#DBEAFE'};
+  const strokes={root:'#F59E0B',L:'var(--blue)',R:'var(--blue)'};
+  // reset all
+  ['root','L','R'].forEach(n=>{
+    const el=document.getElementById('dt-node-'+n);
+    if(el){el.setAttribute('fill',colors[n]||'#DBEAFE'); el.setAttribute('stroke',strokes[n]||'var(--blue)');}
+  });
+  ['LL','LR','RL','RR'].forEach(n=>{
+    const el=document.getElementById('dt-leaf-'+n);
+    if(el){el.setAttribute('fill','#F1F5F9'); el.setAttribute('stroke','#CBD5E1');}
+  });
+  if(node==='root'&&ans){
+    const nextNode=ans==='yes'?'L':'R';
+    const el=document.getElementById('dt-node-'+nextNode);
+    if(el){el.setAttribute('fill','#DBEAFE');el.setAttribute('stroke','#3B82F6');}
+  } else if(node==='L'&&ans){
+    const leaf=ans==='yes'?'dt-leaf-LL':'dt-leaf-LR';
+    const el=document.getElementById(leaf);
+    if(el){el.setAttribute('fill','#D1FAE5');el.setAttribute('stroke','var(--teal)');}
+  } else if(node==='R'&&ans){
+    const leaf=ans==='yes'?'dt-leaf-RL':'dt-leaf-RR';
+    const el=document.getElementById(leaf);
+    if(el){el.setAttribute('fill','#D1FAE5');el.setAttribute('stroke','var(--teal)');}
+  }
+}
+function dtReset(){
+  dtCurrent=dtTree; dtPathStr='';
+  document.getElementById('dtQBox').textContent=dtTree.q;
+  document.getElementById('dtQBox').style.display='block';
+  document.getElementById('dtBtnRow').style.display='flex';
+  document.getElementById('dtResult').style.display='none';
+  document.getElementById('dtResetBtn').style.display='none';
+  document.getElementById('dtPath').textContent='';
+  // reset SVG colors
+  ['root','L','R'].forEach(n=>{
+    const el=document.getElementById('dt-node-'+n);
+    if(el){
+      el.setAttribute('fill',n==='root'?'#FEF3C7':'#F1F5F9');
+      el.setAttribute('stroke',n==='root'?'#F59E0B':'#CBD5E1');
+    }
+  });
+  ['LL','LR','RL','RR'].forEach(n=>{
+    const el=document.getElementById('dt-leaf-'+n);
+    if(el){el.setAttribute('fill','#F1F5F9');el.setAttribute('stroke','#CBD5E1');}
+  });
+}
+
+// ═══════════════════════════════════════
+//  QUIZ S15
+// ═══════════════════════════════════════
+function cQ(btn,n,ok,msg){
+  const opts=btn.parentElement.querySelectorAll('.fqb');
+  opts.forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false;});
+  btn.classList.add(ok?'correct':'wrong');
+  const f=document.getElementById('fb'+n);
+  f.textContent=(ok?'✅ 정답! ':'❌ 오답! ')+msg;
+  f.className='fqf show '+(ok?'ok':'no');
+}
+</script>
+</body>
+</html>
