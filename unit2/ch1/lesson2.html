@@ -313,8 +313,8 @@
         <span style="font-size:22px;">❌</span>
         <div style="font-size:16px;font-weight:800;color:var(--red);">선형 회귀로 분류하면?</div>
       </div>
-      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
-        <canvas id="chart4bad" height="480"></canvas>
+      <div style="background:white;border-radius:10px;padding:8px;margin-bottom:8px;">
+        <canvas id="chart4bad" width="380" height="280"></canvas>
       </div>
       <div style="font-size:13px;color:var(--mid);line-height:1.65;">
         당뇨 여부(0 또는 1)를 선형 회귀로 예측하면<br>
@@ -331,8 +331,8 @@
         <span style="font-size:22px;">✅</span>
         <div style="font-size:16px;font-weight:800;color:var(--teal);">로지스틱 회귀로 분류하면?</div>
       </div>
-      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
-        <canvas id="chart4good" height="480"></canvas>
+      <div style="background:white;border-radius:10px;padding:8px;margin-bottom:8px;">
+        <canvas id="chart4good" width="380" height="280"></canvas>
       </div>
       <div style="font-size:13px;color:var(--mid);line-height:1.65;">
         <strong>시그모이드 함수</strong>를 사용해 출력을 항상 <strong style="color:var(--teal);">0~1 사이</strong>로 제한.<br>
@@ -370,7 +370,7 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
         <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 시그모이드 함수</div>
-        <canvas id="chart5sig" height="160"></canvas>
+        <canvas id="chart5sig" width="380" height="160"></canvas>
         <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:6px;">f(x) = 1 / (1 + e⁻ˣ)</div>
       </div>
       <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;">
@@ -422,7 +422,7 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
         <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 당의 섭취량 → 당뇨병 여부</div>
-        <canvas id="chart7dia" height="200"></canvas>
+        <canvas id="chart7dia" width="380" height="200"></canvas>
         <div style="text-align:center;font-size:12px;color:var(--mid);margin-top:6px;">
           <span style="color:var(--red);">●</span> 당뇨(1) &nbsp;
           <span style="color:var(--teal);">●</span> 정상(0) &nbsp;
@@ -467,7 +467,7 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
         <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">🦌🐯 사슴 vs 호랑이: 어느 경계가 더 좋을까?</div>
-        <canvas id="chart8svm" height="210"></canvas>
+        <canvas id="chart8svm" width="380" height="210"></canvas>
       </div>
       <div class="hl" style="background:#DBEAFE;border-left:4px solid var(--blue);font-size:13px;">
         <strong>A 직선</strong>이 더 좋다! 두 집단 사이 간격(마진)이 더 넓어서, 새로운 데이터가 들어와도 잘 분류한다.
@@ -554,7 +554,7 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
         <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📊 k값에 따라 결과가 달라진다!</div>
-        <canvas id="chart10knn" height="220"></canvas>
+        <canvas id="chart10knn" width="380" height="220"></canvas>
       </div>
     </div>
     <div class="k-cases">
@@ -982,7 +982,7 @@ function initC4(){
       {type:'scatter',label:'당뇨(1)',data:diabPts,backgroundColor:'#EF4444',pointRadius:6},
       {type:'line',label:'선형 회귀',data:linePts,borderColor:'#94A3B8',borderWidth:2,pointRadius:0,fill:false},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.5,max:1.8,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:0,yMax:0,borderColor:'#CBD5E1',borderWidth:1},line2:{type:'line',yMin:1,yMax:1,borderColor:'#CBD5E1',borderWidth:1}}}}}
@@ -997,7 +997,7 @@ function initC4(){
       {type:'scatter',label:'당뇨(1)',data:diabPts,backgroundColor:'#EF4444',pointRadius:6},
       {type:'line',label:'시그모이드',data:sigPts,borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.1,max:1.1,grid:{color:'#F1F5F9'},
                 afterBuildTicks:axis=>{axis.ticks=[{value:0},{value:0.5},{value:1}];},
@@ -1017,7 +1017,7 @@ function initC5sig(){
       {type:'line',label:'σ(x)',data:pts,borderColor:'#8B5CF6',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
       {type:'line',label:'y=0.5',data:[{x:-6,y:0.5},{x:6,y:0.5}],borderColor:'#F97316',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:-6,max:6,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:0,max:1,grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
@@ -1079,7 +1079,7 @@ function initC7dia(){
       {type:'line',label:'로지스틱 곡선',data:pts,borderColor:'#F97316',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4},
       {type:'line',label:'기준(0.5)',data:[{x:0,y:0.5},{x:12,y:0.5}],borderColor:'#8B5CF6',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:0,max:12,title:{display:true,text:'당의 섭취량',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:-0.1,max:1.1,title:{display:true,text:'당뇨 확률',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
@@ -1103,7 +1103,7 @@ function initC8svm(){
       {type:'line',label:'A (좋은 경계)',data:lineA,borderColor:'#10B981',borderWidth:2.5,pointRadius:0,fill:false},
       {type:'line',label:'B (나쁜 경계)',data:lineB,borderColor:'#94A3B8',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:0,max:10,title:{display:true,text:'크기',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:0,max:11,title:{display:true,text:'속도',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
@@ -1186,7 +1186,7 @@ function initC10knn(){
       {type:'scatter',label:'▲ 그룹',data:triangleData,backgroundColor:'#F97316',pointRadius:9,pointStyle:'triangle'},
       {type:'scatter',label:'★ 새 데이터',data:newPt,backgroundColor:'#8B5CF6',pointRadius:12,pointStyle:'star'},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},
+    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
       scales:{x:{min:0,max:11,title:{display:true,text:'특성 1',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
               y:{min:0,max:11,title:{display:true,text:'특성 2',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
       plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
