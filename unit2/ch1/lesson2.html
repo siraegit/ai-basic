@@ -1096,7 +1096,6 @@ const observer=new IntersectionObserver((entries)=>{
     if(id==='s4'  && !cr[4])  { initC4();    cr[4]=1;  }
     if(id==='s5'  && !cr[5])  { initC7dia(); cr[5]=1;  }
     if(id==='s6'  && !cr[6])  { initC8svm(); cr[6]=1;  }
-    if(id==='s9'  && !cr[9])  { initC10knn();cr[9]=1;  }
     if(id==='s10' && !cr[10]) { initKNNint();cr[10]=1; }
   });
 },{threshold:0.1});
@@ -1191,23 +1190,6 @@ function initC8svm(){
 // ═══════════════════════════════════════
 //  S10: K-NN 개념 차트
 // ═══════════════════════════════════════
-function initC10knn(){
-  const circleData=[{x:3,y:6},{x:4,y:7},{x:3.5,y:5},{x:2,y:6.5},{x:4,y:5.5}];
-  const triangleData=[{x:7,y:4},{x:8,y:5},{x:6.5,y:3},{x:7.5,y:6},{x:8.5,y:4}];
-  const newPt=[{x:5.5,y:5.5}];
-  new Chart(document.getElementById('chart10knn').getContext('2d'),{
-    data:{datasets:[
-      {type:'scatter',label:'○ 그룹',data:circleData,backgroundColor:'#3B82F6',pointRadius:9,pointStyle:'circle'},
-      {type:'scatter',label:'▲ 그룹',data:triangleData,backgroundColor:'#F97316',pointRadius:9,pointStyle:'triangle'},
-      {type:'scatter',label:'★ 새 데이터',data:newPt,backgroundColor:'#8B5CF6',pointRadius:12,pointStyle:'star'},
-    ]},
-    options:{responsive:false,maintainAspectRatio:false,animation:{duration:0},
-      scales:{x:{type:'linear',min:0,max:11,title:{display:true,text:'특성 1',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
-              y:{type:'linear',min:0,max:11,title:{display:true,text:'특성 2',font:{size:11}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}}},
-      plugins:{legend:{position:'top',labels:{font:{size:11,family:'Noto Sans KR'}}}}}
-  });
-}
-
 // ═══════════════════════════════════════
 //  S11: K-NN 인터랙티브
 // ═══════════════════════════════════════
