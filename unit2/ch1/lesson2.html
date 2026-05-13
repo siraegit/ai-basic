@@ -446,93 +446,182 @@
     <!-- 왼쪽: 마진 좁음 -->
     <div class="svm-compare-card" style="background:#FFF5F5;border:2px solid #FCA5A5;">
       <div style="font-size:14px;font-weight:800;color:var(--red);margin-bottom:10px;text-align:center;">❌ 마진이 좁은 경계</div>
-      <svg viewBox="0 0 220 160" width="100%" height="auto" style="display:block;">
-        <!-- 마진 영역 (좁음) -->
-        <polygon points="0,150 220,4 220,18 0,164" fill="rgba(148,163,184,0.15)"/>
-        <!-- 마진 경계선 위쪽 -->
-        <line x1="0" y1="150" x2="220" y2="4" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,4"/>
-        <!-- 마진 경계선 아래쪽 -->
-        <line x1="0" y1="164" x2="220" y2="18" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,4"/>
-        <!-- 결정 경계 (치우친 대각선) -->
-        <line x1="0" y1="157" x2="220" y2="11" stroke="#94A3B8" stroke-width="2"/>
-        <!-- 파란 점(사슴): 좌상단 -->
-        <circle cx="50" cy="40" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="70" cy="60" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="45" cy="75" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="80" cy="45" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <!-- 파란 점 서포트 벡터 강조 -->
-        <circle cx="60" cy="85" r="7" fill="#3B82F6" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="60" cy="85" r="12" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 빨간 점(호랑이): 우하단 -->
-        <circle cx="160" cy="120" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="175" cy="100" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="185" cy="115" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="170" cy="145" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <!-- 빨간 점 서포트 벡터 강조 -->
-        <circle cx="155" cy="105" r="7" fill="#EF4444" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="155" cy="105" r="12" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 새 데이터(★): 경계 근처 → 오분류 -->
-        <text x="108" y="87" font-size="16" text-anchor="middle" fill="#7C3AED">★</text>
-        <!-- 오분류 화살표 -->
-        <line x1="116" y1="83" x2="132" y2="75" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+      <svg viewBox="0 0 220 180" width="100%" height="auto" style="display:block;" font-family="Noto Sans KR">
+        <!--
+          교과서 그림 II-27 A 기반 좌표 매핑
+          viewBox 220×180, 플롯 영역: x=28~210, y=12~158
+          경계선 기울기: 교과서 기준 좌상→우하, dy/dx ≈ -0.52
+          파란 원(사슴): 좌상단 밀집
+          빨간 원(호랑이): 우하단 밀집
+          결정경계가 파란 클러스터 쪽으로 치우쳐 있음
+          → 새로운 사슴(보라)이 좁은 마진 안에 떨어져 오분류
+        -->
         <defs>
-          <marker id="arrowRed" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L6,3 Z" fill="#EF4444"/>
+          <marker id="arrS7L1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 Z" fill="#94A3B8"/>
+          </marker>
+          <marker id="arrS7L2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="180">
+            <path d="M0,3 L6,0 L6,6 Z" fill="#94A3B8"/>
           </marker>
         </defs>
-        <!-- 마진 폭 표시 -->
-        <line x1="14" y1="150" x2="14" y2="164" stroke="#94A3B8" stroke-width="1.2"/>
-        <line x1="10" y1="157" x2="20" y2="157" stroke="#94A3B8" stroke-width="1.2"/>
-        <text x="24" y="160" font-size="9" fill="#94A3B8" font-weight="700">마진: 좁음</text>
+
+        <!-- 축 -->
+        <line x1="28" y1="158" x2="28" y2="12" stroke="#94A3B8" stroke-width="1.2"/>
+        <line x1="28" y1="158" x2="210" y2="158" stroke="#94A3B8" stroke-width="1.2"/>
+        <text x="16" y="88" font-size="8" fill="#64748B" text-anchor="middle" transform="rotate(-90,16,88)">속도</text>
+        <text x="119" y="172" font-size="8" fill="#64748B" text-anchor="middle">크기</text>
+
+        <!--
+          경계선 방정식: y = -0.52·(x-28) + C
+          A 그래프: 결정경계 C=128 → (28,128)~(210,34)
+          좁은 마진: 위선 C=112 → (28,112)~(210,18)
+                     아래선 C=144 → (28,144)~(210,50)
+          마진 폭 = 32px 수직
+        -->
+        <!-- 마진 영역 (회색) -->
+        <polygon points="28,112 210,18 210,50 28,144" fill="rgba(148,163,184,0.2)"/>
+        <!-- 위 마진선 (파란 SV 통과) -->
+        <line x1="28" y1="112" x2="210" y2="18" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,4"/>
+        <!-- 아래 마진선 (빨간 SV 통과) -->
+        <line x1="28" y1="144" x2="210" y2="50" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,4"/>
+        <!-- 결정경계 (파란 SV에 치우침 → 파란 군집 바로 옆) -->
+        <line x1="28" y1="128" x2="210" y2="34" stroke="#64748B" stroke-width="2"/>
+
+        <!--
+          파란 원(사슴) 좌상단 군집
+          교과서에서 읽은 상대 위치: 좌상단에 7~8개 밀집
+          x: 35~105, y: 22~85
+        -->
+        <circle cx="38"  cy="28"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="55"  cy="22"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="72"  cy="35"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="42"  cy="50"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="62"  cy="58"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="80"  cy="48"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="50"  cy="72"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="88"  cy="68"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <!-- 파란 서포트벡터: 위 마진선(y=112-(x-28)·0.52) 에 닿는 점, x=105 → y≈72 -->
+        <circle cx="105" cy="72"  r="7" fill="#3B82F6" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="105" cy="72"  r="13" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!--
+          빨간 원(호랑이) 우하단 군집
+          교과서: 우하단에 5~6개
+          x: 135~195, y: 100~148
+        -->
+        <circle cx="148" cy="108" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="165" cy="98"  r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="178" cy="118" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="155" cy="128" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="185" cy="108" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="170" cy="140" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <!-- 빨간 서포트벡터: 아래 마진선(y=144-(x-28)·0.52) 에 닿는 점, x=135 → y≈91 -->
+        <circle cx="135" cy="91"  r="7" fill="#EF4444" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="135" cy="91"  r="13" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!--
+          새로운 사슴: 마진 안쪽(결정경계와 위 마진선 사이)에 위치
+          → 좁은 마진 탓에 결정경계 오른쪽 아래(호랑이 영역)에 놓임
+          교과서 위치: 중앙 아래쪽, 빨간 SV 옆
+          x=122, y=106 → 결정경계(y≈81)보다 아래 = 호랑이 영역
+        -->
+        <circle cx="122" cy="106" r="8" fill="#7C3AED" stroke="white" stroke-width="2"/>
+        <circle cx="122" cy="106" r="15" fill="rgba(239,68,68,0.08)" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="122" y="124" font-size="7.5" text-anchor="middle" fill="#7C3AED" font-weight="700">새로운 사슴</text>
+
+        <!-- 오분류 말풍선 -->
+        <rect x="130" y="84" width="68" height="16" rx="3" fill="#FEE2E2"/>
+        <text x="164" y="96" font-size="8" text-anchor="middle" fill="#EF4444" font-weight="800">호랑이로 오분류!</text>
+        <line x1="130" y1="95" x2="128" y2="101" stroke="#EF4444" stroke-width="1.2"/>
+
+        <!-- 마진 폭 표시: 왼쪽 x=36 기준, 위선~아래선 수직 브래킷 -->
+        <line x1="36" y1="112" x2="36" y2="144" stroke="#94A3B8" stroke-width="1.2"/>
+        <line x1="32" y1="112" x2="40" y2="112" stroke="#94A3B8" stroke-width="1.2"/>
+        <line x1="32" y1="144" x2="40" y2="144" stroke="#94A3B8" stroke-width="1.2"/>
+        <text x="43" y="132" font-size="7.5" fill="#64748B" font-weight="700">마진</text>
       </svg>
       <div style="font-size:12px;color:var(--red);text-align:center;margin-top:6px;font-weight:700;">새 데이터가 들어오면 오분류 위험↑</div>
     </div>
     <!-- 오른쪽: 마진 넓음 -->
     <div class="svm-compare-card" style="background:#F0FDF4;border:2px solid #6EE7B7;">
       <div style="font-size:14px;font-weight:800;color:var(--teal);margin-bottom:10px;text-align:center;">✅ 마진이 넓은 경계 (최적)</div>
-      <svg viewBox="0 0 220 160" width="100%" height="auto" style="display:block;">
-        <!-- 마진 영역 (넓음) -->
-        <polygon points="0,140 220,0 220,50 0,190" fill="rgba(59,130,246,0.12)"/>
-        <!-- 마진 경계선 위쪽 -->
-        <line x1="0" y1="140" x2="220" y2="0" stroke="#3B82F6" stroke-width="1" stroke-dasharray="5,4" opacity="0.5"/>
-        <!-- 마진 경계선 아래쪽 -->
-        <line x1="0" y1="190" x2="220" y2="50" stroke="#3B82F6" stroke-width="1" stroke-dasharray="5,4" opacity="0.5"/>
-        <!-- 결정 경계 (정중앙) -->
-        <line x1="0" y1="165" x2="220" y2="25" stroke="#3B82F6" stroke-width="2.5"/>
-        <!-- 파란 점(사슴): 좌상단 -->
-        <circle cx="50" cy="40" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="70" cy="60" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="45" cy="75" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="80" cy="45" r="7" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <!-- 파란 점 서포트 벡터 강조 -->
-        <circle cx="60" cy="85" r="7" fill="#3B82F6" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="60" cy="85" r="12" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 서포트벡터 → 경계 수직 점선 (파랑) -->
-        <line x1="60" y1="85" x2="92" y2="116" stroke="#3B82F6" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
-        <!-- 빨간 점(호랑이): 우하단 -->
-        <circle cx="160" cy="120" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="175" cy="100" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="185" cy="115" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="170" cy="145" r="7" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <!-- 빨간 점 서포트 벡터 강조 -->
-        <circle cx="155" cy="105" r="7" fill="#EF4444" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="155" cy="105" r="12" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 서포트벡터 → 경계 수직 점선 (빨강) -->
-        <line x1="155" y1="105" x2="123" y2="74" stroke="#EF4444" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
-        <!-- 새 데이터(★): 같은 위치 → 올바르게 분류 -->
-        <text x="108" y="87" font-size="16" text-anchor="middle" fill="#7C3AED">★</text>
+      <svg viewBox="0 0 220 180" width="100%" height="auto" style="display:block;" font-family="Noto Sans KR">
+        <!--
+          교과서 그림 II-27 B 기반 좌표 매핑
+          동일한 기울기 -0.52, 데이터 점 동일
+          B 그래프: 결정경계 두 군집 정중앙
+          넓은 마진: 위선 C=90 → (28,90)~(210,−4.4)→클립
+                     아래선 C=152 → (28,152)~(210,58)
+          결정경계 C=121 → (28,121)~(210,27)
+          마진 폭 = 62px 수직 (A의 약 두 배)
+        -->
         <defs>
-          <marker id="arrowGreen" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L6,3 Z" fill="#10B981"/>
+          <marker id="arrS7R1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L6,3 Z" fill="#3B82F6"/>
+          </marker>
+          <marker id="arrS7R2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="180">
+            <path d="M0,3 L6,0 L6,6 Z" fill="#3B82F6"/>
           </marker>
         </defs>
-        <!-- 올바른 분류 체크 -->
-        <circle cx="122" cy="74" r="9" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
-        <text x="122" y="78" font-size="10" text-anchor="middle" fill="#10B981" font-weight="800">✓</text>
-        <!-- 마진 폭 표시 -->
-        <line x1="14" y1="140" x2="14" y2="190" stroke="#3B82F6" stroke-width="1.2" opacity="0.6"/>
-        <line x1="10" y1="165" x2="20" y2="165" stroke="#3B82F6" stroke-width="1.2" opacity="0.6"/>
-        <text x="24" y="168" font-size="9" fill="#10B981" font-weight="700">마진: 넓음</text>
+
+        <!-- 축 -->
+        <line x1="28" y1="158" x2="28" y2="12" stroke="#94A3B8" stroke-width="1.2"/>
+        <line x1="28" y1="158" x2="210" y2="158" stroke="#94A3B8" stroke-width="1.2"/>
+        <text x="16" y="88" font-size="8" fill="#64748B" text-anchor="middle" transform="rotate(-90,16,88)">속도</text>
+        <text x="119" y="172" font-size="8" fill="#64748B" text-anchor="middle">크기</text>
+
+        <!-- 마진 영역 (넓음, 파란 음영) -->
+        <polygon points="28,90 164,14 210,14 210,58 28,152" fill="rgba(59,130,246,0.12)"/>
+        <!-- 위 마진선 (파란 SV 통과) — 파란 점선 -->
+        <line x1="28" y1="90" x2="210" y2="15" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.8"/>
+        <!-- 아래 마진선 (빨간 SV 통과) — 빨간 점선 -->
+        <line x1="28" y1="152" x2="210" y2="58" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.8"/>
+        <!-- 결정경계 (정중앙, 굵은 파랑) -->
+        <line x1="28" y1="121" x2="210" y2="27" stroke="#3B82F6" stroke-width="2.5"/>
+
+        <!-- 파란 원(사슴) — A와 동일 위치 -->
+        <circle cx="38"  cy="28"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="55"  cy="22"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="72"  cy="35"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="42"  cy="50"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="62"  cy="58"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="80"  cy="48"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="50"  cy="72"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="88"  cy="68"  r="7" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <!-- 파란 서포트벡터: 위 마진선에 접하는 점 x=105, 위선y≈90-(105-28)·0.52≈90-40=50 →y=50 -->
+        <circle cx="105" cy="50"  r="7" fill="#3B82F6" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="105" cy="50"  r="13" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!-- 빨간 원(호랑이) — A와 동일 위치 -->
+        <circle cx="148" cy="108" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="165" cy="98"  r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="178" cy="118" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="155" cy="128" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="185" cy="108" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="170" cy="140" r="7" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <!-- 빨간 서포트벡터: 아래 마진선에 접하는 점 x=135, 아래선y≈152-(135-28)·0.52≈152-55.6=96.4 →y=96 -->
+        <circle cx="135" cy="116" r="7" fill="#EF4444" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="135" cy="116" r="13" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!--
+          새로운 사슴: 두 군집 사이 중간 높이
+          결정경계(x=119, y≈121-(119-28)·0.52≈121-47=74) 보다 위(파란 영역)에 위치
+          → 올바르게 사슴으로 분류
+        -->
+        <circle cx="119" cy="62"  r="8" fill="#7C3AED" stroke="white" stroke-width="2"/>
+        <circle cx="119" cy="62"  r="15" fill="rgba(16,185,129,0.08)" stroke="#10B981" stroke-width="1.5"/>
+        <text x="119" y="80" font-size="7.5" text-anchor="middle" fill="#7C3AED" font-weight="700">새로운 사슴</text>
+
+        <!-- 올바른 분류 말풍선 -->
+        <rect x="128" y="40" width="70" height="16" rx="3" fill="#D1FAE5"/>
+        <text x="163" y="52" font-size="8" text-anchor="middle" fill="#10B981" font-weight="800">올바르게 분류 ✅</text>
+        <line x1="128" y1="51" x2="126" y2="57" stroke="#10B981" stroke-width="1.2"/>
+
+        <!-- 마진 폭 표시: x=36 수직 브래킷 -->
+        <line x1="36" y1="90" x2="36" y2="152" stroke="#3B82F6" stroke-width="1.2" opacity="0.7"/>
+        <line x1="32" y1="90" x2="40" y2="90"   stroke="#3B82F6" stroke-width="1.2" opacity="0.7"/>
+        <line x1="32" y1="152" x2="40" y2="152"  stroke="#3B82F6" stroke-width="1.2" opacity="0.7"/>
+        <text x="43" y="125" font-size="7.5" fill="#3B82F6" font-weight="700">마진</text>
       </svg>
       <div style="font-size:12px;color:var(--teal);text-align:center;margin-top:6px;font-weight:700;">마진이 넓어 새 데이터도 안정적으로 분류✅</div>
     </div>
@@ -554,36 +643,60 @@
     <div class="svm-step-card">
       <div class="svm-step-badge">①</div>
       <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:8px;">서포트 벡터 찾기</div>
-      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;">
-        <!-- 파란 점(사슴) -->
-        <circle cx="40" cy="30" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="55" cy="50" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="35" cy="65" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="65" cy="35" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <!-- 서포트 벡터 파랑 강조 -->
-        <circle cx="50" cy="75" r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="50" cy="75" r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 빨간 점(호랑이) -->
-        <circle cx="145" cy="75" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="160" cy="55" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="140" cy="90" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="170" cy="65" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <!-- 서포트 벡터 빨강 강조 -->
-        <circle cx="155" cy="95" r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="3"/>
-        <circle cx="155" cy="95" r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-        <!-- 서포트 벡터 레이블 -->
-        <text x="28" y="100" font-size="9" fill="#F59E0B" font-weight="700">서포트 벡터</text>
+      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;" font-family="Noto Sans KR">
+        <!--
+          교과서 그림 II-28 ① 기반
+          viewBox 200×130, 플롯 영역 x=20~188, y=10~118
+          기울기 -0.52 동일
+          파란 원(사슴): 좌상단, 빨간 원(호랑이): 우하단
+          서포트벡터만 강조, 결정경계/마진선 없음
+        -->
         <defs>
-          <marker id="arrSV1" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto">
+          <marker id="arrS8a1" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
             <path d="M0,0 L0,5 L5,2.5 Z" fill="#F59E0B"/>
           </marker>
-          <marker id="arrSV2" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto">
+          <marker id="arrS8a2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
             <path d="M0,0 L0,5 L5,2.5 Z" fill="#F59E0B"/>
           </marker>
         </defs>
-        <line x1="50" y1="100" x2="50" y2="88" stroke="#F59E0B" stroke-width="1" marker-end="url(#arrSV1)"/>
-        <line x1="100" y1="100" x2="155" y2="107" stroke="#F59E0B" stroke-width="1" marker-end="url(#arrSV2)"/>
-        <text x="80" y="100" font-size="9" fill="#F59E0B" font-weight="700">서포트 벡터</text>
+
+        <!-- 축 -->
+        <line x1="20" y1="118" x2="20" y2="10" stroke="#94A3B8" stroke-width="1"/>
+        <line x1="20" y1="118" x2="188" y2="118" stroke="#94A3B8" stroke-width="1"/>
+        <text x="12" y="66" font-size="6.5" fill="#64748B" text-anchor="middle" transform="rotate(-90,12,66)">속도</text>
+        <text x="104" y="126" font-size="6.5" fill="#64748B" text-anchor="middle">크기</text>
+
+        <!-- 파란 원(사슴) 좌상단 -->
+        <circle cx="30"  cy="20"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="44"  cy="14"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="58"  cy="24"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="34"  cy="36"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="50"  cy="44"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="40"  cy="56"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <!-- 파란 서포트벡터: 우측경계 쪽 가장 가까운 점 -->
+        <circle cx="72"  cy="44"  r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="72"  cy="44"  r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!-- 빨간 원(호랑이) 우하단 -->
+        <circle cx="128" cy="78"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="144" cy="68"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="158" cy="86"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="136" cy="96"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="162" cy="100" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="150" cy="108" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <!-- 빨간 서포트벡터: 좌측경계 쪽 가장 가까운 점 -->
+        <circle cx="110" cy="64"  r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="110" cy="64"  r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!-- 파란 SV 레이블: 왼쪽 아래에 텍스트, 화살표로 SV 가리킴 -->
+        <text x="22" y="68" font-size="7" fill="#F59E0B" font-weight="700">서포트</text>
+        <text x="22" y="77" font-size="7" fill="#F59E0B" font-weight="700">벡터</text>
+        <line x1="42" y1="70" x2="64" y2="50" stroke="#F59E0B" stroke-width="1.2" marker-end="url(#arrS8a1)"/>
+
+        <!-- 빨간 SV 레이블: 오른쪽 위에 텍스트, 화살표로 SV 가리킴 -->
+        <text x="120" y="46" font-size="7" fill="#F59E0B" font-weight="700">서포트</text>
+        <text x="120" y="55" font-size="7" fill="#F59E0B" font-weight="700">벡터</text>
+        <line x1="118" y1="56" x2="114" y2="62" stroke="#F59E0B" stroke-width="1.2" marker-end="url(#arrS8a2)"/>
       </svg>
       <div style="font-size:12px;color:var(--mid);margin-top:8px;line-height:1.5;">각 그룹에서 경계에 가장 가까운 데이터 포인트를 찾는다</div>
     </div>
@@ -591,37 +704,65 @@
     <div class="svm-step-card">
       <div class="svm-step-badge">②</div>
       <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:8px;">마진 영역 설정</div>
-      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;">
-        <!-- 마진 영역 -->
-        <polygon points="0,95 200,30 200,55 0,120" fill="rgba(59,130,246,0.1)"/>
-        <!-- 파란 점선 (파란 서포트벡터 통과) -->
-        <line x1="0" y1="95" x2="200" y2="30" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <!-- 빨간 점선 (빨간 서포트벡터 통과) -->
-        <line x1="0" y1="120" x2="200" y2="55" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <!-- 파란 점(사슴) -->
-        <circle cx="40" cy="30" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="55" cy="50" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="35" cy="65" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="65" cy="35" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="50" cy="75" r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="3"/>
-        <!-- 빨간 점(호랑이) -->
-        <circle cx="145" cy="75" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="160" cy="55" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="140" cy="90" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="170" cy="65" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="155" cy="95" r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="3"/>
-        <!-- 마진 폭 화살표 -->
+      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;" font-family="Noto Sans KR">
+        <!--
+          교과서 그림 II-28 ② 기반
+          파란 SV(72,44) 통과 위선: 기울기 -0.52
+            x=20 → y=44+(72-20)·0.52=44+27=71  → (20,71)~(188,14)
+          빨간 SV(110,64) 통과 아래선:
+            x=20 → y=64+(110-20)·0.52=64+46.8=111 → (20,111)~(188,54)
+          마진 폭 수직: 111-71=40px
+        -->
         <defs>
-          <marker id="arrM1" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto">
-            <path d="M0,0 L0,5 L5,2.5 Z" fill="#3B82F6"/>
+          <marker id="arrS8b1" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+            <path d="M0,0 L0,5 L5,2.5 Z" fill="#475569"/>
           </marker>
-          <marker id="arrM2" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto">
-            <path d="M0,0 L0,5 L5,2.5 Z" fill="#3B82F6"/>
+          <marker id="arrS8b2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="180">
+            <path d="M0,2.5 L5,0 L5,5 Z" fill="#475569"/>
           </marker>
         </defs>
-        <line x1="18" y1="95" x2="18" y2="112" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrM1)"/>
-        <line x1="18" y1="120" x2="18" y2="103" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrM2)"/>
-        <text x="24" y="110" font-size="9" fill="#3B82F6" font-weight="700">마진</text>
+
+        <!-- 축 -->
+        <line x1="20" y1="118" x2="20" y2="10" stroke="#94A3B8" stroke-width="1"/>
+        <line x1="20" y1="118" x2="188" y2="118" stroke="#94A3B8" stroke-width="1"/>
+        <text x="12" y="66" font-size="6.5" fill="#64748B" text-anchor="middle" transform="rotate(-90,12,66)">속도</text>
+        <text x="104" y="126" font-size="6.5" fill="#64748B" text-anchor="middle">크기</text>
+
+        <!-- 마진 영역 음영 -->
+        <polygon points="20,71 188,14 188,54 20,111" fill="rgba(59,130,246,0.12)"/>
+        <!-- 위 마진선 (파란 SV 통과) -->
+        <line x1="20" y1="71" x2="188" y2="14" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="6,4"/>
+        <!-- 아래 마진선 (빨간 SV 통과) -->
+        <line x1="20" y1="111" x2="188" y2="54" stroke="#EF4444" stroke-width="1.3" stroke-dasharray="6,4"/>
+
+        <!-- 파란 원(사슴) 좌상단 — 단계1과 동일 -->
+        <circle cx="30"  cy="20"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="44"  cy="14"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="58"  cy="24"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="34"  cy="36"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="50"  cy="44"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="40"  cy="56"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <!-- 파란 서포트벡터 (위 마진선 위에 딱 위치) -->
+        <circle cx="72"  cy="44"  r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="2.5"/>
+
+        <!-- 빨간 원(호랑이) 우하단 — 단계1과 동일 -->
+        <circle cx="128" cy="78"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="144" cy="68"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="158" cy="86"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="136" cy="96"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="162" cy="100" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="150" cy="108" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <!-- 빨간 서포트벡터 (아래 마진선 위에 딱 위치) -->
+        <circle cx="110" cy="64"  r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="2.5"/>
+
+        <!-- 마진 폭 양방향 화살표: x=92 기준, 위선y≈71+(92-20)·(-0.52)+(114-71)=... -->
+        <!-- 위선 x=92: y=71+(92-20)·(-0.52)=71-37.4=33.6≈34  -->
+        <!-- 아래선 x=92: y=111+(92-20)·(-0.52)=111-37.4=73.6≈74 -->
+        <line x1="92" y1="34" x2="92" y2="38" stroke="#475569" stroke-width="1.3" marker-end="url(#arrS8b1)"/>
+        <line x1="92" y1="74" x2="92" y2="70" stroke="#475569" stroke-width="1.3" marker-end="url(#arrS8b2)"/>
+        <line x1="87" y1="34" x2="97" y2="34" stroke="#475569" stroke-width="1"/>
+        <line x1="87" y1="74" x2="97" y2="74" stroke="#475569" stroke-width="1"/>
+        <text x="99" y="57" font-size="7" fill="#475569" font-weight="700">마진</text>
       </svg>
       <div style="font-size:12px;color:var(--mid);margin-top:8px;line-height:1.5;">서포트 벡터를 지나는 평행선을 긋고 그 사이 거리가 마진이 된다</div>
     </div>
@@ -629,30 +770,77 @@
     <div class="svm-step-card">
       <div class="svm-step-badge">③</div>
       <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:8px;">결정 경계 확정</div>
-      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;">
-        <!-- 마진 영역 -->
-        <polygon points="0,95 200,30 200,55 0,120" fill="rgba(59,130,246,0.1)"/>
-        <!-- 파란 점선 -->
-        <line x1="0" y1="95" x2="200" y2="30" stroke="#3B82F6" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
-        <!-- 빨간 점선 -->
-        <line x1="0" y1="120" x2="200" y2="55" stroke="#EF4444" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
-        <!-- 결정 경계 (중앙 실선) -->
-        <line x1="0" y1="107" x2="200" y2="42" stroke="#3B82F6" stroke-width="2.5"/>
-        <!-- 파란 점(사슴) -->
-        <circle cx="40" cy="30" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="55" cy="50" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="35" cy="65" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="65" cy="35" r="6" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
-        <circle cx="50" cy="75" r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="3"/>
-        <!-- 빨간 점(호랑이) -->
-        <circle cx="145" cy="75" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="160" cy="55" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="140" cy="90" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="170" cy="65" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
-        <circle cx="155" cy="95" r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="3"/>
-        <!-- 결정 경계 레이블 -->
-        <rect x="72" y="60" width="58" height="18" rx="4" fill="white" opacity="0.85"/>
-        <text x="101" y="73" font-size="9" fill="#3B82F6" font-weight="800" text-anchor="middle">결정 경계</text>
+      <svg viewBox="0 0 200 130" width="100%" height="auto" style="display:block;background:#F8FAFF;border-radius:10px;" font-family="Noto Sans KR">
+        <!--
+          교과서 그림 II-28 ③ 기반
+          단계2의 마진선 그대로 + 중앙 결정경계 실선 추가
+          결정경계: 위선·아래선의 정중앙
+            위선 x=20: y=71  아래선 x=20: y=111  중앙: y=91
+            위선 x=188: y=14  아래선 x=188: y=54  중앙: y=34
+          → 결정경계: (20,91)~(188,34)
+        -->
+        <defs>
+          <marker id="arrS8c1" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+            <path d="M0,0 L0,5 L5,2.5 Z" fill="#475569"/>
+          </marker>
+          <marker id="arrS8c2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="180">
+            <path d="M0,2.5 L5,0 L5,5 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <!-- 축 -->
+        <line x1="20" y1="118" x2="20" y2="10" stroke="#94A3B8" stroke-width="1"/>
+        <line x1="20" y1="118" x2="188" y2="118" stroke="#94A3B8" stroke-width="1"/>
+        <text x="12" y="66" font-size="6.5" fill="#64748B" text-anchor="middle" transform="rotate(-90,12,66)">속도</text>
+        <text x="104" y="126" font-size="6.5" fill="#64748B" text-anchor="middle">크기</text>
+
+        <!-- 마진 영역 음영 -->
+        <polygon points="20,71 188,14 188,54 20,111" fill="rgba(59,130,246,0.12)"/>
+        <!-- 위 마진선 (흐리게) -->
+        <line x1="20" y1="71" x2="188" y2="14" stroke="#3B82F6" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+        <!-- 아래 마진선 (흐리게) -->
+        <line x1="20" y1="111" x2="188" y2="54" stroke="#EF4444" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+        <!-- 결정경계 실선 (중앙, 굵은 파랑) -->
+        <line x1="20" y1="91" x2="188" y2="34" stroke="#3B82F6" stroke-width="2.5"/>
+
+        <!-- 파란 원(사슴) 좌상단 -->
+        <circle cx="30"  cy="20"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="44"  cy="14"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="58"  cy="24"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="34"  cy="36"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="50"  cy="44"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <circle cx="40"  cy="56"  r="6" fill="#93C5FD" stroke="white" stroke-width="1.5"/>
+        <!-- 파란 서포트벡터 -->
+        <circle cx="72"  cy="44"  r="6" fill="#3B82F6" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="72"  cy="44"  r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!-- 빨간 원(호랑이) 우하단 -->
+        <circle cx="128" cy="78"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="144" cy="68"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="158" cy="86"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="136" cy="96"  r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="162" cy="100" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <circle cx="150" cy="108" r="6" fill="#FCA5A5" stroke="white" stroke-width="1.5"/>
+        <!-- 빨간 서포트벡터 -->
+        <circle cx="110" cy="64"  r="6" fill="#EF4444" stroke="#F59E0B" stroke-width="2.5"/>
+        <circle cx="110" cy="64"  r="11" fill="none" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+        <!-- 마진 폭 화살표: x=92 기준 -->
+        <line x1="92" y1="34" x2="92" y2="38" stroke="#475569" stroke-width="1.3" marker-end="url(#arrS8c1)"/>
+        <line x1="92" y1="74" x2="92" y2="70" stroke="#475569" stroke-width="1.3" marker-end="url(#arrS8c2)"/>
+        <line x1="87" y1="34" x2="97" y2="34" stroke="#475569" stroke-width="1"/>
+        <line x1="87" y1="74" x2="97" y2="74" stroke="#475569" stroke-width="1"/>
+        <text x="99" y="57" font-size="7" fill="#475569" font-weight="700">마진</text>
+
+        <!-- 서포트벡터 레이블 -->
+        <text x="22" y="60" font-size="6.5" fill="#F59E0B" font-weight="700">서포트</text>
+        <text x="22" y="68" font-size="6.5" fill="#F59E0B" font-weight="700">벡터</text>
+        <text x="114" y="56" font-size="6.5" fill="#F59E0B" font-weight="700">서포트</text>
+        <text x="114" y="64" font-size="6.5" fill="#F59E0B" font-weight="700">벡터</text>
+
+        <!-- 결정경계 레이블 -->
+        <rect x="22" y="90" width="46" height="13" rx="3" fill="white" opacity="0.92"/>
+        <text x="45" y="100" font-size="7" text-anchor="middle" fill="#3B82F6" font-weight="800">결정 경계</text>
       </svg>
       <div style="font-size:12px;color:var(--mid);margin-top:8px;line-height:1.5;">마진 중앙을 지나는 직선이 최종 결정 경계가 된다</div>
     </div>
