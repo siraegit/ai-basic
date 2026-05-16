@@ -245,7 +245,7 @@
 <div class="slide" id="s4">
   <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · k-평균 알고리즘</div>
   <div class="ttl">k-평균 알고리즘 단계별 시뮬레이션</div>
-  <div class="sub">6개의 데이터 포인트와 k=2로 군집화하는 과정을 단계별로 따라가보자.</div>
+  <div class="sub">5개의 데이터 포인트와 k=2로 군집화하는 과정을 단계별로 따라가보자.</div>
 
   <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px;flex:1;">
     <!-- 왼쪽 -->
@@ -286,156 +286,123 @@
     </div>
   </div>
 </div>
-
 <!-- ═══════════════════════════════════════════════════
-     S5  알고리즘 선정 흐름도 + 탐구 문제
+     S5  기계학습 유형 및 알고리즘 선정 (컴팩트 카드 버전)
 ═══════════════════════════════════════════════════ -->
 <div class="slide" id="s5">
-  <div class="lbl" style="color:var(--blue);">Part 2 · 알고리즘 선정</div>
-  <div class="ttl">문제에 맞는 기계학습 유형 & 알고리즘 선정</div>
-  <div class="sub">문제의 특성을 분석해 적절한 기계학습 유형과 알고리즘을 선정한다.</div>
-
-  <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:20px;flex:1;">
-    <!-- 왼쪽: 흐름도 -->
-    <div>
-      <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">🗺️ 알고리즘 선정 흐름도</div>
-      <svg viewBox="0 0 380 420" width="100%" height="auto" style="display:block;">
+  <div class="lbl" style="color:var(--mid);">Part 2 · 알고리즘 선정</div>
+  <div class="ttl" style="font-size:26px; margin-bottom:10px;">기계학습 유형 및 알고리즘 선정 흐름</div>
+  
+  <div style="display:grid; grid-template-columns: 1.6fr 0.4fr; gap: 12px; flex: 1; min-height: 0;">
+    
+    <!-- 왼쪽: 흐름도와 압축된 알고리즘 카드 -->
+    <div style="background: #F8FAFF; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; overflow: hidden;">
+      
+      <!-- 상단 흐름도 SVG (비율 최적화) -->
+      <svg viewBox="0 0 550 180" style="width: 100%; height: auto; flex-shrink: 0;">
         <defs>
-          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#94A3B8"/>
+          <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="#94A3B8"/>
           </marker>
         </defs>
-        <!-- 시작 -->
-        <ellipse cx="190" cy="28" rx="80" ry="18" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1.5"/>
-        <text x="190" y="33" text-anchor="middle" font-size="12" font-weight="700" fill="#475569" font-family="Noto Sans KR">문제 분석 시작</text>
-        <line x1="190" y1="46" x2="190" y2="62" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- [Q] 데이터 레이블 유무 -->
+        <path d="M275,5 L360,20 L275,35 L190,20 Z" fill="white" stroke="#3B82F6" stroke-width="1.2"/>
+        <text x="275" y="23.5" text-anchor="middle" font-size="9" font-weight="700" fill="#1E40AF">데이터 레이블(정답) 유무</text>
 
-        <!-- Q1 -->
-        <rect x="90" y="62" width="200" height="38" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
-        <text x="190" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E" font-family="Noto Sans KR">레이블(정답)이 있는가?</text>
-        <text x="190" y="93" text-anchor="middle" font-size="10" fill="#92400E" font-family="Noto Sans KR"></text>
+        <path d="M190,20 L110,20 L110,40" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="145" y="16" text-anchor="middle" font-size="8" font-weight="700" fill="#64748B">레이블 유</text>
+        <path d="M360,20 L440,20 L440,40" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="405" y="16" text-anchor="middle" font-size="8" font-weight="700" fill="#64748B">레이블 무</text>
 
-        <!-- Q1 → 아니오 (오른쪽) -->
-        <line x1="290" y1="81" x2="330" y2="81" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="307" y="75" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
-        <!-- 비지도학습 결과 -->
-        <rect x="330" y="62" width="44" height="38" rx="8" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
-        <text x="352" y="78" text-anchor="middle" font-size="9" font-weight="700" fill="#065F46" font-family="Noto Sans KR">비지도학습</text>
-        <text x="352" y="91" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">→ 군집화</text>
-        <line x1="352" y1="100" x2="352" y2="116" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#arr)"/>
-        <rect x="320" y="116" width="76" height="36" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.2"/>
-        <text x="358" y="130" text-anchor="middle" font-size="9" font-weight="700" fill="#065F46" font-family="Noto Sans KR">k-Means</text>
-        <text x="358" y="144" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">군집화</text>
+        <rect x="75" y="40" width="70" height="20" rx="3" fill="white" stroke="#475569" stroke-width="1"/>
+        <text x="110" y="53" text-anchor="middle" font-size="9" font-weight="800" fill="#1E293B">지도학습</text>
+        <rect x="405" y="40" width="70" height="20" rx="3" fill="white" stroke="#475569" stroke-width="1"/>
+        <text x="440" y="53" text-anchor="middle" font-size="9" font-weight="800" fill="#1E293B">비지도학습</text>
 
-        <!-- Q1 → 예 (아래) -->
-        <line x1="190" y1="100" x2="190" y2="116" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="175" y="112" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
+        <!-- [Q] 판단 기준 -->
+        <path d="M110,70 L170,82 L110,94 L50,82 Z" fill="white" stroke="#3B82F6" stroke-width="1"/>
+        <text x="110" y="85" text-anchor="middle" font-size="8" fill="#1E40AF">예측하려는 값의 형태</text>
+        <line x1="110" y1="60" x2="110" y2="70" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
 
-        <!-- Q2 -->
-        <rect x="70" y="116" width="180" height="38" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
-        <text x="160" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">예측값이</text>
-        <text x="160" y="146" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">연속형 숫자인가?</text>
+        <path d="M440,70 L500,82 L440,94 L380,82 Z" fill="white" stroke="#3B82F6" stroke-width="1"/>
+        <text x="440" y="82" text-anchor="middle" font-size="7" fill="#1E40AF">데이터 유사성 기반</text>
+        <text x="440" y="89" text-anchor="middle" font-size="7" fill="#1E40AF">그룹화</text>
+        <line x1="440" y1="60" x2="440" y2="70" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
 
-        <!-- Q2 → 아니오 (오른쪽) -->
-        <line x1="250" y1="135" x2="310" y2="135" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="277" y="129" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
-        <rect x="310" y="116" width="10" height="38" rx="0" fill="none"/>
-        <!-- 분류 결과 박스는 오른쪽에 -->
-        <rect x="308" y="193" width="68" height="58" rx="8" fill="#FED7AA" stroke="#F97316" stroke-width="1.5"/>
-        <text x="342" y="210" text-anchor="middle" font-size="9" font-weight="700" fill="#92400E" font-family="Noto Sans KR">지도학습</text>
-        <text x="342" y="223" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">→ 분류</text>
-        <text x="342" y="236" text-anchor="middle" font-size="8" fill="#92400E" font-family="Noto Sans KR">(로지스틱,</text>
-        <text x="342" y="246" text-anchor="middle" font-size="8" fill="#92400E" font-family="Noto Sans KR">SVM, KNN)</text>
-        <!-- 아니오 수직선 -->
-        <line x1="318" y1="135" x2="342" y2="135" stroke="#94A3B8" stroke-width="1.2"/>
-        <line x1="342" y1="135" x2="342" y2="193" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#arr)"/>
+        <!-- [최종 유형 선택] -->
+        <path d="M50,82 L35,82 L35,110" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="42" y="100" text-anchor="end" font-size="7" font-weight="700" fill="#3B82F6">연속 숫자</text>
+        <rect x="15" y="110" width="40" height="18" rx="2" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.2"/>
+        <text x="35" y="122" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">회귀</text>
 
-        <!-- Q2 → 예 (아래) -->
-        <line x1="160" y1="154" x2="160" y2="172" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="146" y="167" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
+        <path d="M170,82 L185,82 L185,110" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="178" y="100" text-anchor="start" font-size="7" font-weight="700" fill="#F97316">범주형</text>
+        <rect x="165" y="110" width="40" height="18" rx="2" fill="#FFF7ED" stroke="#F97316" stroke-width="1.2"/>
+        <text x="185" y="122" text-anchor="middle" font-size="8" font-weight="800" fill="#92400E">분류</text>
 
-        <!-- Q3 -->
-        <rect x="60" y="172" width="136" height="50" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
-        <text x="128" y="191" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">독립변수가</text>
-        <text x="128" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">2개 이상인가?</text>
-        <text x="128" y="218" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR"></text>
-
-        <!-- Q3 → 예 (아래 왼쪽) -->
-        <line x1="100" y1="222" x2="100" y2="244" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="84" y="238" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
-        <rect x="44" y="244" width="112" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
-        <text x="100" y="259" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">지도학습 → 회귀</text>
-        <text x="100" y="272" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">다중 선형 회귀</text>
-
-        <!-- Q3 → 아니오 (오른쪽) -->
-        <line x1="196" y1="197" x2="230" y2="197" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
-        <text x="210" y="191" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
-        <rect x="228" y="180" width="70" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
-        <text x="263" y="195" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">지도학습 → 회귀</text>
-        <text x="263" y="208" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">단순 선형 회귀</text>
+        <line x1="440" y1="94" x2="440" y2="110" stroke="#94A3B8" stroke-width="1" marker-end="url(#arr)"/>
+        <rect x="420" y="110" width="40" height="18" rx="2" fill="#EDE9FF" stroke="#8B5CF6" stroke-width="1.2"/>
+        <text x="440" y="122" text-anchor="middle" font-size="8" font-weight="800" fill="#5B21B6">군집화</text>
       </svg>
+
+      <!-- 하단 알고리즘 카드 (높이 축소 및 압축 디자인) -->
+      <div style="display:grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 8px;">
+        <!-- 회귀 그룹 -->
+        <div style="background:#EFF6FF; border:1px solid #3B82F6; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">독립변수 1개<br>선형 관계</div>
+          <div style="font-size:8.5px; font-weight:800; color:#1E40AF; border-top:1px solid #BFDBFE; padding-top:3px;">단순 선형 회귀</div>
+        </div>
+        <div style="background:#EFF6FF; border:1px solid #3B82F6; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">독립변수 2개 이상<br>선형 관계</div>
+          <div style="font-size:8.5px; font-weight:800; color:#1E40AF; border-top:1px solid #BFDBFE; padding-top:3px;">다중 선형 회귀</div>
+        </div>
+        <!-- 분류 그룹 -->
+        <div style="background:#FFF7ED; border:1px solid #F97316; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">분류 대상이<br>두 가지 범주</div>
+          <div style="font-size:8.5px; font-weight:800; color:#92400E; border-top:1px solid #FFEDD5; padding-top:3px;">로지스틱 회귀</div>
+        </div>
+        <div style="background:#FFF7ED; border:1px solid #F97316; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">복잡한 데이터<br>일반화 성능</div>
+          <div style="font-size:8.5px; font-weight:800; color:#92400E; border-top:1px solid #FFEDD5; padding-top:3px;">서포트벡터머신</div>
+        </div>
+        <div style="background:#FFF7ED; border:1px solid #F97316; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">규모가 작고<br>간단한 패턴</div>
+          <div style="font-size:8.5px; font-weight:800; color:#92400E; border-top:1px solid #FFEDD5; padding-top:3px;">k-최근접 이웃</div>
+        </div>
+        <div style="background:#FFF7ED; border:1px solid #F97316; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">의사 결정 과정<br>해석 필요</div>
+          <div style="font-size:8.5px; font-weight:800; color:#92400E; border-top:1px solid #FFEDD5; padding-top:3px;">의사결정트리</div>
+        </div>
+        <!-- 군집화 그룹 -->
+        <div style="background:#F5F3FF; border:1px solid #8B5CF6; border-radius:4px; padding:4px; text-align:center;">
+          <div style="font-size:7px; color:#64748B; line-height:1.2; min-height:18px; margin-bottom:3px;">군집 수 인지<br>수치형 데이터</div>
+          <div style="font-size:8.5px; font-weight:800; color:#5B21B6; border-top:1px solid #DDD6FE; padding-top:3px;">k-평균 알고리즘</div>
+        </div>
+      </div>
     </div>
 
-    <!-- 오른쪽: 탐구 문제 -->
-    <div>
-      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">✏️ 교과서 탐구 문제</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-
-        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(1)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="background:#DBEAFE;color:var(--blue);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 1</span>
-            <span style="font-size:13px;font-weight:600;">활동량에 따른 칼로리 소비량 계산</span>
-          </div>
-          <div id="kmAns1" style="display:none;margin-top:8px;padding:8px 12px;background:#EFF6FF;border-radius:8px;font-size:12px;color:var(--blue);">
-            <strong>지도학습 → 단순 선형 회귀</strong><br>이유: 연속값 예측 + 독립변수 1개(활동량)
-          </div>
-          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
-        </div>
-
-        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(2)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="background:#FED7AA;color:var(--orange);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 2</span>
-            <span style="font-size:13px;font-weight:600;">소고기 정보를 바탕으로 등급 판정</span>
-          </div>
-          <div id="kmAns2" style="display:none;margin-top:8px;padding:8px 12px;background:#FFF7ED;border-radius:8px;font-size:12px;color:var(--orange);">
-            <strong>지도학습 → 의사결정트리</strong><br>이유: 범주형 출력 + 다중 변수 + 해석 중요
-          </div>
-          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
-        </div>
-
-        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(3)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="background:#FEE2E2;color:var(--red);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 3</span>
-            <span style="font-size:13px;font-weight:600;">환자 데이터로 악성 종양 진단</span>
-          </div>
-          <div id="kmAns3" style="display:none;margin-top:8px;padding:8px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);">
-            <strong>지도학습 → 로지스틱 회귀</strong><br>이유: 이진 분류 문제(악성/양성)
-          </div>
-          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
-        </div>
-
-        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(4)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="background:#D1FAE5;color:var(--teal);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 4</span>
-            <span style="font-size:13px;font-weight:600;">집의 정보를 바탕으로 적정 집값 계산</span>
-          </div>
-          <div id="kmAns4" style="display:none;margin-top:8px;padding:8px 12px;background:#F0FDF4;border-radius:8px;font-size:12px;color:var(--teal);">
-            <strong>지도학습 → 다중 선형 회귀</strong><br>이유: 연속값 예측 + 독립변수 2개 이상(역세권·학교·방·면적)
-          </div>
-          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
-        </div>
-
-        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(5)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="background:#EDE9FF;color:var(--purple);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 5</span>
-            <span style="font-size:13px;font-weight:600;">가맹점 주소 정보로 배달 대리점 3곳 입지 선정</span>
-          </div>
-          <div id="kmAns5" style="display:none;margin-top:8px;padding:8px 12px;background:#EDE9FF;border-radius:8px;font-size:12px;color:var(--purple);">
-            <strong>비지도학습 → k-평균 알고리즘</strong><br>이유: 레이블 없음 + 군집화 필요(k=3)
-          </div>
-          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
-        </div>
-
+    <!-- 오른쪽: 탐구 문제 (동일 유지) -->
+    <div style="display:flex; flex-direction:column; gap:6px; overflow-y:auto;">
+      <div style="font-size:12px; font-weight:800; color:var(--mid); border-bottom:2px solid #E2E8F0; padding-bottom:4px;">✏️ 교과서 활동</div>
+      <div style="background:white; border-radius:6px; padding:6px; box-shadow:0 1px 2px rgba(0,0,0,0.05); cursor:pointer;" onclick="toggleAnswer(1)">
+        <div style="font-size:10px; font-weight:700; color:#1E40AF;">Q1. 공부시간→점수</div>
+        <div id="kmAns1" style="display:none; padding-top:2px; font-size:9px; color:#1E40AF;">단순 선형 회귀</div>
+      </div>
+      <div style="background:white; border-radius:6px; padding:6px; box-shadow:0 1px 2px rgba(0,0,0,0.05); cursor:pointer;" onclick="toggleAnswer(2)">
+        <div style="font-size:10px; font-weight:700; color:#92400E;">Q2. 소고기 등급</div>
+        <div id="kmAns2" style="display:none; padding-top:2px; font-size:9px; color:#92400E;">의사결정트리</div>
+      </div>
+      <div style="background:white; border-radius:6px; padding:6px; box-shadow:0 1px 2px rgba(0,0,0,0.05); cursor:pointer;" onclick="toggleAnswer(3)">
+        <div style="font-size:10px; font-weight:700; color:#92400E;">Q3. 악성 종양</div>
+        <div id="kmAns3" style="display:none; padding-top:2px; font-size:9px; color:#92400E;">로지스틱 회귀</div>
+      </div>
+      <div style="background:white; border-radius:6px; padding:6px; box-shadow:0 1px 2px rgba(0,0,0,0.05); cursor:pointer;" onclick="toggleAnswer(4)">
+        <div style="font-size:10px; font-weight:700; color:#1E40AF;">Q4. 집값 계산</div>
+        <div id="kmAns4" style="display:none; padding-top:2px; font-size:9px; color:#1E40AF;">다중 선형 회귀</div>
+      </div>
+      <div style="background:white; border-radius:6px; padding:6px; box-shadow:0 1px 2px rgba(0,0,0,0.05); cursor:pointer;" onclick="toggleAnswer(5)">
+        <div style="font-size:10px; font-weight:700; color:#5B21B6;">Q5. 대리점 입지</div>
+        <div id="kmAns5" style="display:none; padding-top:2px; font-size:9px; color:#5B21B6;">k-평균 알고리즘</div>
       </div>
     </div>
   </div>
@@ -1508,7 +1475,7 @@ const kmSteps = [
   },
   {
     title: 'Step 1: 초기 중심점(Centroid) 설정',
-    desc: '데이터가 아닌 임의의 좌표에 중심점을 설정합니다.\n중심점 1(C1): (0.0, 3.0)\n중심점 2(C2): (5.0, 3.0)',
+    desc: '임의의 좌표에 중심점을 설정합니다.\n중심점 1(C1): (0.0, 3.0)\n중심점 2(C2): (5.0, 3.0)',
     centroids: [{x:0,y:3}, {x:5,y:3}],
     assignments: null
   },
