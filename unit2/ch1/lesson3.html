@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모델 생성 및 성능 평가 | 인공지능 기초</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  :root {
+    --blue:#3B82F6; --teal:#10B981; --amber:#F59E0B;
+    --orange:#F97316; --purple:#8B5CF6; --red:#EF4444;
+    --dark:#1E293B; --mid:#475569; --light:#94A3B8; --bg:#F8FAFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#CBD5E1;color:var(--dark);overflow-y:auto;min-height:100vh;}
+
+  #slideshow{display:flex;flex-direction:column;align-items:center;padding:32px 0 48px;gap:20px;}
+  .slide{width:900px;min-height:520px;display:flex;flex-direction:column;padding:28px 50px 24px;background:white;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.12);position:relative;overflow:hidden;}
+
+  .slide::before{content:attr(data-slide);position:absolute;top:14px;right:18px;font-size:11px;font-weight:700;color:var(--light);letter-spacing:1px;font-family:'Space Grotesk',sans-serif;}
+
+  .home-btn{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:5px;padding:8px 16px;border-radius:999px;background:rgba(255,247,237,.97);color:var(--orange);font-size:13px;font-weight:700;text-decoration:none;border:1.5px solid #FED7AA;transition:background .2s,color .2s;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+  .home-btn:hover{background:var(--orange);color:white;}
+
+  .lbl{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;opacity:.65;}
+  .ttl{font-size:34px;font-weight:900;line-height:1.15;margin-bottom:6px;}
+  .sub{font-size:16px;color:var(--mid);margin-bottom:18px;line-height:1.6;}
+  .card{background:white;border-radius:16px;padding:18px 22px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .hl{border-radius:12px;padding:13px 18px;font-size:14px;line-height:1.7;}
+  .tag{display:inline-block;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:700;}
+  .algo-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:800;}
+
+  /* S1 COVER */
+  #s1{background:linear-gradient(135deg,#EFF6FF 0%,#F0FDF4 55%,#FFF7ED 100%);justify-content:center;}
+  .cov-eye{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:16px;}
+  .cov-ttl{font-size:52px;font-weight:900;line-height:1.1;margin-bottom:14px;}
+  .cov-ttl .acc{color:var(--teal);}
+  .cov-sub{font-size:18px;color:var(--mid);margin-bottom:30px;}
+  .goal{display:flex;align-items:center;gap:14px;font-size:16px;color:var(--mid);margin-bottom:11px;}
+  .goal-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .deco{position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:190px;opacity:.07;}
+  .algo-row{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+
+  /* 공통 표 */
+  .ctbl2{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+  .ctbl2 th{padding:14px 16px;font-size:14px;font-weight:800;text-align:center;}
+  .ctbl2 td{padding:12px 16px;font-size:13px;line-height:1.5;text-align:center;border-top:1px solid #F1F5F9;vertical-align:middle;}
+  .ctbl2 .rl2{font-weight:700;background:#F8FAFF;text-align:left;color:var(--mid);font-size:13px;}
+
+  /* QUIZ */
+  .fqg{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
+  .fqc{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.07);display:flex;flex-direction:column;gap:9px;}
+  .fqn{font-size:12px;font-weight:800;color:var(--light);letter-spacing:1px;}
+  .fqq{font-size:14px;font-weight:700;line-height:1.5;}
+  .fqo{display:flex;flex-direction:column;gap:7px;}
+  .fqb{padding:9px 14px;border-radius:9px;border:2px solid #E2E8F0;font-size:13px;cursor:pointer;transition:all .2s;background:white;text-align:left;font-family:'Noto Sans KR',sans-serif;font-weight:500;color:var(--dark);}
+  .fqb:hover{border-color:var(--purple);background:#EDE9FF;}
+  .fqb.correct{border-color:var(--teal);background:#D1FAE5;color:#065F46;font-weight:700;}
+  .fqb.wrong{border-color:var(--red);background:#FEE2E2;color:#991B1B;}
+  .fqf{font-size:12px;line-height:1.5;padding:8px 12px;border-radius:8px;display:none;}
+  .fqf.show{display:block;} .fqf.ok{background:#D1FAE5;color:#065F46;} .fqf.no{background:#FEE2E2;color:#991B1B;}
+
+  /* 정답 카드 blur */
+  .answer-reg,.answer-cls,.answer-sil{filter:blur(6px);user-select:none;transition:filter 0.5s;}
+
+  /* S18 compact */
+  #s18 .lbl{font-size:11px;margin-bottom:3px;}
+  #s18 .ttl{font-size:26px;margin-bottom:4px;}
+  #s18 .sub{font-size:13px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div id="slideshow">
+
+<!-- ═══════════════════════════════════════════════════
+     S1  COVER
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s1">
+  <div style="max-width:720px;margin-top:16px;">
+    <div class="cov-eye">고등학교 인공지능 기초 · Ⅱ. 인공지능과 학습 · 3차시</div>
+    <div class="cov-ttl">모델 생성 및 <span class="acc">성능 평가</span></div>
+    <div class="cov-sub">03. 기계학습 유형 및 알고리즘 선정 | 비지도학습 · k-Means · 알고리즘 선정 · 성능 평가</div>
+    <div style="font-size:13px;font-weight:800;color:var(--mid);letter-spacing:1px;margin-bottom:14px;">🎯 학습 목표</div>
+    <div class="goal"><div class="goal-ic" style="background:#D1FAE5;">🔍</div>비지도학습과 k-평균 알고리즘의 원리를 이해하고 군집화 과정을 설명할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#DBEAFE;">📊</div>회귀·분류·군집화 모델의 성능 평가 지표를 이해하고 계산할 수 있다.</div>
+    <div class="goal"><div class="goal-ic" style="background:#FED7AA;">🎯</div>문제 특성에 따라 적절한 기계학습 유형과 알고리즘을 선정할 수 있다.</div>
+    <div class="algo-row">
+      <span class="algo-badge" style="background:#D1FAE5;color:var(--teal);">① 비지도학습·k-Means</span>
+      <span class="algo-badge" style="background:#DBEAFE;color:var(--blue);">② 알고리즘 선정</span>
+      <span class="algo-badge" style="background:#FED7AA;color:var(--orange);">③ 회귀·분류 성능 평가</span>
+      <span class="algo-badge" style="background:#EDE9FF;color:var(--purple);">④ 군집화 성능 평가</span>
+    </div>
+  </div>
+  <div class="deco">📊</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S2  비지도학습 & 군집화 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="lbl" style="color:var(--teal);">Part 1 · 비지도학습과 군집화</div>
+  <div class="ttl">비지도학습과 군집화(Clustering)</div>
+  <div class="sub">정답(레이블) 없이 데이터 스스로 패턴을 찾는 학습 방식. 비슷한 것끼리 묶는 <strong>군집화</strong>가 대표적이다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:24px;">🔍</span>
+          <div style="font-size:16px;font-weight:800;color:var(--teal);">비지도학습 (Unsupervised Learning)</div>
+        </div>
+        <div style="font-size:14px;color:var(--mid);line-height:1.65;margin-bottom:10px;">입력 데이터에 대한 레이블 없이 학습. 데이터의 전체적 특성을 분석해 관계·패턴을 스스로 발견한다.</div>
+        <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+          ✽ 군집화(Clustering): 비슷한 특성을 가진 데이터끼리 그룹으로 묶는 것
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#EFF6FF;border-radius:12px;padding:12px;">
+          <div style="font-size:18px;margin-bottom:4px;">🛍️</div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;">고객 세분화</div>
+          <div style="font-size:12px;color:var(--mid);">구매 패턴이 비슷한 고객을 그룹화해 맞춤 마케팅</div>
+        </div>
+        <div style="background:#F0FDF4;border-radius:12px;padding:12px;">
+          <div style="font-size:18px;margin-bottom:4px;">🖼️</div>
+          <div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:4px;">이미지 압축</div>
+          <div style="font-size:12px;color:var(--mid);">비슷한 색상을 군집화해 대푯값으로 용량 축소</div>
+        </div>
+        <div style="background:#FFF7ED;border-radius:12px;padding:12px;">
+          <div style="font-size:18px;margin-bottom:4px;">🧬</div>
+          <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px;">유전자 분석</div>
+          <div style="font-size:12px;color:var(--mid);">유사성 기반으로 질병 관련 유전자 그룹 식별</div>
+        </div>
+        <div style="background:#EDE9FF;border-radius:12px;padding:12px;">
+          <div style="font-size:18px;margin-bottom:4px;">🚨</div>
+          <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;">이상 탐지</div>
+          <div style="font-size:12px;color:var(--mid);">정상 거래 군집에서 벗어난 금융 사기 탐지</div>
+        </div>
+      </div>
+    </div>
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">🔑 분류(지도학습) vs 군집화(비지도학습)</div>
+        <table class="ctbl2">
+          <thead>
+            <tr style="background:var(--dark);color:white;">
+              <th>구분</th>
+              <th>분류 (Classification)</th>
+              <th>군집화 (Clustering)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="rl2">레이블</td><td>✅ 있음</td><td>❌ 없음</td></tr>
+            <tr><td class="rl2">목적</td><td>미리 정의된 그룹에 배정</td><td>새로운 그룹 발견</td></tr>
+            <tr><td class="rl2">학습 방식</td><td>지도학습</td><td>비지도학습</td></tr>
+            <tr><td class="rl2">결과 활용</td><td>새 데이터 그룹 예측</td><td>군집 정보 자체를 활용</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        <strong>⚠️ 헷갈리지 말자!</strong><br>
+        분류는 '이 데이터가 어느 그룹?' 을 판별하는 것이고,<br>
+        군집화는 '어떤 그룹이 있는지' 를 발견하는 것이다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S3  k-평균 알고리즘 개요
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="lbl" style="color:var(--teal);">Part 1 · k-평균 알고리즘</div>
+  <div class="ttl">k-평균 알고리즘 (k-Means)</div>
+  <div class="sub">군집화에서 가장 널리 사용되는 알고리즘. 데이터를 k개의 군집으로 묶고 각 군집의 <strong>중심점(Centroid)</strong>을 반복 계산한다.</div>
+
+  <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📐 k-평균 알고리즘 4단계</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:white;border-radius:12px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;">①</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">중심점 초기 설정</div>
+            <div style="font-size:13px;color:var(--mid);">k개의 군집 중심점(Centroid)을 임의로 설정한다.</div>
+            <span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#D1FAE5;color:var(--teal);">초기화</span>
+          </div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;">②</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">군집 할당</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:6px;">각 데이터를 가장 가까운 중심점이 속한 군집에 할당한다. 거리 계산: 유클리드 거리</div>
+            <span class="math" data-expr="d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}"></span>
+            <span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#DBEAFE;color:var(--blue);">거리 계산</span>
+          </div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;">③</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">중심점 재계산</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:6px;">각 군집에 속한 데이터들의 평균 위치로 중심점을 이동한다.</div>
+            <span class="math" data-expr="C_{new} = \left(\frac{\sum x_i}{n},\ \frac{\sum y_i}{n}\right)"></span>
+            <span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#FED7AA;color:var(--orange);">평균 이동</span>
+          </div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;">④</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">수렴까지 반복</div>
+            <div style="font-size:13px;color:var(--mid);">중심점의 변화가 없을 때까지 ②~③을 반복한다. 더 이상 이동이 없으면 군집화 완료!</div>
+            <span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#EDE9FF;color:var(--purple);">수렴 완료</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#FFF7ED;border-radius:14px;padding:16px;">
+        <div style="font-size:14px;font-weight:700;color:var(--orange);margin-bottom:8px;">⚠️ k값 선택의 중요성</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:10px;">
+          k값이 너무 작으면 → 데이터가 과도하게 단순화<br>
+          k값이 너무 크면 → 군집이 지나치게 세분화<br>
+          → 적절한 k값 탐색 방법: <strong>Elbow Method</strong> 등
+        </div>
+      </div>
+      <div style="background:#FEE2E2;border-radius:14px;padding:16px;">
+        <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px;">⚠️ 초기 중심점 설정의 영향</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.65;">초기 중심점 위치에 따라 최종 군집 결과가 달라질 수 있다.<br>→ 여러 번 실행해 최적 결과를 선택하는 것이 중요하다.</div>
+      </div>
+      <div class="hl" style="background:#D1FAE5;border-left:4px solid var(--teal);font-size:13px;">
+        ✅ 다음 슬라이드에서 실제 좌표로 k-평균 알고리즘을 단계별로 따라가보자!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S4  k-Means 단계별 시뮬레이션
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="lbl" style="color:var(--purple);">체험 활동 🎮 · k-평균 알고리즘</div>
+  <div class="ttl">k-평균 알고리즘 단계별 시뮬레이션</div>
+  <div class="sub">6개의 데이터 포인트와 k=2로 군집화하는 과정을 단계별로 따라가보자.</div>
+
+  <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;">
+      <canvas id="kmeansCanvas" width="480" height="360" style="background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:block;width:100%;"></canvas>
+      <div style="display:flex;gap:10px;margin-top:12px;">
+        <button id="kmBtn" onclick="kmNext()" style="flex:1;padding:12px;background:var(--teal);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">▶ 다음 단계</button>
+        <button onclick="kmReset()" style="padding:12px 18px;background:#F1F5F9;color:var(--mid);border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">↺ 초기화</button>
+      </div>
+    </div>
+    <!-- 오른쪽 -->
+    <div id="kmStepPanel" style="display:flex;flex-direction:column;gap:12px;height:100%;">
+      <div style="background:var(--dark);border-radius:12px;padding:14px 18px;color:white;text-align:center;">
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:4px;">현재 단계</div>
+        <div id="kmStepTitle" style="font-size:18px;font-weight:800;">Step 0: 초기 데이터</div>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">📋 데이터 포인트</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:var(--dark);color:white;">
+              <th style="padding:6px 10px;border-radius:6px 0 0 0;">점</th>
+              <th style="padding:6px 10px;">x</th>
+              <th style="padding:6px 10px;">y</th>
+              <th id="kmColHeader" style="padding:6px 10px;border-radius:0 6px 0 0;">군집</th>
+            </tr>
+          </thead>
+          <tbody id="kmDataTable"></tbody>
+        </table>
+      </div>
+      <div id="kmStepDesc" class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;line-height:1.7;flex:1;">
+        k=2로 군집화를 시작합니다.<br>파란 점(A~C)과 빨간 점(D~F) 6개의<br>데이터를 확인하세요.
+      </div>
+      <div id="kmCentroidBox" style="background:white;border-radius:12px;padding:12px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);">
+        <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:6px;">📍 중심점(Centroid) 위치</div>
+        <div id="kmCentroidInfo" style="font-size:13px;font-family:'Space Grotesk',monospace;">C1: 미설정 &nbsp;|&nbsp; C2: 미설정</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S5  알고리즘 선정 흐름도 + 탐구 문제
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 알고리즘 선정</div>
+  <div class="ttl">문제에 맞는 기계학습 유형 & 알고리즘 선정</div>
+  <div class="sub">문제의 특성을 분석해 적절한 기계학습 유형과 알고리즘을 선정한다.</div>
+
+  <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:20px;flex:1;">
+    <!-- 왼쪽: 흐름도 -->
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;">🗺️ 알고리즘 선정 흐름도</div>
+      <svg viewBox="0 0 380 420" width="100%" height="auto" style="display:block;">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#94A3B8"/>
+          </marker>
+        </defs>
+        <!-- 시작 -->
+        <ellipse cx="190" cy="28" rx="80" ry="18" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1.5"/>
+        <text x="190" y="33" text-anchor="middle" font-size="12" font-weight="700" fill="#475569" font-family="Noto Sans KR">문제 분석 시작</text>
+        <line x1="190" y1="46" x2="190" y2="62" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Q1 -->
+        <rect x="90" y="62" width="200" height="38" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="190" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E" font-family="Noto Sans KR">레이블(정답)이 있는가?</text>
+        <text x="190" y="93" text-anchor="middle" font-size="10" fill="#92400E" font-family="Noto Sans KR"></text>
+
+        <!-- Q1 → 아니오 (오른쪽) -->
+        <line x1="290" y1="81" x2="330" y2="81" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="307" y="75" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
+        <!-- 비지도학습 결과 -->
+        <rect x="330" y="62" width="44" height="38" rx="8" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+        <text x="352" y="78" text-anchor="middle" font-size="9" font-weight="700" fill="#065F46" font-family="Noto Sans KR">비지도학습</text>
+        <text x="352" y="91" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">→ 군집화</text>
+        <line x1="352" y1="100" x2="352" y2="116" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#arr)"/>
+        <rect x="320" y="116" width="76" height="36" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.2"/>
+        <text x="358" y="130" text-anchor="middle" font-size="9" font-weight="700" fill="#065F46" font-family="Noto Sans KR">k-Means</text>
+        <text x="358" y="144" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">군집화</text>
+
+        <!-- Q1 → 예 (아래) -->
+        <line x1="190" y1="100" x2="190" y2="116" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="175" y="112" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
+
+        <!-- Q2 -->
+        <rect x="70" y="116" width="180" height="38" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="160" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">예측값이</text>
+        <text x="160" y="146" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">연속형 숫자인가?</text>
+
+        <!-- Q2 → 아니오 (오른쪽) -->
+        <line x1="250" y1="135" x2="310" y2="135" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="277" y="129" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
+        <rect x="310" y="116" width="10" height="38" rx="0" fill="none"/>
+        <!-- 분류 결과 박스는 오른쪽에 -->
+        <rect x="308" y="193" width="68" height="58" rx="8" fill="#FED7AA" stroke="#F97316" stroke-width="1.5"/>
+        <text x="342" y="210" text-anchor="middle" font-size="9" font-weight="700" fill="#92400E" font-family="Noto Sans KR">지도학습</text>
+        <text x="342" y="223" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">→ 분류</text>
+        <text x="342" y="236" text-anchor="middle" font-size="8" fill="#92400E" font-family="Noto Sans KR">(로지스틱,</text>
+        <text x="342" y="246" text-anchor="middle" font-size="8" fill="#92400E" font-family="Noto Sans KR">SVM, KNN)</text>
+        <!-- 아니오 수직선 -->
+        <line x1="318" y1="135" x2="342" y2="135" stroke="#94A3B8" stroke-width="1.2"/>
+        <line x1="342" y1="135" x2="342" y2="193" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+        <!-- Q2 → 예 (아래) -->
+        <line x1="160" y1="154" x2="160" y2="172" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="146" y="167" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
+
+        <!-- Q3 -->
+        <rect x="60" y="172" width="136" height="50" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="128" y="191" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">독립변수가</text>
+        <text x="128" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E" font-family="Noto Sans KR">2개 이상인가?</text>
+        <text x="128" y="218" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR"></text>
+
+        <!-- Q3 → 예 (아래 왼쪽) -->
+        <line x1="100" y1="222" x2="100" y2="244" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="84" y="238" font-size="10" fill="#475569" font-family="Noto Sans KR">예</text>
+        <rect x="44" y="244" width="112" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+        <text x="100" y="259" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">지도학습 → 회귀</text>
+        <text x="100" y="272" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">다중 선형 회귀</text>
+
+        <!-- Q3 → 아니오 (오른쪽) -->
+        <line x1="196" y1="197" x2="230" y2="197" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="210" y="191" text-anchor="middle" font-size="10" fill="#475569" font-family="Noto Sans KR">아니오</text>
+        <rect x="228" y="180" width="70" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+        <text x="263" y="195" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">지도학습 → 회귀</text>
+        <text x="263" y="208" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">단순 선형 회귀</text>
+      </svg>
+    </div>
+
+    <!-- 오른쪽: 탐구 문제 -->
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">✏️ 교과서 탐구 문제</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+
+        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(1)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="background:#DBEAFE;color:var(--blue);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 1</span>
+            <span style="font-size:13px;font-weight:600;">활동량에 따른 칼로리 소비량 계산</span>
+          </div>
+          <div id="kmAns1" style="display:none;margin-top:8px;padding:8px 12px;background:#EFF6FF;border-radius:8px;font-size:12px;color:var(--blue);">
+            <strong>지도학습 → 단순 선형 회귀</strong><br>이유: 연속값 예측 + 독립변수 1개(활동량)
+          </div>
+          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
+        </div>
+
+        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(2)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="background:#FED7AA;color:var(--orange);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 2</span>
+            <span style="font-size:13px;font-weight:600;">소고기 정보를 바탕으로 등급 판정</span>
+          </div>
+          <div id="kmAns2" style="display:none;margin-top:8px;padding:8px 12px;background:#FFF7ED;border-radius:8px;font-size:12px;color:var(--orange);">
+            <strong>지도학습 → 의사결정트리</strong><br>이유: 범주형 출력 + 다중 변수 + 해석 중요
+          </div>
+          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
+        </div>
+
+        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(3)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="background:#FEE2E2;color:var(--red);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 3</span>
+            <span style="font-size:13px;font-weight:600;">환자 데이터로 악성 종양 진단</span>
+          </div>
+          <div id="kmAns3" style="display:none;margin-top:8px;padding:8px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);">
+            <strong>지도학습 → 로지스틱 회귀</strong><br>이유: 이진 분류 문제(악성/양성)
+          </div>
+          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
+        </div>
+
+        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(4)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="background:#D1FAE5;color:var(--teal);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 4</span>
+            <span style="font-size:13px;font-weight:600;">집의 정보를 바탕으로 적정 집값 계산</span>
+          </div>
+          <div id="kmAns4" style="display:none;margin-top:8px;padding:8px 12px;background:#F0FDF4;border-radius:8px;font-size:12px;color:var(--teal);">
+            <strong>지도학습 → 다중 선형 회귀</strong><br>이유: 연속값 예측 + 독립변수 2개 이상(역세권·학교·방·면적)
+          </div>
+          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
+        </div>
+
+        <div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;" onclick="toggleAnswer(5)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="background:#EDE9FF;color:var(--purple);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;">문제 5</span>
+            <span style="font-size:13px;font-weight:600;">가맹점 주소 정보로 배달 대리점 3곳 입지 선정</span>
+          </div>
+          <div id="kmAns5" style="display:none;margin-top:8px;padding:8px 12px;background:#EDE9FF;border-radius:8px;font-size:12px;color:var(--purple);">
+            <strong>비지도학습 → k-평균 알고리즘</strong><br>이유: 레이블 없음 + 군집화 필요(k=3)
+          </div>
+          <div style="font-size:11px;color:var(--light);text-align:right;margin-top:4px;">▼ 정답 확인</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S6  피어슨 상관계수
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="lbl" style="color:var(--blue);">Part 2 · 알고리즘 선정</div>
+  <div class="ttl">피어슨 상관계수 (Pearson Correlation)</div>
+  <div class="sub">두 변수 사이의 <strong>선형 관계 강도</strong>를 -1~1 사이 수치로 나타내는 지표. 선형 회귀 알고리즘 선정의 핵심 근거가 된다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <table class="ctbl2">
+        <thead>
+          <tr style="background:var(--dark);color:white;">
+            <th>상관계수 범위</th>
+            <th>해석</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#EFF6FF;"><td class="rl2">±0.9 이상</td><td>매우 높은 선형 상관관계</td></tr>
+          <tr style="background:#EFF6FF;"><td class="rl2">±0.7 ~ ±0.9</td><td>높은 선형 상관관계</td></tr>
+          <tr><td class="rl2">±0.4 ~ ±0.7</td><td>다소 높은 선형 상관관계</td></tr>
+          <tr><td class="rl2">±0.2 ~ ±0.4</td><td>낮은 선형 상관관계</td></tr>
+          <tr><td class="rl2">±0.2 미만</td><td>선형 상관관계 없음</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--mid);padding:4px 8px;background:#F8FAFF;border-radius:8px;">
+        양수(+): 한 값 ↑ → 다른 값 ↑ &nbsp;/&nbsp; 음수(-): 한 값 ↑ → 다른 값 ↓
+      </div>
+
+      <div style="background:#F0FDF4;border-radius:14px;padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px;">🍊 감귤 당도 예측 — 속성별 상관계수</div>
+        <table class="ctbl2" style="font-size:12px;">
+          <thead>
+            <tr style="background:var(--dark);color:white;">
+              <th style="padding:8px;">속성</th>
+              <th style="padding:8px;">상관계수</th>
+              <th style="padding:8px;">해석</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#D1FAE5;"><td class="rl2" style="font-size:12px;">평균 기온</td><td>-0.844</td><td style="text-align:left;">높은 음의 상관관계 ✅</td></tr>
+            <tr style="background:#D1FAE5;"><td class="rl2" style="font-size:12px;">최고 기온</td><td>-0.821</td><td style="text-align:left;">높은 음의 상관관계 ✅</td></tr>
+            <tr style="background:#D1FAE5;"><td class="rl2" style="font-size:12px;">최저 기온</td><td>-0.808</td><td style="text-align:left;">높은 음의 상관관계 ✅</td></tr>
+            <tr><td class="rl2" style="font-size:12px;">일교차</td><td>-0.512</td><td style="text-align:left;">다소 높은 상관관계 ✅</td></tr>
+            <tr><td class="rl2" style="font-size:12px;">일조율</td><td>-0.315</td><td style="text-align:left;">낮은 상관관계</td></tr>
+            <tr style="background:#FEF2F2;"><td class="rl2" style="font-size:12px;">강수량</td><td>-0.074</td><td style="text-align:left;">상관관계 없음 ❌</td></tr>
+          </tbody>
+        </table>
+        <div class="hl" style="background:#DBEAFE;border-left:4px solid var(--blue);font-size:12px;margin-top:8px;">
+          → 평균·최고·최저 기온, 일교차가 당도와 선형 관계 → <strong>다중 선형 회귀</strong> 선정
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 산점도 3개 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <!-- 양의 상관관계 -->
+      <div style="background:#EFF6FF;border-radius:12px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:6px;">양의 상관관계 (r ≈ +0.9)</div>
+        <svg viewBox="0 0 220 110" width="100%" height="auto" style="display:block;">
+          <rect width="220" height="110" fill="white" rx="6"/>
+          <line x1="20" y1="95" x2="210" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="20" y1="10" x2="20" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="10" y1="100" x2="205" y2="15" stroke="#3B82F6" stroke-width="1.5" opacity=".6"/>
+          <circle cx="22" cy="88" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="42" cy="78" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="62" cy="68" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="84" cy="58" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="104" cy="48" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="132" cy="35" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="158" cy="24" r="5" fill="#3B82F6" opacity=".85"/>
+          <circle cx="182" cy="16" r="5" fill="#3B82F6" opacity=".85"/>
+          <text x="110" y="107" text-anchor="middle" font-size="9" fill="#3B82F6" font-weight="700">x↑ → y↑</text>
+        </svg>
+      </div>
+      <!-- 음의 상관관계 -->
+      <div style="background:#FFF7ED;border-radius:12px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:6px;">음의 상관관계 (r ≈ -0.8)</div>
+        <svg viewBox="0 0 220 110" width="100%" height="auto" style="display:block;">
+          <rect width="220" height="110" fill="white" rx="6"/>
+          <line x1="20" y1="95" x2="210" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="20" y1="10" x2="20" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="10" y1="16" x2="205" y2="100" stroke="#F97316" stroke-width="1.5" opacity=".6"/>
+          <circle cx="22" cy="18" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="42" cy="28" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="62" cy="42" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="87" cy="55" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="112" cy="68" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="137" cy="78" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="162" cy="86" r="5" fill="#F97316" opacity=".85"/>
+          <circle cx="187" cy="91" r="5" fill="#F97316" opacity=".85"/>
+          <text x="110" y="107" text-anchor="middle" font-size="9" fill="#F97316" font-weight="700">x↑ → y↓  (기온↑ → 당도↓)</text>
+        </svg>
+      </div>
+      <!-- 무상관 -->
+      <div style="background:#F8FAFF;border-radius:12px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:6px;">무상관 (r ≈ 0)</div>
+        <svg viewBox="0 0 220 110" width="100%" height="auto" style="display:block;">
+          <rect width="220" height="110" fill="white" rx="6"/>
+          <line x1="20" y1="95" x2="210" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="20" y1="10" x2="20" y2="95" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="15" y1="52" x2="210" y2="52" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="5,3" opacity=".6"/>
+          <circle cx="30" cy="28" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="55" cy="75" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="80" cy="35" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="105" cy="82" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="130" cy="22" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="155" cy="68" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="180" cy="45" r="5" fill="#94A3B8" opacity=".8"/>
+          <circle cx="200" cy="88" r="5" fill="#94A3B8" opacity=".8"/>
+          <text x="110" y="107" text-anchor="middle" font-size="9" fill="#94A3B8" font-weight="700">x와 y 무관</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S7  훈련/테스트 데이터 분리
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="lbl" style="color:var(--teal);">Part 3 · 모델 생성 및 성능 평가</div>
+  <div class="ttl">왜 훈련 데이터와 테스트 데이터를 나눠야 할까?</div>
+  <div class="sub">모델의 성능을 올바르게 평가하고 <strong>일반화</strong> 능력을 확보하기 위해 반드시 분리해야 한다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:12px;">📊 데이터 분리 비율</div>
+        <div style="width:100%;height:44px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:8px;">
+          <div style="width:70%;background:var(--teal);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;">훈련 데이터 70%</div>
+          <div style="width:30%;background:var(--orange);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;">테스트 30%</div>
+        </div>
+        <div style="font-size:12px;color:var(--mid);">일반적으로 7:3 ~ 8:2 비율로 분리</div>
+      </div>
+
+      <div style="background:#F0FDF4;border-radius:14px;padding:14px;">
+        <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:6px;">📚 훈련 데이터 (Training Data)</div>
+        <div style="font-size:13px;color:var(--mid);">모델이 패턴과 규칙을 학습하는 데 사용</div>
+      </div>
+
+      <div style="background:#FFF7ED;border-radius:14px;padding:14px;">
+        <div style="font-size:14px;font-weight:700;color:var(--orange);margin-bottom:6px;">🧪 테스트 데이터 (Test Data)</div>
+        <div style="font-size:13px;color:var(--mid);">훈련된 모델이 실전에서 얼마나 잘 작동하는지 검증</div>
+      </div>
+
+      <div class="hl" style="background:#FEF3C7;border-left:4px solid var(--amber);font-size:13px;">
+        💡 비유: 족보 문제만 외운 학생은 새 문제를 못 푼다.<br>
+        훈련 데이터 = 족보 / 테스트 데이터 = 실전 시험
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#FEF3C7;border-radius:14px;padding:16px;">
+        <div style="font-size:15px;font-weight:800;color:var(--amber);margin-bottom:6px;">과소적합 (Underfitting)</div>
+        <div style="font-size:13px;color:var(--mid);">모델이 너무 단순 → 훈련 데이터 패턴도 못 학습</div>
+      </div>
+      <div style="background:#D1FAE5;border-radius:14px;padding:16px;border:2px solid var(--teal);">
+        <div style="font-size:15px;font-weight:800;color:var(--teal);margin-bottom:6px;">✅ 일반화 (Generalization)</div>
+        <div style="font-size:13px;color:var(--mid);">훈련·새 데이터 모두 잘 작동하는 이상적 상태</div>
+      </div>
+      <div style="background:#FEE2E2;border-radius:14px;padding:16px;">
+        <div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px;">과적합 (Overfitting)</div>
+        <div style="font-size:13px;color:var(--mid);">훈련 데이터에만 최적화 → 새 데이터 예측 나빠짐</div>
+        <div style="font-size:13px;color:var(--red);font-weight:700;margin-top:6px;">→ 테스트 데이터로 과적합 여부 확인!</div>
+      </div>
+      <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+        📌 테스트 데이터를 반복 사용하면 테스트 데이터에도 과적합될 수 있다.<br>→ 교차 검증(Cross Validation)으로 보완한다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S8  교차 검증
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="lbl" style="color:var(--teal);">Part 3 · 모델 생성 및 성능 평가</div>
+  <div class="ttl">교차 검증 (Cross Validation)</div>
+  <div class="sub">테스트 데이터를 반복 사용하면 과적합의 원인이 된다. 이를 방지하기 위한 검증 방법이다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽: 홀드아웃 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:2px;">홀드아웃 교차 검증 (Hold-out)</div>
+      <div class="card" style="padding:14px;">
+        <svg viewBox="0 0 340 110" width="100%" height="auto" style="display:block;">
+          <!-- 전체 데이터 바 -->
+          <rect x="10" y="10" width="320" height="30" rx="6" fill="#E2E8F0"/>
+          <text x="170" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#475569" font-family="Noto Sans KR">전체 데이터</text>
+          <!-- 화살표 -->
+          <line x1="170" y1="40" x2="170" y2="56" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+          <!-- 분할 바 -->
+          <rect x="10" y="60" width="192" height="30" rx="6" fill="#D1FAE5"/>
+          <text x="106" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46" font-family="Noto Sans KR">훈련 (60%)</text>
+          <rect x="202" y="60" width="64" height="30" fill="#DBEAFE"/>
+          <text x="234" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">검증 (20%)</text>
+          <rect x="266" y="60" width="64" height="30" rx="6" fill="#FED7AA"/>
+          <text x="298" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#92400E" font-family="Noto Sans KR">테스트 (20%)</text>
+          <!-- 레이블 -->
+          <text x="10" y="105" font-size="9" fill="#475569" font-family="Noto Sans KR">훈련+검증 → 모델 학습·개선 / 테스트 → 최종 성능 평가</text>
+        </svg>
+      </div>
+      <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+        <strong>장점:</strong> 빠르고 간단<br>
+        <strong>단점:</strong> 데이터 분할 방식에 따라 결과가 달라질 수 있음
+      </div>
+    </div>
+
+    <!-- 오른쪽: k-fold -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:2px;">k-fold 교차 검증 (5-fold 예시)</div>
+      <div class="card" style="padding:14px;">
+        <svg viewBox="0 0 340 170" width="100%" height="auto" style="display:block;">
+          <defs>
+            <marker id="arr2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#94A3B8"/>
+            </marker>
+          </defs>
+          <!-- 5-fold 그리드 -->
+          <!-- Row 0: Fold0=test, rest=train -->
+          <rect x="30" y="10" width="54" height="22" rx="3" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="57" y="25" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">Fold 1</text>
+          <rect x="88" y="10" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="115" y="25" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 2</text>
+          <rect x="146" y="10" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="173" y="25" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 3</text>
+          <rect x="204" y="10" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="231" y="25" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 4</text>
+          <rect x="262" y="10" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="289" y="25" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 5</text>
+          <text x="325" y="25" font-size="9" fill="#475569" font-family="Noto Sans KR">→ 성능₁</text>
+
+          <!-- Row 1 -->
+          <rect x="30" y="36" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="57" y="51" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 1</text>
+          <rect x="88" y="36" width="54" height="22" rx="3" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="115" y="51" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">Fold 2</text>
+          <rect x="146" y="36" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="173" y="51" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 3</text>
+          <rect x="204" y="36" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="231" y="51" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 4</text>
+          <rect x="262" y="36" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="289" y="51" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 5</text>
+          <text x="325" y="51" font-size="9" fill="#475569" font-family="Noto Sans KR">→ 성능₂</text>
+
+          <!-- Row 2 -->
+          <rect x="30" y="62" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="57" y="77" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 1</text>
+          <rect x="88" y="62" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="115" y="77" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 2</text>
+          <rect x="146" y="62" width="54" height="22" rx="3" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="173" y="77" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">Fold 3</text>
+          <rect x="204" y="62" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="231" y="77" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 4</text>
+          <rect x="262" y="62" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="289" y="77" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 5</text>
+          <text x="325" y="77" font-size="9" fill="#475569" font-family="Noto Sans KR">→ 성능₃</text>
+
+          <!-- Row 3 -->
+          <rect x="30" y="88" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="57" y="103" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 1</text>
+          <rect x="88" y="88" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="115" y="103" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 2</text>
+          <rect x="146" y="88" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="173" y="103" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 3</text>
+          <rect x="204" y="88" width="54" height="22" rx="3" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="231" y="103" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">Fold 4</text>
+          <rect x="262" y="88" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="289" y="103" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 5</text>
+          <text x="325" y="103" font-size="9" fill="#475569" font-family="Noto Sans KR">→ 성능₄</text>
+
+          <!-- Row 4 -->
+          <rect x="30" y="114" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="57" y="129" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 1</text>
+          <rect x="88" y="114" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="115" y="129" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 2</text>
+          <rect x="146" y="114" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="173" y="129" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 3</text>
+          <rect x="204" y="114" width="54" height="22" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="231" y="129" text-anchor="middle" font-size="9" fill="#065F46" font-family="Noto Sans KR">Fold 4</text>
+          <rect x="262" y="114" width="54" height="22" rx="3" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="289" y="129" text-anchor="middle" font-size="9" fill="#92400E" font-family="Noto Sans KR">Fold 5</text>
+          <text x="325" y="129" font-size="9" fill="#475569" font-family="Noto Sans KR">→ 성능₅</text>
+
+          <text x="30" y="158" font-size="10" font-weight="700" fill="#10B981" font-family="Noto Sans KR">최종 성능 = 5번 평균</text>
+          <!-- 범례 -->
+          <rect x="200" y="148" width="12" height="12" rx="2" fill="#FED7AA" stroke="#F97316" stroke-width="1"/>
+          <text x="216" y="158" font-size="9" fill="#475569" font-family="Noto Sans KR">테스트</text>
+          <rect x="254" y="148" width="12" height="12" rx="2" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+          <text x="270" y="158" font-size="9" fill="#475569" font-family="Noto Sans KR">훈련</text>
+        </svg>
+      </div>
+      <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+        <strong>장점:</strong> 안정적이고 신뢰성 높은 성능 평가<br>
+        <strong>단점:</strong> 학습을 k번 반복해 시간이 더 걸림
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S9  회귀 모델 성능 평가 지표
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="lbl" style="color:var(--blue);">Part 3 · 회귀 모델 성능 평가</div>
+  <div class="ttl">회귀 모델의 성능 평가 지표</div>
+  <div class="sub">예측값과 실제값의 <strong>오차</strong>를 기반으로 모델 성능을 수치화한다.</div>
+
+  <!-- 상단 차트 -->
+  <div class="card" style="padding:10px;margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:6px;">📊 회귀 모델의 오차 시각화</div>
+    <canvas id="chartError" width="780" height="130"></canvas>
+  </div>
+
+  <!-- 하단 4개 지표 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;">
+    <div style="background:#EFF6FF;border-radius:14px;padding:16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:8px;">평균제곱오차 (MSE)</div>
+      <div style="margin-bottom:8px;"><span class="math block" data-expr="MSE = \dfrac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">오차를 제곱해 평균. 큰 오차에 민감</div>
+      <span style="background:var(--blue);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
+    </div>
+    <div style="background:#F0FDF4;border-radius:14px;padding:16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--teal);margin-bottom:8px;">평균제곱근오차 (RMSE)</div>
+      <div style="margin-bottom:8px;"><span class="math block" data-expr="RMSE = \sqrt{\dfrac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">MSE의 제곱근. 원래 단위로 해석 가능</div>
+      <span style="background:var(--teal);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
+    </div>
+    <div style="background:#FFF7ED;border-radius:14px;padding:16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--orange);margin-bottom:8px;">평균절대오차 (MAE)</div>
+      <div style="margin-bottom:8px;"><span class="math block" data-expr="MAE = \dfrac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">오차 절댓값의 평균. 전반적 오차 크기</div>
+      <span style="background:var(--orange);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
+    </div>
+    <div style="background:#EDE9FF;border-radius:14px;padding:16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--purple);margin-bottom:8px;">결정 계수 (R²)</div>
+      <div style="margin-bottom:8px;"><span class="math block" data-expr="R^2 = 1 - \dfrac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">모델이 데이터 변동성을 얼마나 잘 설명하는지</div>
+      <span style="background:var(--purple);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">1에 가까울수록 좋음</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S10  회귀 계산 연습
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="lbl" style="color:var(--blue);">계산 연습 ✏️ · 회귀 모델</div>
+  <div class="ttl">MSE와 MAE 직접 계산해보기</div>
+  <div class="sub">아래 데이터로 MSE와 MAE를 계산해보자. 풀어본 뒤 정답 버튼을 눌러 확인하자.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div>
+      <div style="background:white;border-radius:14px;padding:16px;border-left:4px solid var(--blue);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:12px;">📋 주어진 데이터</div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="background:var(--dark);color:white;">
+              <th style="padding:8px 12px;border-radius:6px 0 0 0;font-size:13px;">데이터</th>
+              <th style="padding:8px 12px;font-size:13px;">실제값(y)</th>
+              <th style="padding:8px 12px;font-size:13px;">예측값(ŷ)</th>
+              <th style="padding:8px 12px;border-radius:0 6px 0 0;font-size:13px;">오차(y-ŷ)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 12px;text-align:center;font-weight:700;">1</td><td style="padding:8px 12px;text-align:center;">10</td><td style="padding:8px 12px;text-align:center;">12</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--red);">-2</td></tr>
+            <tr style="border-bottom:1px solid #F1F5F9;background:#F8FAFF;"><td style="padding:8px 12px;text-align:center;font-weight:700;">2</td><td style="padding:8px 12px;text-align:center;">20</td><td style="padding:8px 12px;text-align:center;">18</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--teal);">+2</td></tr>
+            <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 12px;text-align:center;font-weight:700;">3</td><td style="padding:8px 12px;text-align:center;">30</td><td style="padding:8px 12px;text-align:center;">35</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--red);">-5</td></tr>
+            <tr style="border-bottom:1px solid #F1F5F9;background:#F8FAFF;"><td style="padding:8px 12px;text-align:center;font-weight:700;">4</td><td style="padding:8px 12px;text-align:center;">40</td><td style="padding:8px 12px;text-align:center;">38</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--teal);">+2</td></tr>
+            <tr><td style="padding:8px 12px;text-align:center;font-weight:700;">5</td><td style="padding:8px 12px;text-align:center;">50</td><td style="padding:8px 12px;text-align:center;">53</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--red);">-3</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;font-size:14px;font-weight:700;line-height:2;">
+          Q1. 위 데이터의 MAE를 구하시오.<br>
+          Q2. 위 데이터의 MSE를 구하시오.
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="answer-reg" style="background:#EFF6FF;border-radius:12px;padding:16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:10px;">MAE 풀이</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.8;">
+          Step 1: |오차| → 2, 2, 5, 2, 3<br>
+          Step 2: 합산 → 2+2+5+2+3 = 14<br>
+          Step 3: 평균 → 14 ÷ 5 = <strong>2.8</strong>
+        </div>
+        <div style="background:var(--blue);color:white;border-radius:8px;padding:10px;text-align:center;font-size:16px;font-weight:800;margin-top:8px;">MAE = 2.8</div>
+      </div>
+      <div class="answer-reg" style="background:#F0FDF4;border-radius:12px;padding:16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--teal);margin-bottom:10px;">MSE 풀이</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.8;">
+          Step 1: 오차² → 4, 4, 25, 4, 9<br>
+          Step 2: 합산 → 4+4+25+4+9 = 46<br>
+          Step 3: 평균 → 46 ÷ 5 = <strong>9.2</strong>
+        </div>
+        <div style="background:var(--teal);color:white;border-radius:8px;padding:10px;text-align:center;font-size:16px;font-weight:800;margin-top:8px;">MSE = 9.2</div>
+      </div>
+      <button id="btn-reg" onclick="revealAnswer('reg')" style="padding:13px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:'Noto Sans KR',sans-serif;">📖 정답 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S11  혼동 행렬
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="lbl" style="color:var(--orange);">Part 3 · 분류 모델 성능 평가</div>
+  <div class="ttl">혼동 행렬 (Confusion Matrix)</div>
+  <div class="sub">분류 모델의 예측 결과와 실제 정답을 비교하는 표. 모든 분류 성능 지표의 기반이 된다.</div>
+
+  <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:12px;">A 전자 회사 불량품 판별 모델 (전체 100개 제품)</div>
+      <table style="border-collapse:separate;border-spacing:4px;width:100%;">
+        <thead>
+          <tr>
+            <td colspan="2" style="width:100px;"></td>
+            <td colspan="2" style="background:#F8FAFF;text-align:center;padding:8px;font-size:13px;font-weight:700;border-radius:8px;">모델의 분류 결과</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td style="text-align:center;padding:8px 6px;font-size:12px;font-weight:700;color:var(--mid);">예측: 정상(음성 N)</td>
+            <td style="text-align:center;padding:8px 6px;font-size:12px;font-weight:700;color:var(--mid);">예측: 불량(양성 P)</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;padding:8px 4px;font-size:13px;font-weight:700;color:var(--mid);">실제 데이터</td>
+            <td style="padding:8px 6px;font-size:12px;font-weight:700;color:var(--mid);">실제: 정상</td>
+            <td style="background:#D1FAE5;border:2px solid #10B981;border-radius:10px;padding:16px;text-align:center;">
+              <div style="font-size:24px;font-weight:900;color:#065F46;">TN = 85</div>
+              <div style="font-size:12px;color:var(--mid);margin-top:4px;">실제 정상 → 정상 예측 ✅</div>
+            </td>
+            <td style="background:#FEE2E2;border:2px solid #EF4444;border-radius:10px;padding:16px;text-align:center;">
+              <div style="font-size:24px;font-weight:900;color:#991B1B;">FP = 5</div>
+              <div style="font-size:12px;color:var(--mid);margin-top:4px;">실제 정상 → 불량 예측 ❌</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 6px;font-size:12px;font-weight:700;color:var(--mid);">실제: 불량</td>
+            <td style="background:#FEE2E2;border:2px solid #EF4444;border-radius:10px;padding:16px;text-align:center;">
+              <div style="font-size:24px;font-weight:900;color:#991B1B;">FN = 3</div>
+              <div style="font-size:12px;color:var(--mid);margin-top:4px;">실제 불량 → 정상 예측 ❌</div>
+              <div style="font-size:12px;color:var(--red);font-weight:700;">(가장 위험!)</div>
+            </td>
+            <td style="background:#DBEAFE;border:2px solid #3B82F6;border-radius:10px;padding:16px;text-align:center;">
+              <div style="font-size:24px;font-weight:900;color:#1E40AF;">TP = 7</div>
+              <div style="font-size:12px;color:var(--mid);margin-top:4px;">실제 불량 → 불량 예측 ✅</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#F8FAFF;border-radius:12px;padding:14px;font-size:13px;line-height:1.8;">
+        <strong>T (True):</strong> 예측이 실제와 일치<br>
+        <strong>F (False):</strong> 예측이 실제와 불일치
+      </div>
+      <div style="background:#F8FAFF;border-radius:12px;padding:14px;font-size:13px;line-height:1.8;">
+        <strong>N (Negative):</strong> 모델이 음성(정상)으로 예측<br>
+        <strong>P (Positive):</strong> 모델이 양성(불량)으로 예측
+      </div>
+      <div style="background:#D1FAE5;border-radius:10px;padding:10px 14px;font-size:13px;">
+        <strong style="color:var(--teal);">TN:</strong> 정상을 정상으로 → 올바른 음성 예측
+      </div>
+      <div style="background:#FEE2E2;border-radius:10px;padding:10px 14px;font-size:13px;">
+        <strong style="color:var(--red);">FP:</strong> 정상을 불량으로 → 잘못된 양성 예측
+      </div>
+      <div style="background:#FEE2E2;border-radius:10px;padding:10px 14px;font-size:13px;">
+        <strong style="color:var(--red);">FN:</strong> 불량을 정상으로 → 잘못된 음성 예측<br>
+        <span style="font-weight:700;color:var(--red);">⚠️ 실제 불량이 출하되는 가장 위험한 오류!</span>
+      </div>
+      <div style="background:#DBEAFE;border-radius:10px;padding:10px 14px;font-size:13px;">
+        <strong style="color:var(--blue);">TP:</strong> 불량을 불량으로 → 올바른 양성 예측
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S12  분류 성능 평가 지표
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="lbl" style="color:var(--orange);">Part 3 · 분류 모델 성능 평가</div>
+  <div class="ttl">분류 모델의 성능 평가 지표</div>
+  <div class="sub">혼동 행렬의 TN, FP, FN, TP를 조합해 다양한 성능 지표를 계산한다. 모두 0~1 사이, 1에 가까울수록 좋다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;">
+    <div style="background:#EFF6FF;border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--blue);margin-bottom:10px;">정확도 (Accuracy)</div>
+      <div style="margin-bottom:10px;"><span class="math block" data-expr="\text{정확도} = \dfrac{TN+TP}{TN+FP+FN+TP}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">전체 중 올바르게 분류한 비율</div>
+      <div style="background:white;border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-align:center;margin-bottom:6px;">(85+7)/100 = <span style="color:var(--blue);">0.92</span></div>
+      <div style="font-size:12px;color:var(--mid);">⚠️ 클래스 불균형 시 신뢰도 낮음</div>
+    </div>
+
+    <div style="background:#FFF7ED;border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--orange);margin-bottom:10px;">정밀도 (Precision)</div>
+      <div style="margin-bottom:10px;"><span class="math block" data-expr="\text{정밀도} = \dfrac{TP}{FP+TP}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">불량으로 예측한 것 중 실제 불량 비율</div>
+      <div style="background:white;border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-align:center;margin-bottom:6px;">7/(5+7) = <span style="color:var(--orange);">≈ 0.583</span></div>
+      <div style="font-size:12px;color:var(--mid);">FP를 낮추는 데 집중</div>
+    </div>
+
+    <div style="background:#F0FDF4;border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--teal);margin-bottom:10px;">재현율 (Recall)</div>
+      <div style="margin-bottom:10px;"><span class="math block" data-expr="\text{재현율} = \dfrac{TP}{FN+TP}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">실제 불량 중 불량으로 올바르게 예측한 비율</div>
+      <div style="background:white;border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-align:center;margin-bottom:6px;">7/(3+7) = <span style="color:var(--teal);">0.7</span></div>
+      <div style="font-size:12px;color:var(--mid);">FN을 낮추는 데 집중</div>
+    </div>
+
+    <div style="background:#EDE9FF;border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--purple);margin-bottom:10px;">특이도 (Specificity)</div>
+      <div style="margin-bottom:10px;"><span class="math block" data-expr="\text{특이도} = \dfrac{TN}{TN+FP}"></span></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">실제 정상 중 정상으로 올바르게 예측한 비율</div>
+      <div style="background:white;border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-align:center;margin-bottom:6px;">85/(85+5) = <span style="color:var(--purple);">≈ 0.944</span></div>
+      <div style="font-size:12px;color:var(--mid);">음성(정상) 판별 능력</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S13  정밀도 vs 재현율
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s13">
+  <div class="lbl" style="color:var(--orange);">Part 3 · 분류 모델 성능 평가</div>
+  <div class="ttl">정밀도 vs 재현율: 상황에 따라 다르다</div>
+  <div class="sub">정밀도와 재현율은 <strong>상충 관계(Trade-off)</strong>에 있다. 문제 특성에 따라 더 중요한 지표를 선택해야 한다.</div>
+
+  <div class="card" style="margin-bottom:14px;padding:12px 18px;">
+    <div style="font-size:13px;color:var(--mid);line-height:1.8;">
+      정밀도↑ = FP↓ (음성을 양성으로 잘못 분류하는 것 감소) &nbsp;|&nbsp;
+      재현율↑ = FN↓ (양성을 음성으로 잘못 분류하는 것 감소)<br>
+      → 정밀도를 높이면 재현율이 낮아지는 경향, 그 반대도 동일
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;">
+    <div style="background:#EFF6FF;border:2px solid var(--blue);border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--blue);margin-bottom:12px;">📧 정밀도가 더 중요한 경우</div>
+      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;">스팸 메일 필터</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.7;">
+          정상 메일→스팸 오판(FP): 중요 메일 못 받아 업무 차질 ❌<br>
+          스팸→정상 오판(FN): 불편하지만 큰 문제 없음<br>
+          <strong style="color:var(--blue);">→ FP를 줄이는 정밀도가 중요</strong>
+        </div>
+      </div>
+      <div style="background:white;border-radius:10px;padding:12px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">추천 광고</div>
+        <div style="font-size:13px;color:var(--mid);">관심 없는 광고 노출(FP) → 사용자 이탈</div>
+      </div>
+    </div>
+
+    <div style="background:#FFF7ED;border:2px solid var(--orange);border-radius:14px;padding:18px;">
+      <div style="font-size:15px;font-weight:800;color:var(--orange);margin-bottom:12px;">🏥 재현율이 더 중요한 경우</div>
+      <div style="background:white;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;">암 진단 모델</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.7;">
+          암 환자→정상 오판(FN): 치료 기회 놓침 → 생명 위협 ❌<br>
+          정상인→암 오판(FP): 추가 검사 비용 발생<br>
+          <strong style="color:var(--orange);">→ FN을 줄이는 재현율이 중요</strong>
+        </div>
+      </div>
+      <div style="background:white;border-radius:10px;padding:12px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">금융 사기 탐지</div>
+        <div style="font-size:13px;color:var(--mid);">사기 거래→정상 오판(FN) → 큰 금전 피해</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;margin-top:14px;">
+    ✅ 가장 이상적: 정밀도와 재현율 모두 높은 것. 단, 둘 중 하나만 극단적으로 높고 나머지가 매우 낮으면 바람직하지 않다.<br>
+    → 문제의 목적과 상황에 맞게 평가 지표를 선택해야 한다.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S14  분류 계산 연습
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s14">
+  <div class="lbl" style="color:var(--orange);">계산 연습 ✏️ · 분류 모델</div>
+  <div class="ttl">혼동 행렬로 성능 지표 계산해보기</div>
+  <div class="sub">아래 혼동 행렬을 보고 정확도·정밀도·재현율·특이도를 직접 계산해보자.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div>
+      <table style="border-collapse:separate;border-spacing:4px;width:100%;margin-bottom:16px;">
+        <thead>
+          <tr>
+            <td colspan="2" style="width:100px;"></td>
+            <td colspan="2" style="background:#F8FAFF;text-align:center;padding:6px;font-size:12px;font-weight:700;border-radius:6px;">모델의 분류 결과</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td style="text-align:center;padding:6px;font-size:11px;font-weight:700;color:var(--mid);">예측: 정상(N)</td>
+            <td style="text-align:center;padding:6px;font-size:11px;font-weight:700;color:var(--mid);">예측: 불량(P)</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;padding:4px;font-size:12px;font-weight:700;color:var(--mid);">실제 데이터</td>
+            <td style="padding:6px;font-size:11px;font-weight:700;color:var(--mid);">실제: 정상</td>
+            <td style="background:#D1FAE5;border:2px solid #10B981;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;font-weight:900;color:#065F46;">TN = 85</div>
+            </td>
+            <td style="background:#FEE2E2;border:2px solid #EF4444;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;font-weight:900;color:#991B1B;">FP = 5</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:6px;font-size:11px;font-weight:700;color:var(--mid);">실제: 불량</td>
+            <td style="background:#FEE2E2;border:2px solid #EF4444;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;font-weight:900;color:#991B1B;">FN = 3</div>
+            </td>
+            <td style="background:#DBEAFE;border:2px solid #3B82F6;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;font-weight:900;color:#1E40AF;">TP = 7</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:14px;font-weight:700;line-height:2.2;">
+        Q1. 정확도를 구하시오.<br>
+        Q2. 정밀도를 구하시오.<br>
+        Q3. 재현율을 구하시오.<br>
+        Q4. 특이도를 구하시오.
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="answer-cls" style="background:#EFF6FF;border-radius:12px;padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px;">정확도</div>
+        <div style="font-size:12px;color:var(--mid);">(TN+TP)/(전체) = (85+7)/100 = 92/100</div>
+        <div style="background:var(--blue);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">정확도 = 0.92 (92%)</div>
+      </div>
+      <div class="answer-cls" style="background:#FFF7ED;border-radius:12px;padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:4px;">정밀도</div>
+        <div style="font-size:12px;color:var(--mid);">TP/(FP+TP) = 7/(5+7) = 7/12</div>
+        <div style="background:var(--orange);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">정밀도 ≈ 0.583 (58.3%)</div>
+      </div>
+      <div class="answer-cls" style="background:#F0FDF4;border-radius:12px;padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:4px;">재현율</div>
+        <div style="font-size:12px;color:var(--mid);">TP/(FN+TP) = 7/(3+7) = 7/10</div>
+        <div style="background:var(--teal);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">재현율 = 0.7 (70%)</div>
+      </div>
+      <div class="answer-cls" style="background:#EDE9FF;border-radius:12px;padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px;">특이도</div>
+        <div style="font-size:12px;color:var(--mid);">TN/(TN+FP) = 85/(85+5) = 85/90</div>
+        <div style="background:var(--purple);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">특이도 ≈ 0.944 (94.4%)</div>
+      </div>
+      <button id="btn-cls" onclick="revealAnswer('cls')" style="padding:13px;background:var(--orange);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:'Noto Sans KR',sans-serif;">📖 정답 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S15  실루엣 계수 개념
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s15">
+  <div class="lbl" style="color:var(--purple);">Part 4 · 군집화 모델 성능 평가</div>
+  <div class="ttl">실루엣 계수 (Silhouette Coefficient)</div>
+  <div class="sub">군집화 모델의 성능을 수치화하는 지표. 각 데이터가 <strong>얼마나 잘 군집화</strong>되어 있는지 나타낸다.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--mid);margin-bottom:10px;">📐 실루엣 계수 수식</div>
+        <div style="margin-bottom:12px;"><span class="math block" data-expr="s(i) = \dfrac{b(i) - a(i)}{\max\bigl(a(i),\ b(i)\bigr)}"></span></div>
+        <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:13px;margin-bottom:8px;">
+          <strong>a(i):</strong> 같은 군집 내 다른 데이터들과의 평균 거리<br>
+          → 군집 내 응집도 측정 / 작을수록 좋음 (군집이 촘촘)
+        </div>
+        <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
+          <strong>b(i):</strong> 가장 가까운 다른 군집까지의 평균 거리<br>
+          → 군집 간 분리도 측정 / 클수록 좋음 (군집이 잘 분리됨)
+        </div>
+      </div>
+
+      <div class="card" style="padding:12px;">
+        <svg viewBox="0 0 340 220" width="100%" height="auto" style="display:block;">
+          <!-- 군집 A (파랑) -->
+          <ellipse cx="75" cy="65" rx="48" ry="40" fill="rgba(59,130,246,0.08)" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="60" cy="60" r="7" fill="#3B82F6" opacity=".8"/>
+          <circle cx="80" cy="45" r="7" fill="#3B82F6" opacity=".8"/>
+          <circle cx="50" cy="80" r="7" fill="#3B82F6" opacity=".8"/>
+          <circle cx="75" cy="70" r="7" fill="#3B82F6" opacity=".8"/>
+          <circle cx="90" cy="55" r="7" fill="#3B82F6" opacity=".8"/>
+          <text x="75" y="115" text-anchor="middle" font-size="11" fill="#3B82F6" font-weight="700" font-family="Noto Sans KR">군집 A</text>
+
+          <!-- 군집 B (빨강) -->
+          <ellipse cx="250" cy="55" rx="48" ry="40" fill="rgba(239,68,68,0.08)" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="230" cy="55" r="7" fill="#EF4444" opacity=".8"/>
+          <circle cx="250" cy="40" r="7" fill="#EF4444" opacity=".8"/>
+          <circle cx="240" cy="70" r="7" fill="#EF4444" opacity=".8"/>
+          <circle cx="265" cy="50" r="7" fill="#EF4444" opacity=".8"/>
+          <circle cx="255" cy="75" r="7" fill="#EF4444" opacity=".8"/>
+          <text x="250" y="115" text-anchor="middle" font-size="11" fill="#EF4444" font-weight="700" font-family="Noto Sans KR">군집 B</text>
+
+          <!-- 군집 C (초록) -->
+          <ellipse cx="165" cy="185" rx="45" ry="28" fill="rgba(16,185,129,0.08)" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="150" cy="185" r="7" fill="#10B981" opacity=".8"/>
+          <circle cx="170" cy="175" r="7" fill="#10B981" opacity=".8"/>
+          <circle cx="140" cy="195" r="7" fill="#10B981" opacity=".8"/>
+          <circle cx="168" cy="198" r="7" fill="#10B981" opacity=".8"/>
+          <text x="165" y="218" text-anchor="middle" font-size="11" fill="#10B981" font-weight="700" font-family="Noto Sans KR">군집 C</text>
+
+          <!-- 기준점 i (군집 A, 강조) -->
+          <circle cx="80" cy="45" r="11" fill="#3B82F6" stroke="#1E293B" stroke-width="3"/>
+          <text x="80" y="49" text-anchor="middle" font-size="10" fill="white" font-weight="900" font-family="Noto Sans KR">i</text>
+
+          <!-- a(i): 군집 A 내 다른 점들까지 선 -->
+          <line x1="80" y1="45" x2="60" y2="60" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+          <line x1="80" y1="45" x2="50" y2="80" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+          <line x1="80" y1="45" x2="75" y2="70" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+          <line x1="80" y1="45" x2="90" y2="55" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+          <rect x="88" y="55" width="32" height="16" rx="4" fill="#EDE9FF"/>
+          <text x="104" y="67" text-anchor="middle" font-size="9" fill="#7C3AED" font-weight="700" font-family="Noto Sans KR">a(i)</text>
+
+          <!-- b(i): 군집 B 중심까지 선 -->
+          <line x1="80" y1="45" x2="248" y2="56" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3" opacity=".7"/>
+          <rect x="148" y="36" width="32" height="16" rx="4" fill="#FEE2E2"/>
+          <text x="164" y="48" text-anchor="middle" font-size="9" fill="#DC2626" font-weight="700" font-family="Noto Sans KR">b(i)</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#D1FAE5;border:2px solid var(--teal);border-radius:14px;padding:16px;">
+        <div style="font-size:20px;font-weight:900;color:var(--teal);margin-bottom:6px;">s(i) ≈ 1</div>
+        <div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><strong>b(i) &gt;&gt; a(i)</strong></div>
+        <div style="font-size:13px;color:var(--mid);">같은 군집 내 응집력 높고 다른 군집과 잘 분리됨</div>
+        <div style="font-size:13px;font-weight:700;color:var(--teal);margin-top:6px;">→ 군집화 매우 우수 ✅</div>
+      </div>
+      <div style="background:#FEF3C7;border:2px solid var(--amber);border-radius:14px;padding:16px;">
+        <div style="font-size:20px;font-weight:900;color:var(--amber);margin-bottom:6px;">s(i) ≈ 0</div>
+        <div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><strong>b(i) ≈ a(i)</strong></div>
+        <div style="font-size:13px;color:var(--mid);">군집 경계에 위치한 데이터</div>
+        <div style="font-size:13px;font-weight:700;color:var(--amber);margin-top:6px;">→ 어느 군집에 속할지 애매한 상태</div>
+      </div>
+      <div style="background:#FEE2E2;border:2px solid var(--red);border-radius:14px;padding:16px;">
+        <div style="font-size:20px;font-weight:900;color:var(--red);margin-bottom:6px;">s(i) ≈ -1</div>
+        <div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><strong>b(i) &lt;&lt; a(i)</strong></div>
+        <div style="font-size:13px;color:var(--mid);">다른 군집에 더 가까운 상태</div>
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-top:6px;">→ 잘못된 군집에 배정됨 ❌</div>
+      </div>
+      <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:12px;">
+        📌 데이터 하나의 실루엣 계수가 높다고 전체 군집화가 좋다고 볼 수 없다. 각 군집별 평균이 전체 평균과 크게 벗어나지 않아야 군집화가 고르게 잘 된 것이다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S16  실루엣 계수 계산 연습
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s16">
+  <div class="lbl" style="color:var(--purple);">계산 연습 ✏️ · 군집화 모델</div>
+  <div class="ttl">실루엣 계수 직접 계산해보기</div>
+  <div class="sub">아래 데이터를 보고 점 P의 실루엣 계수를 구해보자.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
+    <!-- 왼쪽 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:12px;">
+        <svg viewBox="0 0 320 220" width="100%" height="auto" style="display:block;">
+          <!-- 군집 A (파랑) -->
+          <ellipse cx="75" cy="80" rx="50" ry="45" fill="rgba(59,130,246,0.08)" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="60" cy="70" r="7" fill="#3B82F6" opacity=".8"/>
+          <text x="60" y="60" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P1</text>
+          <circle cx="85" cy="50" r="7" fill="#3B82F6" opacity=".8"/>
+          <text x="85" y="40" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P2</text>
+          <circle cx="50" cy="95" r="7" fill="#3B82F6" opacity=".8"/>
+          <text x="50" y="85" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P3</text>
+          <circle cx="80" cy="85" r="7" fill="#3B82F6" opacity=".8"/>
+          <text x="80" y="75" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P4</text>
+          <text x="75" y="135" text-anchor="middle" font-size="11" fill="#3B82F6" font-weight="700" font-family="Noto Sans KR">군집 A</text>
+
+          <!-- 군집 B (빨강) -->
+          <ellipse cx="245" cy="160" rx="50" ry="38" fill="rgba(239,68,68,0.08)" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="230" cy="155" r="7" fill="#EF4444" opacity=".8"/>
+          <text x="230" y="145" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q1</text>
+          <circle cx="255" cy="140" r="7" fill="#EF4444" opacity=".8"/>
+          <text x="255" y="130" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q2</text>
+          <circle cx="215" cy="170" r="7" fill="#EF4444" opacity=".8"/>
+          <text x="215" y="160" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q3</text>
+          <text x="245" y="208" text-anchor="middle" font-size="11" fill="#EF4444" font-weight="700" font-family="Noto Sans KR">군집 B</text>
+
+          <!-- 점 P (보라, 군집 A) -->
+          <circle cx="100" cy="105" r="10" fill="#8B5CF6" stroke="#1E293B" stroke-width="2.5"/>
+          <text x="100" y="109" text-anchor="middle" font-size="10" fill="white" font-weight="900" font-family="Noto Sans KR">P</text>
+
+          <!-- a(i) 선 (P→P1,P2,P3,P4) -->
+          <line x1="100" y1="105" x2="60" y2="70" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+          <line x1="100" y1="105" x2="85" y2="50" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+          <line x1="100" y1="105" x2="50" y2="95" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+          <line x1="100" y1="105" x2="80" y2="85" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+
+          <!-- b(i) 선 (P→Q1,Q2,Q3) -->
+          <line x1="100" y1="105" x2="230" y2="155" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
+          <line x1="100" y1="105" x2="255" y2="140" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
+          <line x1="100" y1="105" x2="215" y2="170" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
+
+          <!-- 범례 -->
+          <circle cx="10" cy="210" r="5" fill="#8B5CF6"/>
+          <text x="18" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">P(계산 대상)</text>
+          <circle cx="110" cy="210" r="5" fill="#3B82F6"/>
+          <text x="118" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">군집A</text>
+          <circle cx="165" cy="210" r="5" fill="#EF4444"/>
+          <text x="173" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">군집B</text>
+        </svg>
+      </div>
+
+      <div style="background:white;border-radius:12px;padding:14px;border-left:4px solid var(--purple);box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;">점 P는 군집 A에 소속</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.9;">
+          <strong style="color:var(--blue);">군집 A 내 거리:</strong><br>
+          P→P1 = 3.0 &nbsp; P→P2 = 5.0<br>
+          P→P3 = 2.0 &nbsp; P→P4 = 2.0<br>
+          <strong style="color:var(--red);">군집 B까지 거리:</strong><br>
+          P→Q1 = 6.0 &nbsp; P→Q2 = 8.0 &nbsp; P→Q3 = 5.0
+        </div>
+        <div style="font-size:14px;font-weight:700;margin-top:10px;">Q. 점 P의 실루엣 계수 s(P)를 구하시오.</div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="answer-sil" style="background:#EDE9FF;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:800;color:var(--purple);margin-bottom:6px;">Step 1: a(P) 계산 — 군집 A 내 평균 거리</div>
+        <div style="font-size:13px;color:var(--mid);">(3.0 + 5.0 + 2.0 + 2.0) / 4 = 12/4</div>
+        <div style="background:var(--purple);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">a(P) = 3.0</div>
+      </div>
+      <div class="answer-sil" style="background:#F0FDF4;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:800;color:var(--teal);margin-bottom:6px;">Step 2: b(P) 계산 — 군집 B까지 평균 거리</div>
+        <div style="font-size:13px;color:var(--mid);">(6.0 + 8.0 + 5.0) / 3 = 19/3 ≈ 6.33</div>
+        <div style="background:var(--teal);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">b(P) = 6.33</div>
+      </div>
+      <div class="answer-sil" style="background:#DBEAFE;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:800;color:var(--blue);margin-bottom:6px;">Step 3: s(P) 계산</div>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:8px;">
+          <span class="math block" data-expr="s(P) = \dfrac{b(P)-a(P)}{\max(a(P),b(P))} = \dfrac{6.33-3.0}{6.33} \approx 0.53"></span>
+        </div>
+        <div style="background:#D1FAE5;border-radius:6px;padding:8px;text-align:center;font-size:13px;font-weight:800;color:#065F46;">
+          s(P) ≈ 0.53 → 군집화 양호한 편 ✅
+        </div>
+      </div>
+      <button id="btn-sil" onclick="revealAnswer('sil')" style="padding:13px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:'Noto Sans KR',sans-serif;">📖 정답 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S17  전체 성능 평가 지표 비교표
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s17">
+  <div class="lbl" style="color:var(--mid);">Part 5 · 정리</div>
+  <div class="ttl">성능 평가 지표 한눈에 비교</div>
+  <div class="sub">모델 종류에 따라 적합한 성능 평가 지표가 다르다.</div>
+
+  <table class="ctbl2" style="flex:1;">
+    <thead>
+      <tr style="background:var(--dark);color:white;">
+        <th>모델</th>
+        <th>지표</th>
+        <th>수식(간략)</th>
+        <th>좋은 값</th>
+        <th>특징</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#EFF6FF;">
+        <td rowspan="4" class="rl2" style="font-weight:800;color:var(--blue);">회귀</td>
+        <td style="font-weight:700;">MSE</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">Σ(y-ŷ)²/n</td>
+        <td>0에 가까울수록</td>
+        <td style="text-align:left;">큰 오차에 민감</td>
+      </tr>
+      <tr style="background:#EFF6FF;">
+        <td style="font-weight:700;">RMSE</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">√MSE</td>
+        <td>0에 가까울수록</td>
+        <td style="text-align:left;">원래 단위 해석</td>
+      </tr>
+      <tr style="background:#EFF6FF;">
+        <td style="font-weight:700;">MAE</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">Σ|y-ŷ|/n</td>
+        <td>0에 가까울수록</td>
+        <td style="text-align:left;">평균 오차 크기</td>
+      </tr>
+      <tr style="background:#EFF6FF;">
+        <td style="font-weight:700;">R²</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">1-SS_res/SS_tot</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">설명력 비율</td>
+      </tr>
+      <tr style="background:#FFF7ED;">
+        <td rowspan="4" class="rl2" style="font-weight:800;color:var(--orange);">분류</td>
+        <td style="font-weight:700;">정확도</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">(TN+TP)/전체</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">클래스 불균형 주의</td>
+      </tr>
+      <tr style="background:#FFF7ED;">
+        <td style="font-weight:700;">정밀도</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">TP/(FP+TP)</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">FP 줄이기 중요 시</td>
+      </tr>
+      <tr style="background:#FFF7ED;">
+        <td style="font-weight:700;">재현율</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">TP/(FN+TP)</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">FN 줄이기 중요 시</td>
+      </tr>
+      <tr style="background:#FFF7ED;">
+        <td style="font-weight:700;">특이도</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">TN/(TN+FP)</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">음성 판별 능력</td>
+      </tr>
+      <tr style="background:#EDE9FF;">
+        <td class="rl2" style="font-weight:800;color:var(--purple);">군집화</td>
+        <td style="font-weight:700;">실루엣 계수</td>
+        <td style="font-family:'Space Grotesk',monospace;font-size:12px;">(b-a)/max(a,b)</td>
+        <td>1에 가까울수록</td>
+        <td style="text-align:left;">-1~1 범위</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     S18  정리 퀴즈
+═══════════════════════════════════════════════════ -->
+<div class="slide" id="s18">
+  <div class="lbl" style="color:var(--purple);">🎯 정리 퀴즈</div>
+  <div class="ttl">오늘 배운 내용 확인하기</div>
+  <div class="sub">선택지를 클릭해서 정답을 맞혀보자! 다시 클릭해서 바꿀 수 있어.</div>
+
+  <div class="fqg">
+    <!-- Q1 -->
+    <div class="fqc">
+      <div class="fqn">Q1</div>
+      <div class="fqq">훈련 데이터에만 과도하게 적응해 새로운 데이터 예측이 나빠지는 현상은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,1,false,'일반화는 새로운 데이터에서도 잘 작동하는 이상적 상태예요.')">① 일반화</button>
+        <button class="fqb" onclick="cQ(this,1,false,'과소적합은 모델이 너무 단순해서 훈련 데이터도 제대로 못 학습하는 현상이에요.')">② 과소적합</button>
+        <button class="fqb" onclick="cQ(this,1,true,'정답! 과적합(Overfitting)은 훈련 데이터에만 최적화되어 새 데이터에 취약한 상태예요.')">③ 과적합</button>
+      </div>
+      <div class="fqf" id="fb1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="fqc">
+      <div class="fqn">Q2</div>
+      <div class="fqq">회귀 모델에서 오차의 절댓값 평균을 나타내는 지표는?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,2,false,'MSE는 오차를 제곱하여 평균을 구해요. 절댓값이 아니라 제곱이에요.')">① MSE</button>
+        <button class="fqb" onclick="cQ(this,2,false,'RMSE는 MSE의 제곱근이에요.')">② RMSE</button>
+        <button class="fqb" onclick="cQ(this,2,true,'정답! MAE(평균절대오차)는 오차 절댓값 평균으로 전반적인 오차 크기를 나타내요.')">③ MAE</button>
+      </div>
+      <div class="fqf" id="fb2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="fqc">
+      <div class="fqn">Q3</div>
+      <div class="fqq">실제 불량(양성) 데이터 중 불량으로 올바르게 예측한 비율을 나타내는 지표는?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,3,false,'정확도는 전체 데이터 중 올바르게 분류한 비율이에요.')">① 정확도</button>
+        <button class="fqb" onclick="cQ(this,3,false,'정밀도는 불량으로 예측한 것 중 실제 불량 비율이에요. (TP/FP+TP)')">② 정밀도</button>
+        <button class="fqb" onclick="cQ(this,3,true,'정답! 재현율(Recall)은 실제 양성 중 양성으로 올바르게 예측한 비율로 TP/(FN+TP)로 계산해요.')">③ 재현율</button>
+      </div>
+      <div class="fqf" id="fb3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="fqc">
+      <div class="fqn">Q4</div>
+      <div class="fqq">실루엣 계수 s(i)의 범위와 해석으로 올바른 것은?</div>
+      <div class="fqo">
+        <button class="fqb" onclick="cQ(this,4,false,'실루엣 계수는 -1~1 사이이며 1에 가까울수록 좋아요.')">① 0~1 사이이며 0에 가까울수록 좋다</button>
+        <button class="fqb" onclick="cQ(this,4,true,'정답! -1~1 범위이며 1에 가까울수록 군집 내 응집도가 높고 군집 간 분리가 잘 된 것이에요.')">② -1~1 사이이며 1에 가까울수록 좋다</button>
+        <button class="fqb" onclick="cQ(this,4,false,'값이 클수록(1에 가까울수록) 군집화가 잘 된 것이에요. -1에 가까울수록 잘못 배정된 것이에요.')">③ 값이 클수록 군집이 잘못 배정된 것이다</button>
+      </div>
+      <div class="fqf" id="fb4"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /slideshow -->
+
+<a href="../../index.html" class="home-btn">🏠 목차</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ── KaTeX 렌더링 ──
+document.querySelectorAll('.math').forEach(el=>{
+  katex.render(el.dataset.expr, el,
+    {throwOnError:false, displayMode:el.classList.contains('block')});
+});
+
+// ── 슬라이드 번호 배지 ──
+const total = document.querySelectorAll('.slide').length;
+document.querySelectorAll('.slide').forEach((el,i)=>{
+  el.setAttribute('data-slide',(i+1)+' / '+total);
+});
+
+// ── 정답 보기 ──
+function revealAnswer(id){
+  document.querySelectorAll('.answer-'+id).forEach(el=>{
+    el.style.filter='none';
+  });
+  const btn=document.getElementById('btn-'+id);
+  btn.textContent='✅ 정답 확인됨';
+  btn.style.background='var(--teal)';
+}
+
+// ── 퀴즈 ──
+function cQ(btn,n,ok,msg){
+  const opts=btn.parentElement.querySelectorAll('.fqb');
+  opts.forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false;});
+  btn.classList.add(ok?'correct':'wrong');
+  const f=document.getElementById('fb'+n);
+  f.textContent=(ok?'✅ 정답! ':'❌ 오답! ')+msg;
+  f.className='fqf show '+(ok?'ok':'no');
+}
+
+// ── 탐구 문제 토글 ──
+function toggleAnswer(n){
+  const el = document.getElementById('kmAns'+n);
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+// ── k-Means 데이터 수정 (소속이 바뀌는 역동적인 시나리오) ──
+const kmData = [
+  {id:'A', x:2, y:4},
+  {id:'B', x:2, y:2},
+  {id:'C', x:4, y:3}, // 이 데이터가 Step 4에서 군집을 옮기게 됩니다.
+  {id:'D', x:8, y:4},
+  {id:'E', x:8, y:2},
+];
+
+const kmSteps = [
+  {
+    title: 'Step 0: 초기 데이터 상태',
+    desc: '5개의 데이터 포인트가 평면에 존재합니다.\n데이터 간의 거리를 고려했을 때,\n어떻게 묶이는 것이 가장 효율적일까요?',
+    centroids: null,
+    assignments: null
+  },
+  {
+    title: 'Step 1: 초기 중심점(Centroid) 설정',
+    desc: '데이터가 아닌 임의의 좌표에 중심점을 설정합니다.\n중심점 1(C1): (0.0, 3.0)\n중심점 2(C2): (5.0, 3.0)',
+    centroids: [{x:0,y:3}, {x:5,y:3}],
+    assignments: null
+  },
+  {
+    title: 'Step 2: 1차 군집 할당 (유클리드 거리)',
+    desc: '각 데이터에서 더 가까운 중심점으로 군집을 할당합니다.\nC점(4,3)은 C1(거리 4)보다 C2(거리 1)에 더 가깝습니다.\n\n결과: {A, B} → 군집1 / {C, D, E} → 군집2',
+    centroids: [{x:0,y:3}, {x:5,y:3}],
+    assignments: [0, 0, 1, 1, 1] 
+  },
+  {
+    title: 'Step 3: 중심점 재계산 (평균값 이동)',
+    desc: '군집별 데이터들의 좌표 평균을 구하여 중심점을 이동합니다.\nC1_new = {(2,4), (2,2)}의 평균 = (2.0, 3.0)\nC2_new = {(4,3), (8,4), (8,2)}의 평균 = (6.67, 3.0)',
+    centroids: [{x:2.0, y:3.0}, {x:6.67, y:3.0}],
+    assignments: [0, 0, 1, 1, 1]
+  },
+  {
+    title: 'Step 4: 2차 군집 재할당 (소속 변경 발생)',
+    desc: '이동한 중심점과 거리를 다시 계산합니다.\nC점(4,3)은 이제 C1(거리 2)이 C2(거리 2.67)보다 가깝습니다!\nC점의 소속이 군집2에서 군집1로 변경되었습니다.',
+    centroids: [{x:2.0, y:3.0}, {x:6.67, y:3.0}],
+    assignments: [0, 0, 0, 1, 1] // C의 소속이 1(C2)에서 0(C1)으로 변경됨
+  },
+  {
+    title: 'Step 5: 최종 중심점 업데이트',
+    desc: '소속이 변했으므로 중심점을 다시 계산합니다.\nC1_final: {A, B, C}의 평균 → (2.67, 3.0)\nC2_final: {D, E}의 평균 → (8.0, 3.0)',
+    centroids: [{x:2.67, y:3.0}, {x:8.0, y:3.0}],
+    assignments: [0, 0, 0, 1, 1]
+  },
+  {
+    title: '✅ 군집화 완료 (수렴)',
+    desc: '더 이상 데이터의 소속이 바뀌지 않는 수렴 상태입니다.\n최종 군집:\n그룹 1: {A, B, C} / 그룹 2: {D, E}',
+    centroids: [{x:2.67, y:3.0}, {x:8.0, y:3.0}],
+    assignments: [0, 0, 0, 1, 1],
+    done: true
+  }
+];
+
+let kmStep = 0;
+const colors = ['#3B82F6','#EF4444'];
+const colorsBg = ['#DBEAFE','#FEE2E2'];
+
+function kmDraw() {
+  const canvas = document.getElementById('kmeansCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pad = 50;
+  const tx = x => pad + (x / 9) * (W - pad*2);
+  const ty = y => H - pad - (y / 9) * (H - pad*2);
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#F8FAFF';
+  ctx.fillRect(0,0,W,H);
+
+  ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1;
+  for (let i=0; i<=9; i++) {
+    ctx.beginPath(); ctx.moveTo(tx(i), ty(0)); ctx.lineTo(tx(i), ty(9)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx(0), ty(i)); ctx.lineTo(tx(9), ty(i)); ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(tx(0),ty(0)); ctx.lineTo(tx(9),ty(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tx(0),ty(0)); ctx.lineTo(tx(0),ty(9)); ctx.stroke();
+
+  ctx.fillStyle = '#94A3B8'; ctx.font = '11px Space Grotesk';
+  ctx.textAlign = 'center';
+  for (let i=0; i<=9; i+=2) {
+    ctx.fillText(i, tx(i), ty(0)+16);
+    ctx.textAlign = 'right';
+    ctx.fillText(i, tx(0)-6, ty(i)+4);
+    ctx.textAlign = 'center';
+  }
+
+  const step = kmSteps[kmStep];
+
+  if (step.assignments && step.centroids) {
+    step.centroids.forEach((c,ci) => {
+      ctx.beginPath();
+      ctx.arc(tx(c.x), ty(c.y), 60, 0, Math.PI*2);
+      ctx.fillStyle = ci===0 ? 'rgba(59,130,246,0.07)' : 'rgba(239,68,68,0.07)';
+      ctx.fill();
+    });
+  }
+
+  if (step.assignments && step.centroids) {
+    kmData.forEach((p,i) => {
+      const c = step.centroids[step.assignments[i]];
+      ctx.beginPath();
+      ctx.setLineDash([4,3]);
+      ctx.strokeStyle = colors[step.assignments[i]]+'66';
+      ctx.lineWidth = 1;
+      ctx.moveTo(tx(p.x), ty(p.y));
+      ctx.lineTo(tx(c.x), ty(c.y));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  }
+
+  kmData.forEach((p,i) => {
+    const assigned = step.assignments ? step.assignments[i] : null;
+    const col = assigned !== null ? colors[assigned] : '#64748B';
+    ctx.beginPath();
+    ctx.arc(tx(p.x), ty(p.y), 10, 0, Math.PI*2);
+    ctx.fillStyle = col;
+    ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#1E293B';
+    ctx.font = 'bold 12px Noto Sans KR';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.id, tx(p.x), ty(p.y) - 14);
+  });
+
+  if (step.centroids) {
+    step.centroids.forEach((c,ci) => {
+      if (kmStep === 3 && kmSteps[1].centroids) {
+        const prev = kmSteps[1].centroids[ci];
+        ctx.beginPath();
+        ctx.setLineDash([6,3]);
+        ctx.strokeStyle = colors[ci]+'88';
+        ctx.lineWidth = 2;
+        ctx.moveTo(tx(prev.x), ty(prev.y));
+        ctx.lineTo(tx(c.x), ty(c.y));
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      ctx.save();
+      ctx.translate(tx(c.x), ty(c.y));
+      ctx.fillStyle = colors[ci];
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let k=0; k<5; k++) {
+        const angle = (k*4*Math.PI/5) - Math.PI/2;
+        const angle2 = (k*4*Math.PI/5 + 2*Math.PI/5) - Math.PI/2;
+        const r1=14, r2=6;
+        if(k===0) ctx.moveTo(r1*Math.cos(-Math.PI/2), r1*Math.sin(-Math.PI/2));
+        ctx.lineTo(r1*Math.cos(angle), r1*Math.sin(angle));
+        ctx.lineTo(r2*Math.cos(angle2), r2*Math.sin(angle2));
+      }
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = colors[ci];
+      ctx.font = 'bold 11px Space Grotesk';
+      ctx.textAlign = 'center';
+      const label = kmStep<=1
+        ? `C${ci+1}(${c.x},${c.y})`
+        : `C${ci+1}(${c.x.toFixed(2)},${c.y.toFixed(2)})`;
+      ctx.fillText(label, tx(c.x), ty(c.y)+26);
+    });
+  }
+
+  if (step.done) {
+    ctx.fillStyle = 'rgba(16,185,129,0.12)';
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#065F46';
+    ctx.font = 'bold 18px Noto Sans KR';
+    ctx.textAlign = 'center';
+    ctx.fillText('✅ 군집화 완료!', W/2, 30);
+  }
+}
+
+function kmUpdatePanel() {
+  const step = kmSteps[kmStep];
+  document.getElementById('kmStepTitle').textContent = step.title;
+  document.getElementById('kmStepDesc').innerText = step.desc;
+
+  if (step.centroids) {
+    const c1 = step.centroids[0], c2 = step.centroids[1];
+    document.getElementById('kmCentroidInfo').innerHTML =
+      `<span style="color:#3B82F6;font-weight:700;">C1</span>: (${c1.x.toFixed(2)}, ${c1.y.toFixed(2)}) &nbsp;|&nbsp; <span style="color:#EF4444;font-weight:700;">C2</span>: (${c2.x.toFixed(2)}, ${c2.y.toFixed(2)})`;
+  } else {
+    document.getElementById('kmCentroidInfo').textContent = 'C1: 미설정  |  C2: 미설정';
+  }
+
+  const tbody = document.getElementById('kmDataTable');
+  tbody.innerHTML = '';
+  kmData.forEach((p,i) => {
+    const assigned = step.assignments ? step.assignments[i] : null;
+    const col = assigned !== null ? colors[assigned] : '#64748B';
+    const label = assigned !== null ? `군집${assigned+1}` : '-';
+    tbody.innerHTML +=
+      `<tr style="border-bottom:1px solid #F1F5F9;">
+        <td style="padding:5px 10px;font-weight:700;color:${col};">${p.id}</td>
+        <td style="padding:5px 10px;text-align:center;">${p.x}</td>
+        <td style="padding:5px 10px;text-align:center;">${p.y}</td>
+        <td style="padding:5px 10px;text-align:center;font-weight:700;color:${col};">${label}</td>
+      </tr>`;
+  });
+
+  const btn = document.getElementById('kmBtn');
+  if (kmStep >= kmSteps.length-1) {
+    btn.textContent = '✅ 완료';
+    btn.style.background = '#10B981';
+    btn.disabled = true;
+  } else {
+    btn.textContent = '▶ 다음 단계';
+    btn.style.background = 'var(--teal)';
+    btn.disabled = false;
+  }
+}
+
+function kmNext() {
+  if (kmStep < kmSteps.length-1) { kmStep++; kmDraw(); kmUpdatePanel(); }
+}
+function kmReset() {
+  kmStep = 0; kmDraw(); kmUpdatePanel();
+}
+
+// ── IntersectionObserver ──
+const cr={};
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const id = entry.target.id;
+    if(id==='s4' && !cr[4]){ kmDraw(); kmUpdatePanel(); cr[4]=1; }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.slide').forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>
