@@ -916,7 +916,7 @@
         </thead>
         <tbody>
           <tr>
-            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;padding:8px 4px;font-size:13px;font-weight:700;color:var(--mid);">실제 데이터</td>
+            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;color:var(--mid);">실제 데이터</td>
             <td style="padding:8px 6px;font-size:12px;font-weight:700;color:var(--mid);">실제: 정상</td>
             <td style="background:#D1FAE5;border:2px solid #10B981;border-radius:10px;padding:16px;text-align:center;">
               <div style="font-size:24px;font-weight:900;color:#065F46;">TN = 85</div>
@@ -1023,8 +1023,8 @@
 
   <div class="card" style="margin-bottom:14px;padding:12px 18px;">
     <div style="font-size:13px;color:var(--mid);line-height:1.8;">
-      정밀도↑ = FP↓ (음성을 양성으로 잘못 분류하는 것 감소) &nbsp;|&nbsp;
-      재현율↑ = FN↓ (양성을 음성으로 잘못 분류하는 것 감소)<br>
+      정밀도↑ = FP↓ (실제 음성을 양성으로 잘못 분류하는 것 감소) &nbsp;|&nbsp;
+      재현율↑ = FN↓ (실제 양성을 음성으로 잘못 분류하는 것 감소)<br>
       → 정밀도를 높이면 재현율이 낮아지는 경향, 그 반대도 동일
     </div>
   </div>
@@ -1094,7 +1094,7 @@
         </thead>
         <tbody>
           <tr>
-            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;padding:4px;font-size:12px;font-weight:700;color:var(--mid);">실제 데이터</td>
+            <td rowspan="2" style="writing-mode:vertical-rl;text-orientation:mixed;text-align:center;padding:4px;font-size:12px;font-weight:700;color:var(--mid);">실제 데이터</td>
             <td style="padding:6px;font-size:11px;font-weight:700;color:var(--mid);">실제: 정상</td>
             <td style="background:#D1FAE5;border:2px solid #10B981;border-radius:8px;padding:12px;text-align:center;">
               <div style="font-size:20px;font-weight:900;color:#065F46;">TN = 85</div>
@@ -1168,7 +1168,7 @@
           → 군집 내 응집도 측정 / 작을수록 좋음 (군집이 촘촘)
         </div>
         <div class="hl" style="background:#F0FDF4;border-left:4px solid var(--teal);font-size:13px;">
-          <strong>b(i):</strong> 가장 가까운 다른 군집까지의 평균 거리<br>
+          <strong>b(i):</strong> 내가 속하지 않은 다른 군집들 중, 나랑 가장 가까운 군집에 속한 '모든 데이터들'과의 평균 거리<br>
           → 군집 간 분리도 측정 / 클수록 좋음 (군집이 잘 분리됨)
         </div>
       </div>
@@ -1242,7 +1242,7 @@
         <div style="font-size:13px;font-weight:700;color:var(--red);margin-top:6px;">→ 잘못된 군집에 배정됨 ❌</div>
       </div>
       <div class="hl" style="background:#EDE9FF;border-left:4px solid var(--purple);font-size:12px;">
-        📌 데이터 하나의 실루엣 계수가 높다고 전체 군집화가 좋다고 볼 수 없다. 각 군집별 평균이 전체 평균과 크게 벗어나지 않아야 군집화가 고르게 잘 된 것이다.
+        📌 전체 실루엣 평균 점수만 높다고 좋은 군집화가 아니다! <br>특정 군집 혼자서만 점수가 높고 다른 군집은 엉망일 수 있으므로, 각 군집별 평균 점수가 전체 평균과 비슷하게 고르게 분포되어야 올바른 군집화임.
       </div>
     </div>
   </div>
@@ -1254,95 +1254,157 @@
 <div class="slide" id="s16">
   <div class="lbl" style="color:var(--purple);">계산 연습 ✏️ · 군집화 모델</div>
   <div class="ttl">실루엣 계수 직접 계산해보기</div>
-  <div class="sub">아래 데이터를 보고 점 P의 실루엣 계수를 구해보자.</div>
+  <div class="sub">군집이 3개일 때, 점 i의 실루엣 계수를 단계별로 구해보자.</div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;">
-    <!-- 왼쪽 -->
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div class="card" style="padding:12px;">
-        <svg viewBox="0 0 320 220" width="100%" height="auto" style="display:block;">
-          <!-- 군집 A (파랑) -->
-          <ellipse cx="75" cy="80" rx="50" ry="45" fill="rgba(59,130,246,0.08)" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3"/>
-          <circle cx="60" cy="70" r="7" fill="#3B82F6" opacity=".8"/>
-          <text x="60" y="60" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P1</text>
-          <circle cx="85" cy="50" r="7" fill="#3B82F6" opacity=".8"/>
-          <text x="85" y="40" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P2</text>
-          <circle cx="50" cy="95" r="7" fill="#3B82F6" opacity=".8"/>
-          <text x="50" y="85" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P3</text>
-          <circle cx="80" cy="85" r="7" fill="#3B82F6" opacity=".8"/>
-          <text x="80" y="75" text-anchor="middle" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">P4</text>
-          <text x="75" y="135" text-anchor="middle" font-size="11" fill="#3B82F6" font-weight="700" font-family="Noto Sans KR">군집 A</text>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;">
+    <!-- 왼쪽: 시각화 + 거리 데이터 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:10px;">
+        <svg viewBox="0 0 340 270" width="100%" height="auto" style="display:block;">
 
-          <!-- 군집 B (빨강) -->
-          <ellipse cx="245" cy="160" rx="50" ry="38" fill="rgba(239,68,68,0.08)" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
-          <circle cx="230" cy="155" r="7" fill="#EF4444" opacity=".8"/>
-          <text x="230" y="145" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q1</text>
-          <circle cx="255" cy="140" r="7" fill="#EF4444" opacity=".8"/>
-          <text x="255" y="130" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q2</text>
-          <circle cx="215" cy="170" r="7" fill="#EF4444" opacity=".8"/>
-          <text x="215" y="160" text-anchor="middle" font-size="9" fill="#991B1B" font-family="Noto Sans KR">Q3</text>
-          <text x="245" y="208" text-anchor="middle" font-size="11" fill="#EF4444" font-weight="700" font-family="Noto Sans KR">군집 B</text>
+          <!-- 군집 A (파랑) — 왼쪽 중단 -->
+          <ellipse cx="80" cy="150" rx="58" ry="52" fill="rgba(59,130,246,0.10)" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <!-- 점 i (보라, 군집 A 소속) -->
+          <circle cx="95" cy="158" r="10" fill="#8B5CF6" stroke="#1E293B" stroke-width="2"/>
+          <text x="95" y="162" text-anchor="middle" font-size="11" fill="white" font-weight="900" font-family="Noto Sans KR">i</text>
+          <!-- 군집 A 다른 점들 -->
+          <circle cx="52" cy="138" r="7" fill="#3B82F6" opacity=".85"/>
+          <circle cx="72" cy="110" r="7" fill="#3B82F6" opacity=".85"/>
+          <circle cx="58" cy="178" r="7" fill="#3B82F6" opacity=".85"/>
+          <text x="80" y="212" text-anchor="middle" font-size="11" fill="#3B82F6" font-weight="700" font-family="Noto Sans KR">클러스터 A</text>
 
-          <!-- 점 P (보라, 군집 A) -->
-          <circle cx="100" cy="105" r="10" fill="#8B5CF6" stroke="#1E293B" stroke-width="2.5"/>
-          <text x="100" y="109" text-anchor="middle" font-size="10" fill="white" font-weight="900" font-family="Noto Sans KR">P</text>
+          <!-- a(i) 화살표: i → 군집A 점들 -->
+          <line x1="95" y1="158" x2="52" y2="138" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="4,3" opacity=".8"/>
+          <line x1="95" y1="158" x2="72" y2="110" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="4,3" opacity=".8"/>
+          <line x1="95" y1="158" x2="58" y2="178" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="4,3" opacity=".8"/>
 
-          <!-- a(i) 선 (P→P1,P2,P3,P4) -->
-          <line x1="100" y1="105" x2="60" y2="70" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
-          <line x1="100" y1="105" x2="85" y2="50" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
-          <line x1="100" y1="105" x2="50" y2="95" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
-          <line x1="100" y1="105" x2="80" y2="85" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+          <!-- a(i) 라벨 -->
+          <text x="58" y="140" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">3.5</text>
+          <text x="74" y="126" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">2</text>
+          <text x="62" y="176" font-size="9" fill="#1E40AF" font-family="Noto Sans KR">3.5</text>
 
-          <!-- b(i) 선 (P→Q1,Q2,Q3) -->
-          <line x1="100" y1="105" x2="230" y2="155" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
-          <line x1="100" y1="105" x2="255" y2="140" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
-          <line x1="100" y1="105" x2="215" y2="170" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="6,3" opacity=".7"/>
+          <!-- 군집 B (초록) — 오른쪽 하단 -->
+          <ellipse cx="255" cy="210" rx="52" ry="38" fill="rgba(16,185,129,0.10)" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <circle cx="235" cy="205" r="7" fill="#10B981" opacity=".85"/>
+          <circle cx="260" cy="192" r="7" fill="#10B981" opacity=".85"/>
+          <circle cx="275" cy="220" r="7" fill="#10B981" opacity=".85"/>
+          <text x="255" y="256" text-anchor="middle" font-size="11" fill="#10B981" font-weight="700" font-family="Noto Sans KR">클러스터 B</text>
+
+          <!-- d(i,B) 화살표: i → 군집B 점들 -->
+          <line x1="95" y1="158" x2="235" y2="205" stroke="#10B981" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+          <line x1="95" y1="158" x2="260" y2="192" stroke="#10B981" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+          <line x1="95" y1="158" x2="275" y2="220" stroke="#10B981" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+
+          <!-- d(i,B) 라벨 -->
+          <text x="158" y="196" font-size="9" fill="#065F46" font-family="Noto Sans KR">5</text>
+          <text x="178" y="172" font-size="9" fill="#065F46" font-family="Noto Sans KR">6</text>
+          <text x="192" y="202" font-size="9" fill="#065F46" font-family="Noto Sans KR">7</text>
+
+          <!-- 군집 C (주황) — 오른쪽 상단 -->
+          <ellipse cx="255" cy="62" rx="52" ry="42" fill="rgba(249,115,22,0.10)" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <circle cx="235" cy="58" r="7" fill="#F97316" opacity=".85"/>
+          <circle cx="265" cy="42" r="7" fill="#F97316" opacity=".85"/>
+          <circle cx="270" cy="76" r="7" fill="#F97316" opacity=".85"/>
+          <text x="255" y="114" text-anchor="middle" font-size="11" fill="#F97316" font-weight="700" font-family="Noto Sans KR">클러스터 C</text>
+
+          <!-- d(i,C) 화살표: i → 군집C 점들 -->
+          <line x1="95" y1="158" x2="235" y2="58" stroke="#F97316" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+          <line x1="95" y1="158" x2="265" y2="42" stroke="#F97316" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+          <line x1="95" y1="158" x2="270" y2="76" stroke="#F97316" stroke-width="1.3" stroke-dasharray="6,3" opacity=".75"/>
+
+          <!-- d(i,C) 라벨 -->
+          <text x="153" y="100" font-size="9" fill="#C2410C" font-family="Noto Sans KR">7.5</text>
+          <text x="178" y="86" font-size="9" fill="#C2410C" font-family="Noto Sans KR">6</text>
+          <text x="188" y="122" font-size="9" fill="#C2410C" font-family="Noto Sans KR">7.5</text>
 
           <!-- 범례 -->
-          <circle cx="10" cy="210" r="5" fill="#8B5CF6"/>
-          <text x="18" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">P(계산 대상)</text>
-          <circle cx="110" cy="210" r="5" fill="#3B82F6"/>
-          <text x="118" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">군집A</text>
-          <circle cx="165" cy="210" r="5" fill="#EF4444"/>
-          <text x="173" y="214" font-size="9" fill="#475569" font-family="Noto Sans KR">군집B</text>
+          <circle cx="8" cy="262" r="5" fill="#8B5CF6"/>
+          <text x="16" y="266" font-size="8.5" fill="#475569" font-family="Noto Sans KR">i (계산 대상)</text>
+          <circle cx="95" cy="262" r="5" fill="#3B82F6"/>
+          <text x="103" y="266" font-size="8.5" fill="#475569" font-family="Noto Sans KR">클러스터A</text>
+          <circle cx="170" cy="262" r="5" fill="#10B981"/>
+          <text x="178" y="266" font-size="8.5" fill="#475569" font-family="Noto Sans KR">클러스터B</text>
+          <circle cx="245" cy="262" r="5" fill="#F97316"/>
+          <text x="253" y="266" font-size="8.5" fill="#475569" font-family="Noto Sans KR">클러스터C</text>
         </svg>
       </div>
 
-      <div style="background:white;border-radius:12px;padding:14px;border-left:4px solid var(--purple);box-shadow:0 2px 8px rgba(0,0,0,.06);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:8px;">점 P는 군집 A에 소속</div>
-        <div style="font-size:13px;color:var(--mid);line-height:1.9;">
-          <strong style="color:var(--blue);">군집 A 내 거리:</strong><br>
-          P→P1 = 3.0 &nbsp; P→P2 = 5.0<br>
-          P→P3 = 2.0 &nbsp; P→P4 = 2.0<br>
-          <strong style="color:var(--red);">군집 B까지 거리:</strong><br>
-          P→Q1 = 6.0 &nbsp; P→Q2 = 8.0 &nbsp; P→Q3 = 5.0
+      <!-- 거리 데이터 카드 -->
+      <div style="background:white;border-radius:12px;padding:12px;border-left:4px solid var(--purple);box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:12.5px;line-height:1.8;">
+        <div style="font-weight:700;margin-bottom:6px;">점 i는 클러스터 A에 소속</div>
+        <div style="color:var(--mid);">
+          <strong style="color:#3B82F6;">클러스터 A 내 거리:</strong>
+          &nbsp;i→P1 = 3.5 &nbsp; i→P2 = 2 &nbsp; i→P3 = 3.5<br>
+          <strong style="color:#10B981;">클러스터 B까지 거리:</strong>
+          &nbsp;i→Q1 = 5 &nbsp; i→Q2 = 6 &nbsp; i→Q3 = 7<br>
+          <strong style="color:#F97316;">클러스터 C까지 거리:</strong>
+          &nbsp;i→R1 = 7.5 &nbsp; i→R2 = 6 &nbsp; i→R3 = 7.5
         </div>
-        <div style="font-size:14px;font-weight:700;margin-top:10px;">Q. 점 P의 실루엣 계수 s(P)를 구하시오.</div>
+        <div style="font-weight:700;margin-top:8px;color:#1E293B;">Q. 점 i의 실루엣 계수 s(i)를 구하시오.</div>
       </div>
     </div>
 
-    <!-- 오른쪽 -->
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="answer-sil" style="background:#EDE9FF;border-radius:12px;padding:14px;">
-        <div style="font-size:13px;font-weight:800;color:var(--purple);margin-bottom:6px;">Step 1: a(P) 계산 — 군집 A 내 평균 거리</div>
-        <div style="font-size:13px;color:var(--mid);">(3.0 + 5.0 + 2.0 + 2.0) / 4 = 12/4</div>
-        <div style="background:var(--purple);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">a(P) = 3.0</div>
-      </div>
-      <div class="answer-sil" style="background:#F0FDF4;border-radius:12px;padding:14px;">
-        <div style="font-size:13px;font-weight:800;color:var(--teal);margin-bottom:6px;">Step 2: b(P) 계산 — 군집 B까지 평균 거리</div>
-        <div style="font-size:13px;color:var(--mid);">(6.0 + 8.0 + 5.0) / 3 = 19/3 ≈ 6.33</div>
-        <div style="background:var(--teal);color:white;border-radius:6px;padding:6px;text-align:center;font-size:13px;font-weight:800;margin-top:6px;">b(P) = 6.33</div>
-      </div>
-      <div class="answer-sil" style="background:#DBEAFE;border-radius:12px;padding:14px;">
-        <div style="font-size:13px;font-weight:800;color:var(--blue);margin-bottom:6px;">Step 3: s(P) 계산</div>
-        <div style="font-size:12px;color:var(--mid);margin-bottom:8px;">
-          <span class="math block" data-expr="s(P) = \dfrac{b(P)-a(P)}{\max(a(P),b(P))} = \dfrac{6.33-3.0}{6.33} \approx 0.53"></span>
+    <!-- 오른쪽: 단계별 풀이 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+
+      <!-- Step 1: a(i) -->
+      <div style="background:#EDE9FF;border-radius:12px;padding:13px;">
+        <div style="font-size:12.5px;font-weight:800;color:var(--purple);margin-bottom:5px;">
+          Step 1: a(i) — 같은 클러스터 내 평균 거리
         </div>
-        <div style="background:#D1FAE5;border-radius:6px;padding:8px;text-align:center;font-size:13px;font-weight:800;color:#065F46;">
-          s(P) ≈ 0.53 → 군집화 양호한 편 ✅
+        <div style="font-size:12px;color:var(--mid);margin-bottom:4px;">
+          <span class="math" data-expr="a(i) = \dfrac{3.5 + 2 + 3.5}{3} = \dfrac{9}{3} = 3"></span>
+        </div>
+        <div style="background:var(--purple);color:white;border-radius:6px;padding:5px 8px;text-align:center;font-size:13px;font-weight:800;">a(i) = 3</div>
+      </div>
+
+      <!-- Step 2: d(i,B) & d(i,C) -->
+      <div style="background:#F0FDF4;border-radius:12px;padding:13px;">
+        <div style="font-size:12.5px;font-weight:800;color:#065F46;margin-bottom:5px;">
+          Step 2: 다른 클러스터까지의 평균 거리 계산
+        </div>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:3px;">
+          <span class="math" data-expr="d(i,B) = \dfrac{5+6+7}{3} = 6"></span>
+        </div>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:5px;">
+          <span class="math" data-expr="d(i,C) = \dfrac{7.5+6+7.5}{3} = 7"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#D1FAE5;border-radius:6px;padding:5px;text-align:center;font-size:12px;font-weight:800;color:#065F46;">d(i, B) = 6</div>
+          <div style="background:#FFEDD5;border-radius:6px;padding:5px;text-align:center;font-size:12px;font-weight:800;color:#C2410C;">d(i, C) = 7</div>
         </div>
       </div>
-      <button id="btn-sil" onclick="revealAnswer('sil')" style="padding:13px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:'Noto Sans KR',sans-serif;">📖 정답 보기</button>
+
+      <!-- Step 3: b(i) -->
+      <div style="background:#F0FDF4;border-radius:12px;padding:13px;">
+        <div style="font-size:12.5px;font-weight:800;color:var(--teal);margin-bottom:5px;">
+          Step 3: b(i) — 가장 가까운 이웃 클러스터까지 평균 거리
+        </div>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:5px;">
+          <span class="math" data-expr="b(i) = \min(d(i,B),\,d(i,C)) = \min(6,\,7) = 6"></span>
+        </div>
+        <div style="background:var(--teal);color:white;border-radius:6px;padding:5px 8px;text-align:center;font-size:13px;font-weight:800;">b(i) = 6</div>
+      </div>
+
+      <!-- Step 4: s(i) -->
+      <div style="background:#DBEAFE;border-radius:12px;padding:13px;">
+        <div style="font-size:12.5px;font-weight:800;color:var(--blue);margin-bottom:5px;">
+          Step 4: s(i) — 실루엣 계수 계산
+        </div>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:6px;">
+          <span class="math" data-expr="s(i) = \dfrac{b(i)-a(i)}{\max(a(i),\,b(i))} = \dfrac{6-3}{\max(3,\,6)} = \dfrac{3}{6} = 0.5"></span>
+        </div>
+        <div style="background:#1D4ED8;border-radius:6px;padding:7px;text-align:center;font-size:13px;font-weight:800;color:white;">
+          s(i) = 0.5 → 군집화 양호 ✅
+        </div>
+      </div>
+
+      <!-- 참고 박스 -->
+      <div style="background:#F8FAFC;border-radius:10px;padding:10px 12px;border:1px solid #E2E8F0;font-size:11.5px;color:#475569;line-height:1.7;">
+        <strong style="color:#1E293B;">참고:</strong>
+        b(i)는 다른 모든 클러스터까지의 평균 거리 중 <strong>가장 작은 값</strong>을 선택한다.
+        b(i)가 작을수록 데이터 포인트는 현재 군집보다 다른 군집에 속할 가능성이 높다.
+      </div>
     </div>
   </div>
 </div>
@@ -1443,7 +1505,7 @@
       <div class="fqo">
         <button class="fqb" onclick="cQ(this,1,false,'일반화는 새로운 데이터에서도 잘 작동하는 이상적 상태예요.')">① 일반화</button>
         <button class="fqb" onclick="cQ(this,1,false,'과소적합은 모델이 너무 단순해서 훈련 데이터도 제대로 못 학습하는 현상이에요.')">② 과소적합</button>
-        <button class="fqb" onclick="cQ(this,1,true,'정답! 과적합(Overfitting)은 훈련 데이터에만 최적화되어 새 데이터에 취약한 상태예요.')">③ 과적합</button>
+        <button class="fqb" onclick="cQ(this,1,true,'정답! 과적합(Overfitting)은 훈련 데이터에만 최적화되어 새 데이터에 취약한 상태예요.')">③ 과적합(과대적합)</button>
       </div>
       <div class="fqf" id="fb1"></div>
     </div>
