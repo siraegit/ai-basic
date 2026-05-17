@@ -605,11 +605,11 @@
           <line x1="170" y1="40" x2="170" y2="56" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
           <!-- 분할 바 -->
           <rect x="10" y="60" width="192" height="30" rx="6" fill="#D1FAE5"/>
-          <text x="106" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46" font-family="Noto Sans KR">훈련 (60%)</text>
+          <text x="106" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46" font-family="Noto Sans KR">훈련</text>
           <rect x="202" y="60" width="64" height="30" fill="#DBEAFE"/>
-          <text x="234" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">검증 (20%)</text>
+          <text x="234" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#1E40AF" font-family="Noto Sans KR">검증</text>
           <rect x="266" y="60" width="64" height="30" rx="6" fill="#FED7AA"/>
-          <text x="298" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#92400E" font-family="Noto Sans KR">테스트 (20%)</text>
+          <text x="298" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#92400E" font-family="Noto Sans KR">테스트</text>
           <!-- 레이블 -->
           <text x="10" y="105" font-size="9" fill="#475569" font-family="Noto Sans KR">훈련+검증 → 모델 학습·개선 / 테스트 → 최종 성능 평가</text>
         </svg>
@@ -720,38 +720,111 @@
   <div class="ttl">회귀 모델의 성능 평가 지표</div>
   <div class="sub">예측값과 실제값의 <strong>오차</strong>를 기반으로 모델 성능을 수치화한다.</div>
 
-  <!-- 상단 차트 -->
-  <div class="card" style="padding:10px;margin-bottom:14px;">
-    <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:6px;">📊 회귀 모델의 오차 시각화</div>
-    <canvas id="chartError" width="780" height="130"></canvas>
-  </div>
+  <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:18px;flex:1;">
+    <!-- 왼쪽: 그래프 + MSE 풀이 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
 
-  <!-- 하단 4개 지표 -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;">
-    <div style="background:#EFF6FF;border-radius:14px;padding:16px;">
-      <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:8px;">평균제곱오차 (MSE)</div>
-      <div style="margin-bottom:8px;"><span class="math block" data-expr="MSE = \dfrac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2"></span></div>
-      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">오차를 제곱해 평균. 큰 오차에 민감</div>
-      <span style="background:var(--blue);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
+      <!-- 교과서 스타일 그래프 -->
+      <div class="card" style="padding:14px 18px;">
+        <svg viewBox="0 0 300 220" width="100%" height="auto" style="display:block;">
+          <!-- 배경 -->
+          <rect width="300" height="220" fill="white"/>
+
+          <!-- 축 -->
+          <line x1="48" y1="10" x2="48" y2="185" stroke="#1E293B" stroke-width="1.8"/>
+          <line x1="48" y1="185" x2="285" y2="185" stroke="#1E293B" stroke-width="1.8"/>
+
+          <!-- 축 화살표 -->
+          <polygon points="48,6 44,14 52,14" fill="#1E293B"/>
+          <polygon points="289,185 281,181 281,189" fill="#1E293B"/>
+
+          <!-- 축 레이블 -->
+          <text x="10" y="14" font-size="10" fill="#475569" font-family="Noto Sans KR" font-weight="700">y</text>
+          <text x="6" y="38" font-size="9" fill="#475569" font-family="Noto Sans KR">종속</text>
+          <text x="6" y="49" font-size="9" fill="#475569" font-family="Noto Sans KR">변수</text>
+          <text x="262" y="200" font-size="9" fill="#475569" font-family="Noto Sans KR">독립 변수 x</text>
+          <text x="272" y="182" font-size="10" fill="#475569" font-family="Noto Sans KR" font-weight="700">x</text>
+
+          <!-- 절편 b 표시 -->
+          <circle cx="48" cy="158" r="3" fill="#1E293B"/>
+          <text x="10" y="156" font-size="9" fill="#475569" font-family="Noto Sans KR">상수항</text>
+          <text x="18" y="167" font-size="9" fill="#475569" font-family="Noto Sans KR">b</text>
+
+          <!-- 회귀선: y = wx + b, (48,158)~(280,50) -->
+          <line x1="48" y1="158" x2="280" y2="50" stroke="#EF4444" stroke-width="2"/>
+
+          <!-- 회귀식 레이블 -->
+          <text x="170" y="115" font-size="10" fill="#EF4444" font-family="Noto Sans KR">회귀식</text>
+          <text x="163" y="127" font-size="10" fill="#EF4444" font-family="Noto Sans KR" font-style="italic">y&#7522; = wx&#7522; + b</text>
+
+          <!--
+            3개 데이터 포인트
+            점1: x=90  → 회귀선 y=158-(158-50)*(90-48)/(280-48)=158-108*42/232≈138.5  실제y=155
+            점2: x=155 → 회귀선 y=158-108*107/232≈108.2  실제y=85 (회귀선 아래)
+            점3: x=230 → 회귀선 y=158-108*182/232≈73.2  실제y=58 (회귀선 아래)
+            교과서처럼 1개는 선 위, 2개는 선 아래
+          -->
+
+          <!-- 점1: 회귀선 위 (실제y=155, 예측y≈138) -->
+          <line x1="90" y1="139" x2="90" y2="155" stroke="#475569" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <circle cx="90" cy="155" r="5" fill="#10B981"/>
+          <!-- 오차 화살표+레이블 -->
+          <text x="95" y="142" font-size="9" fill="#475569" font-family="Noto Sans KR">오차</text>
+          <text x="97" y="152" font-size="9" fill="#475569" font-family="Noto Sans KR" font-style="italic">i</text>
+
+          <!-- 점2: 회귀선 위 (예측y≈104, 실제y=82) -->
+          <line x1="165" y1="82" x2="165" y2="104" stroke="#475569" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <circle cx="165" cy="82" r="5" fill="#10B981"/>
+
+          <!-- 점3: 회귀선 아래 (실제y=85, 예측y≈68) -->
+          <line x1="235" y1="68" x2="235" y2="85" stroke="#475569" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <circle cx="235" cy="85" r="5" fill="#10B981"/>
+
+          <!-- 캡션 -->
+          <text x="48" y="212" font-size="9" fill="#94A3B8" font-family="Noto Sans KR">선형 회귀 모델의 오차</text>
+        </svg>
+      </div>
+
+      <!-- 결정 계수 카드 -->
+      <div style="background:#EDE9FF;border-radius:14px;padding:14px 16px;flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:13px;font-weight:800;color:var(--purple);">결정 계수 (R²)</span>
+          <span style="background:var(--purple);color:white;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;white-space:nowrap;">1에 가까울수록 좋음</span>
+        </div>
+        <div style="margin-bottom:8px;"><span class="math block" data-expr="R^2 = 1 - \dfrac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}"></span></div>
+        <div style="font-size:12px;color:var(--mid);">모델의 절대적인 설명력을 0과 1사이의 비율로 나타낸 지표</div>
+      </div>
+
     </div>
-    <div style="background:#F0FDF4;border-radius:14px;padding:16px;">
-      <div style="font-size:14px;font-weight:800;color:var(--teal);margin-bottom:8px;">평균제곱근오차 (RMSE)</div>
-      <div style="margin-bottom:8px;"><span class="math block" data-expr="RMSE = \sqrt{\dfrac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}"></span></div>
-      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">MSE의 제곱근. 원래 단위로 해석 가능</div>
-      <span style="background:var(--teal);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
+
+    <!-- 오른쪽: 4개 지표 카드 세로 배치 -->
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div style="background:#EFF6FF;border-radius:12px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:13px;font-weight:800;color:var(--blue);">평균제곱오차 (MSE)</span>
+          <span style="background:var(--blue);color:white;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;white-space:nowrap;">0에 가까울수록 좋음</span>
+        </div>
+        <div style="margin-bottom:5px;"><span class="math block" data-expr="MSE = \dfrac{1}{n}\sum(y_i - \hat{y}_i)^2"></span></div>
+        <div style="font-size:12px;color:var(--mid);">오차를 제곱하여 평균한 값으로, 큰 오차를 잡아내는 데 민감</div>
+      </div>
+      <div style="background:#F0FDF4;border-radius:12px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:13px;font-weight:800;color:var(--teal);">평균제곱근오차 (RMSE)</span>
+          <span style="background:var(--teal);color:white;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;white-space:nowrap;">0에 가까울수록 좋음</span>
+        </div>
+        <div style="margin-bottom:5px;"><span class="math block" data-expr="RMSE = \sqrt{\dfrac{1}{n}\sum(y_i-\hat{y}_i)^2}"></span></div>
+        <div style="font-size:12px;color:var(--mid);">MSE에 루트를 씌워, 실제 데이터와 동일한 단위로 직관적 해석이 가능</div>
+      </div>
+      <div style="background:#FFF7ED;border-radius:12px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:13px;font-weight:800;color:var(--orange);">평균절대오차 (MAE)</span>
+          <span style="background:var(--orange);color:white;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;white-space:nowrap;">0에 가까울수록 좋음</span>
+        </div>
+        <div style="margin-bottom:5px;"><span class="math block" data-expr="MAE = \dfrac{1}{n}\sum|y_i - \hat{y}_i|"></span></div>
+        <div style="font-size:12px;color:var(--mid);">오차 절댓값의 평균으로, 이상치(노이즈)의 영향에 둔감하고 직관적</div>
+      </div>
     </div>
-    <div style="background:#FFF7ED;border-radius:14px;padding:16px;">
-      <div style="font-size:14px;font-weight:800;color:var(--orange);margin-bottom:8px;">평균절대오차 (MAE)</div>
-      <div style="margin-bottom:8px;"><span class="math block" data-expr="MAE = \dfrac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|"></span></div>
-      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">오차 절댓값의 평균. 전반적 오차 크기</div>
-      <span style="background:var(--orange);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">0에 가까울수록 좋음</span>
-    </div>
-    <div style="background:#EDE9FF;border-radius:14px;padding:16px;">
-      <div style="font-size:14px;font-weight:800;color:var(--purple);margin-bottom:8px;">결정 계수 (R²)</div>
-      <div style="margin-bottom:8px;"><span class="math block" data-expr="R^2 = 1 - \dfrac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}"></span></div>
-      <div style="font-size:13px;color:var(--mid);margin-bottom:8px;">모델이 데이터 변동성을 얼마나 잘 설명하는지</div>
-      <span style="background:var(--purple);color:white;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;">1에 가까울수록 좋음</span>
-    </div>
+
   </div>
 </div>
 
@@ -1685,6 +1758,85 @@ function kmReset() {
   kmStep = 0; kmDraw(); kmUpdatePanel();
 }
 
+// ── initChartError (S9) ──
+function initChartError(){
+  const canvas = document.getElementById('chartError');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const actuals  = [10, 20, 30, 40, 50];
+  const preds    = [12, 18, 35, 38, 53];
+  const xs       = [1, 2, 3, 4, 5];
+
+  // 커스텀 플러그인: 오차 수직 점선
+  const errorLinePlugin = {
+    id: 'errorLines',
+    afterDraw(chart) {
+      const c   = chart.ctx;
+      const xSc = chart.scales.x;
+      const ySc = chart.scales.y;
+      c.save();
+      c.setLineDash([4, 3]);
+      c.strokeStyle = '#EF4444';
+      c.lineWidth   = 1.5;
+      xs.forEach((x, i) => {
+        c.beginPath();
+        c.moveTo(xSc.getPixelForValue(x), ySc.getPixelForValue(actuals[i]));
+        c.lineTo(xSc.getPixelForValue(x), ySc.getPixelForValue(preds[i]));
+        c.stroke();
+      });
+      c.restore();
+    }
+  };
+
+  new Chart(ctx, {
+    data: {
+      datasets: [
+        {
+          type: 'scatter',
+          label: '실제값',
+          data: xs.map((x, i) => ({ x, y: actuals[i] })),
+          backgroundColor: '#F97316',
+          pointRadius: 7,
+          order: 2
+        },
+        {
+          type: 'scatter',
+          label: '예측값',
+          data: xs.map((x, i) => ({ x, y: preds[i] })),
+          backgroundColor: '#3B82F6',
+          pointRadius: 5,
+          pointStyle: 'rectRot',
+          order: 3
+        },
+        {
+          type: 'line',
+          label: '회귀선',
+          data: [{ x: 0, y: 7 }, { x: 6, y: 56 }],
+          borderColor: '#3B82F6',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      animation: { duration: 0 },
+      scales: {
+        x: { type:'linear', min:0, max:6, grid:{ color:'#F1F5F9' }, ticks:{ font:{ size:10 } } },
+        y: { min:0, max:60,            grid:{ color:'#F1F5F9' }, ticks:{ font:{ size:10 } } }
+      },
+      plugins: {
+        legend: { position:'top', labels:{ font:{ size:11, family:'Noto Sans KR' } } }
+      }
+    },
+    plugins: [errorLinePlugin]
+  });
+}
+
 // ── IntersectionObserver ──
 const cr={};
 const observer = new IntersectionObserver((entries)=>{
@@ -1692,6 +1844,7 @@ const observer = new IntersectionObserver((entries)=>{
     if(!entry.isIntersecting) return;
     const id = entry.target.id;
     if(id==='s4' && !cr[4]){ kmDraw(); kmUpdatePanel(); cr[4]=1; }
+    if(id==='s9' && !cr[9]){ initChartError(); cr[9]=1; }
   });
 },{threshold:0.1});
 document.querySelectorAll('.slide').forEach(s=>observer.observe(s));
